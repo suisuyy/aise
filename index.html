@@ -100,6 +100,17 @@
             border: none;
             height: 80vh;
         }
+        
+        /* New styles for wide screen layout */
+        @media (min-width: 1200px) {
+            .frames-wrapper.all-tab {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .frames-wrapper.all-tab .frame-container {
+                width: calc(50% - 20px);
+            }
+        }
     </style>
 </head>
 <body>
@@ -114,7 +125,7 @@
         </div>
     </div>
     <div class="results-container">
-        <div class="frames-wrapper">
+        <div class="frames-wrapper all-tab">
             <div id="perplexity-container" class="frame-container">
                 <div id="perplexity-url" class="url-display"></div>
                 <iframe id="perplexity-frame" class="results-frame" src="about:blank" tabindex="-1"></iframe>
@@ -166,6 +177,7 @@
 
         // Tab functionality
         const tabs = document.querySelectorAll('.tab');
+        const framesWrapper = document.querySelector('.frames-wrapper');
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 tabs.forEach(t => t.classList.remove('active'));
@@ -175,10 +187,12 @@
                 const frameContainers = document.querySelectorAll('.frame-container');
                 
                 if (target === 'all') {
+                    framesWrapper.classList.add('all-tab');
                     frameContainers.forEach(container => {
                         container.style.display = 'flex';
                     });
                 } else {
+                    framesWrapper.classList.remove('all-tab');
                     frameContainers.forEach(container => {
                         container.style.display = 'none';
                     });
@@ -195,7 +209,10 @@
             this.classList.add('expanded');
         });
         textarea.addEventListener('blur', function() {
-                this.classList.remove('expanded');
+            this.classList.remove('expanded');
+
+            if (this.value === '') {
+            }
         });
         textarea.addEventListener('input', function() {
             if (this.value !== '') {
