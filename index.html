@@ -41,10 +41,10 @@
         .search-container {
             display: flex;
             flex-grow: 1;
-            margin-left: 10px;
-            align-items: center;
+            align-items: flex-start;
         }
         .search-textarea {
+            height: 100%;
             flex-grow: 1;
             padding: 10px;
             font-size: 16px;
@@ -53,12 +53,16 @@
             outline: none;
             resize: none;
             overflow: hidden;
-            height: 20px;
+            
             max-height: 150px;
             transition: all 0.3s ease;
         }
-        .search-textarea:focus, .search-textarea.expanded {
+        #searchContainer.expanded {
+            position: fixed;
+            width: 90vw;
             height: 100px;
+            top: 0;
+            right:0;
         }
         .search-button {
             margin-left: 10px;
@@ -119,11 +123,13 @@
         <button class="tab" data-target="perplexity">Perplexity</button>
         <button class="tab" data-target="bing">Bing</button>
         <button class="tab" data-target="google">Google</button>
-        <div class="search-container">
-            <textarea id="search-textarea" class="search-textarea" placeholder="Search..."></textarea>
+        
+        <div class="search-container" id="searchContainer">
+            <textarea id="search-textarea" class="search-textarea" rows="1" placeholder="Search..."></textarea>
             <button id="search-button" class="search-button">Run</button>
         </div>
     </div>
+    
     <div class="results-container">
         <div class="frames-wrapper all-tab">
             <div id="perplexity-container" class="frame-container">
@@ -143,6 +149,7 @@
 
     <script>
         function performSearch(query) {
+            console.log('query: '+query)
             if (query) {
                 var perplexityUrl = 'https://rper.suisuy.eu.org/search?s=o&q=' + encodeURIComponent(query);
                 var bingUrl = 'https://www.bing.com/search?showconv=1&q=' + encodeURIComponent(query) + '&sendquery=1&FORM=SCCODX';
@@ -206,17 +213,20 @@
         // Textarea focus and blur functionality
         const textarea = document.getElementById('search-textarea');
         textarea.addEventListener('focus', function() {
-            this.classList.add('expanded');
+            searchContainer.classList.add('expanded');
         });
         textarea.addEventListener('blur', function() {
-            this.classList.remove('expanded');
 
+            setTimeout(() => {
+                searchContainer.classList.remove('expanded');
+
+            }, 200);
             if (this.value === '') {
             }
         });
         textarea.addEventListener('input', function() {
             if (this.value !== '') {
-                this.classList.add('expanded');
+                searchContainer.classList.add('expanded');
             }
         });
     </script>
