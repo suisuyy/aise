@@ -15,23 +15,50 @@
             display: flex;
             flex-direction: column;
         }
-        .search-container {
+        .tab-container {
             position: sticky;
             top: 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            background-color: #e0e0e0;
+            padding: 10px;
             z-index: 100;
-            background-color: #f0f0f0;
-            padding: 20px;
-            text-align: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .search-input {
-            width: 60%;
-            max-width: 300px;
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: #e0e0e0;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .tab.active {
+            background-color: #f0f0f0;
+            border-bottom: 2px solid #4285f4;
+        }
+        .search-container {
+            display: flex;
+            flex-grow: 1;
+            margin-left: 10px;
+            align-items: center;
+        }
+        .search-textarea {
+            flex-grow: 1;
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ddd;
             border-radius: 24px;
             outline: none;
+            resize: none;
+            overflow: hidden;
+            height: 20px;
+            max-height: 150px;
+            transition: all 0.3s ease;
+        }
+        .search-textarea:focus, .search-textarea.expanded {
+            height: 100px;
         }
         .search-button {
             margin-left: 10px;
@@ -51,23 +78,6 @@
             flex-grow: 1;
             flex-direction: column;
             border-top: 1px solid #ddd;
-        }
-        .tab-container {
-            position: sticky;
-            top: 80px;
-            display: flex;
-            background-color: #e0e0e0;
-            z-index: 99;
-        }
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border: none;
-            background-color: #e0e0e0;
-        }
-        .tab.active {
-            background-color: #f0f0f0;
-            border-bottom: 2px solid #4285f4;
         }
         .frames-wrapper {
             display: flex;
@@ -93,17 +103,15 @@
     </style>
 </head>
 <body>
-    <div class="search-container">
-        <form id="search-form">
-            <input type="text" id="search-input" class="search-input" placeholder="Search..." autofocus>
-            <button type="submit" class="search-button">Run</button>
-        </form>
-    </div>
     <div class="tab-container">
         <button class="tab active" data-target="all">All</button>
         <button class="tab" data-target="perplexity">Perplexity</button>
         <button class="tab" data-target="bing">Bing</button>
         <button class="tab" data-target="google">Google</button>
+        <div class="search-container">
+            <textarea id="search-textarea" class="search-textarea" placeholder="Search..."></textarea>
+            <button id="search-button" class="search-button">Run</button>
+        </div>
     </div>
     <div class="results-container">
         <div class="frames-wrapper">
@@ -136,14 +144,12 @@
                 document.getElementById('perplexity-url').textContent = perplexityUrl;
                 document.getElementById('bing-url').textContent = bingUrl;
                 document.getElementById('google-url').textContent = googleUrl;
-                
-                document.getElementById('search-input').value = query;
             }
         }
 
-        document.getElementById('search-form').addEventListener('submit', function(e) {
+        document.getElementById('search-button').addEventListener('click', function(e) {
             e.preventDefault();
-            var query = document.getElementById('search-input').value;
+            var query = document.getElementById('search-textarea').value;
             performSearch(query);
         });
 
@@ -151,9 +157,11 @@
             var urlParams = new URLSearchParams(window.location.search);
             var query = urlParams.get('q');
             if (query) {
+                document.getElementById('search-textarea').value = query;
+                document.getElementById('search-textarea').classList.add('expanded');
                 performSearch(query);
             }
-            document.getElementById('search-input').focus();
+            document.getElementById('search-textarea').focus();
         };
 
         // Tab functionality
@@ -179,6 +187,20 @@
                     targetContainer.scrollIntoView({ behavior: 'smooth' });
                 }
             });
+        });
+
+        // Textarea focus and blur functionality
+        const textarea = document.getElementById('search-textarea');
+        textarea.addEventListener('focus', function() {
+            this.classList.add('expanded');
+        });
+        textarea.addEventListener('blur', function() {
+                this.classList.remove('expanded');
+        });
+        textarea.addEventListener('input', function() {
+            if (this.value !== '') {
+                this.classList.add('expanded');
+            }
         });
     </script>
 </body>
