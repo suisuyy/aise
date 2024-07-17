@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="Perplexity Open Search">
+    <title>Custom Search Engine with Perplexity, Bing, and Google</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .search-container {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: #f0f0f0;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .search-input {
+            width: 60%;
+            max-width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            outline: none;
+        }
+        .search-button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+        }
+        .search-button:hover {
+            background-color: #357ae8;
+        }
+        .results-container {
+            display: flex;
+            flex-grow: 1;
+            flex-direction: column;
+            border-top: 1px solid #ddd;
+        }
+        .tab-container {
+            position: sticky;
+            top: 80px;
+            display: flex;
+            background-color: #e0e0e0;
+            z-index: 99;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: #e0e0e0;
+        }
+        .tab.active {
+            background-color: #f0f0f0;
+            border-bottom: 2px solid #4285f4;
+        }
+        .frames-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+        .frame-container {
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .url-display {
+            padding: 5px;
+            background-color: #e0e0e0;
+            font-size: 12px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .results-frame {
+            border: none;
+            height: 80vh;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <form id="search-form">
+            <input type="text" id="search-input" class="search-input" placeholder="Search..." autofocus>
+            <button type="submit" class="search-button">Run</button>
+        </form>
+    </div>
+    <div class="tab-container">
+        <button class="tab active" data-target="all">All</button>
+        <button class="tab" data-target="perplexity">Perplexity</button>
+        <button class="tab" data-target="bing">Bing</button>
+        <button class="tab" data-target="google">Google</button>
+    </div>
+    <div class="results-container">
+        <div class="frames-wrapper">
+            <div id="perplexity-container" class="frame-container">
+                <div id="perplexity-url" class="url-display"></div>
+                <iframe id="perplexity-frame" class="results-frame" src="about:blank" tabindex="-1"></iframe>
+            </div>
+            <div id="bing-container" class="frame-container">
+                <div id="bing-url" class="url-display"></div>
+                <iframe id="bing-frame" class="results-frame" src="about:blank" tabindex="-1"></iframe>
+            </div>
+            <div id="google-container" class="frame-container">
+                <div id="google-url" class="url-display"></div>
+                <iframe id="google-frame" class="results-frame" src="about:blank" tabindex="-1"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function performSearch(query) {
+            if (query) {
+                var perplexityUrl = 'https://rper.suisuy.eu.org/search?s=o&q=' + encodeURIComponent(query);
+                var bingUrl = 'https://www.bing.com/search?showconv=1&q=' + encodeURIComponent(query) + '&sendquery=1&FORM=SCCODX';
+                var googleUrl = 'https://www.google.com/search?igu=1&q=' + encodeURIComponent(query);
+                
+                document.getElementById('perplexity-frame').src = perplexityUrl;
+                document.getElementById('bing-frame').src = bingUrl;
+                document.getElementById('google-frame').src = googleUrl;
+                
+                document.getElementById('perplexity-url').textContent = perplexityUrl;
+                document.getElementById('bing-url').textContent = bingUrl;
+                document.getElementById('google-url').textContent = googleUrl;
+                
+                document.getElementById('search-input').value = query;
+            }
+        }
+
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var query = document.getElementById('search-input').value;
+            performSearch(query);
+        });
+
+        window.onload = function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var query = urlParams.get('q');
+            if (query) {
+                performSearch(query);
+            }
+            document.getElementById('search-input').focus();
+        };
+
+        // Tab functionality
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const target = tab.getAttribute('data-target');
+                const frameContainers = document.querySelectorAll('.frame-container');
+                
+                if (target === 'all') {
+                    frameContainers.forEach(container => {
+                        container.style.display = 'flex';
+                    });
+                } else {
+                    frameContainers.forEach(container => {
+                        container.style.display = 'none';
+                    });
+                    const targetContainer = document.getElementById(`${target}-container`);
+                    targetContainer.style.display = 'flex';
+                    targetContainer.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
