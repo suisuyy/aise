@@ -59,9 +59,13 @@
         }
         #result{
           z-index: 10000;
-          
+          position: fixed;
+          bottom: 50px;
+          height: 300px;
+          width: 90vw;
+          background-color: lightblue;
+          opacity: 0.8;
         }
-
         #qr-text {
             width: 100%;
             padding: 10px;
@@ -119,12 +123,13 @@
         const html5QrCode = new Html5Qrcode("reader");
         const resultElement = document.getElementById('result');
         let isScanning = false;
+        let lastResult = '';
 
         function displayResult(decodedText) {
-            resultElement.innerText = `
-                 
-                ${decodedText}
-            ` + result.innerText ;
+            if (decodedText !== lastResult) {
+                resultElement.innerText = decodedText + '\n' + resultElement.innerText;
+                lastResult = decodedText;
+            }
         }
 
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {

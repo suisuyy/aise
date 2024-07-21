@@ -7,7 +7,6 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -74,11 +73,15 @@
         .function:hover {
             background-color: #7ccd7c;
         }
+        .blankdiv{
+            height: 100px;
+        }
     </style>
 </head>
 <body>
     <div class="calculator">
-        <div id="display"></div>
+
+        <div id="display" ></div>
         <div id="result"></div>
         <div class="keyboard">
             <button onclick="appendToDisplay('7')">7</button>
@@ -113,6 +116,7 @@
     <script>
         const display = document.getElementById('display');
         const result = document.getElementById('result');
+        display.contentEditable=true ;
 
         function appendToDisplay(value) {
             display.textContent += value;
