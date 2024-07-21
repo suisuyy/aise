@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced JavaScript Expression Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .calculator {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 320px;
+        }
+        #display, #result {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        #display {
+            height: 60px;
+            overflow-y: auto;
+            word-wrap: break-word;
+        }
+        #result {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        button {
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        button:hover {
+            background-color: #e0e0e0;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .wide {
+            grid-column: span 2;
+        }
+        .operator {
+            background-color: #ffd700;
+        }
+        .operator:hover {
+            background-color: #ffcc00;
+        }
+        .function {
+            background-color: #90ee90;
+        }
+        .function:hover {
+            background-color: #7ccd7c;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div id="display"></div>
+        <div id="result"></div>
+        <div class="keyboard">
+            <button onclick="appendToDisplay('7')">7</button>
+            <button onclick="appendToDisplay('8')">8</button>
+            <button onclick="appendToDisplay('9')">9</button>
+            <button class="operator" onclick="appendToDisplay('+')">+</button>
+            <button onclick="appendToDisplay('4')">4</button>
+            <button onclick="appendToDisplay('5')">5</button>
+            <button onclick="appendToDisplay('6')">6</button>
+            <button class="operator" onclick="appendToDisplay('-')">-</button>
+            <button onclick="appendToDisplay('1')">1</button>
+            <button onclick="appendToDisplay('2')">2</button>
+            <button onclick="appendToDisplay('3')">3</button>
+            <button class="operator" onclick="appendToDisplay('*')">*</button>
+            <button onclick="appendToDisplay('0')">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+            <button class="operator" onclick="appendToDisplay('/')">/</button>
+            <button class="operator" onclick="appendToDisplay('**')">^</button>
+            <button onclick="appendToDisplay('(')">(</button>
+            <button onclick="appendToDisplay(')')">)</button>
+            <button class="operator" onclick="appendToDisplay('%')">%</button>
+            <button onclick="backspace()">←</button>
+            <button class="function" onclick="appendToDisplay('Math.sin(')">sin</button>
+            <button class="function" onclick="appendToDisplay('Math.cos(')">cos</button>
+            <button class="function" onclick="appendToDisplay('Math.tan(')">tan</button>
+            <button class="function" onclick="appendToDisplay('Math.log(')">log</button>
+            <button class="wide" onclick="clearDisplay()">Clear</button>
+            <button class="wide operator" onclick="evaluateExpression()">=</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+        const result = document.getElementById('result');
+
+        function appendToDisplay(value) {
+            display.textContent += value;
+            evaluateExpression();
+        }
+
+        function clearDisplay() {
+            display.textContent = '';
+            result.textContent = '';
+        }
+
+        function backspace() {
+            display.textContent = display.textContent.slice(0, -1);
+            evaluateExpression();
+        }
+
+        function evaluateExpression() {
+            const expression = display.textContent;
+
+            if (expression.trim() === '') {
+                result.textContent = '';
+                return;
+            }
+
+            try {
+                // Using Function constructor to create a safe evaluation environment
+                const calculatedResult = new Function('return ' + expression)();
+                result.textContent = Number.isInteger(calculatedResult) ? calculatedResult : calculatedResult.toFixed(4);
+            } catch (error) {
+                result.textContent = 'Error';
+            }
+        }
+
+        // Add keyboard support
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            if (/[\d\+\-\*\/\(\)\.\%\^]/.test(key)) {
+                appendToDisplay(key === '^' ? '**' : key);
+            } else if (key === 'Enter') {
+                evaluateExpression();
+            } else if (key === 'Backspace') {
+                backspace();
+            } else if (key === 'Escape') {
+                clearDisplay();
+            }
+        });
+    </script>
+</body>
+</html>
