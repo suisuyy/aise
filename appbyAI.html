@@ -22,17 +22,16 @@
             flex-wrap: wrap;
             align-items: center;
             background-color: #e0e0e0;
-            padding: 10px;
+            padding: 0;
             z-index: 100;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .tab {
-            padding: 10px 20px;
+            padding: 0;
             cursor: pointer;
             border: none;
             background-color: #e0e0e0;
-            margin-right: 5px;
-            margin-bottom: 5px;
+            margin-right: 15px;
         }
         .tab.active {
             background-color: #f0f0f0;
@@ -59,8 +58,8 @@
         }
         #searchContainer.expanded {
             position: fixed;
-            width: 90vw;
-            height: 100px;
+            width: 95vw;
+            height: 30vh;
             top: 0;
             right:0;
         }
@@ -120,25 +119,22 @@
 <body>
     <div class="tab-container">
         <button class="tab active" data-target="all">All</button>
-        <button class="tab" data-target="perplexity">Perplexity</button>
-        <button class="tab" data-target="bing">Bing</button>
-        <button class="tab" data-target="google">Google</button>
+        <button class="tab" data-target="perplexity">qrscaner</button>
+        <button class="tab" data-target="bing">Caculator</button>
+        <button class="tab" data-target="google" id="more..">More..</button>
         
-        <div class="search-container" id="searchContainer">
-            <textarea id="search-textarea" class="search-textarea" rows="1" placeholder="Search..."></textarea>
-            <button id="search-button" class="search-button">Run</button>
-        </div>
+        
     </div>
     
     <div class="results-container">
         <div class="frames-wrapper all-tab">
             <div id="perplexity-container" class="frame-container">
                 <div id="perplexity-url" class="url-display"></div>
-                <iframe id="perplexity-frame" class="results-frame" src="about:blank" tabindex="-1"  allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
+                <iframe id="perplexity-frame" class="results-frame" src="./qr.html" tabindex="-1"  allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
             </div>
             <div id="bing-container" class="frame-container">
                 <div id="bing-url" class="url-display"></div>
-                <iframe id="bing-frame" class="results-frame" src="about:blank" tabindex="-1" allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
+                <iframe id="bing-frame" class="results-frame" src="./cal.html" tabindex="-1" allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
             </div>
             <div id="google-container" class="frame-container">
                 <div id="google-url" class="url-display"></div>
@@ -148,39 +144,7 @@
     </div>
 
     <script>
-        function performSearch(query) {
-            console.log('query: '+query)
-            if (query) {
-                var perplexityUrl = 'https://mpere.suisuy.eu.org/search?s=o&q=' + encodeURIComponent(query);
-                var bingUrl = 'https://www.bing.com/search?showconv=1&q=' + encodeURIComponent(query) + '&sendquery=1&FORM=SCCODX';
-                var googleUrl = 'https://www.google.com/search?igu=1&q=' + encodeURIComponent(query);
-                
-                document.getElementById('perplexity-frame').src = perplexityUrl;
-                document.getElementById('bing-frame').src = bingUrl;
-                document.getElementById('google-frame').src = googleUrl;
-                
-                document.getElementById('perplexity-url').textContent = perplexityUrl;
-                document.getElementById('bing-url').textContent = bingUrl;
-                document.getElementById('google-url').textContent = googleUrl;
-            }
-        }
-
-        document.getElementById('search-button').addEventListener('click', function(e) {
-            e.preventDefault();
-            var query = document.getElementById('search-textarea').value;
-            performSearch(query);
-        });
-
-        window.onload = function() {
-            var urlParams = new URLSearchParams(window.location.search);
-            var query = urlParams.get('q');
-            if (query) {
-                document.getElementById('search-textarea').value = query;
-                document.getElementById('search-textarea').classList.add('expanded');
-                performSearch(query);
-            }
-            document.getElementById('search-textarea').focus();
-        };
+     
 
         // Tab functionality
         const tabs = document.querySelectorAll('.tab');
@@ -210,25 +174,7 @@
             });
         });
 
-        // Textarea focus and blur functionality
-        const textarea = document.getElementById('search-textarea');
-        textarea.addEventListener('focus', function() {
-            searchContainer.classList.add('expanded');
-        });
-        textarea.addEventListener('blur', function() {
-
-            setTimeout(() => {
-                searchContainer.classList.remove('expanded');
-
-            }, 200);
-            if (this.value === '') {
-            }
-        });
-        textarea.addEventListener('input', function() {
-            if (this.value !== '') {
-                searchContainer.classList.add('expanded');
-            }
-        });
+        
     </script>
 </body>
 </html>
