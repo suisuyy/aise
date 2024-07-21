@@ -121,7 +121,7 @@
         <button class="tab active" data-target="all">All</button>
         <button class="tab" data-target="perplexity">qrscaner</button>
         <button class="tab" data-target="bing">Caculator</button>
-        <button class="tab" data-target="google" id="more..">More..</button>
+        <button class="tab" data-target="player" id="player">Player</button>
         
         
     </div>
@@ -139,6 +139,11 @@
             <div id="google-container" class="frame-container">
                 <div id="google-url" class="url-display"></div>
                 <iframe id="google-frame" class="results-frame" src="about:blank" tabindex="-1" allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
+            </div>
+
+            <div id="player-container" class="frame-container">
+                <div id="player-url" class="url-display"></div>
+                <iframe id="player-frame" class="results-frame" src="./player" tabindex="-1" allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
             </div>
         </div>
     </div>
