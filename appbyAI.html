@@ -59,8 +59,8 @@
         }
         #searchContainer.expanded {
             position: fixed;
-            width: 95vw;
-            height: 30vh;
+            width: 90vw;
+            height: 100px;
             top: 0;
             right:0;
         }
@@ -122,7 +122,7 @@
         <button class="tab active" data-target="all">All</button>
         <button class="tab" data-target="perplexity">Perplexity</button>
         <button class="tab" data-target="bing">Bing</button>
-        <button class="tab" data-target="google" id="google-tab">Google</button>
+        <button class="tab" data-target="google">Google</button>
         
         <div class="search-container" id="searchContainer">
             <textarea id="search-textarea" class="search-textarea" rows="1" placeholder="Search..."></textarea>
@@ -214,8 +214,6 @@
         const textarea = document.getElementById('search-textarea');
         textarea.addEventListener('focus', function() {
             searchContainer.classList.add('expanded');
-            document.querySelector('#google-tab')?.click();
-
         });
         textarea.addEventListener('blur', function() {
 
