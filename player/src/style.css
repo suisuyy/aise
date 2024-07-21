@@ -33,10 +33,10 @@ textarea {
 
 button {
   padding: 0;
-  margin: 0;
+  margin-right: 10px;
   cursor: pointer;
-  background-color: #007bff;
-  color: #fff;
+  background-color: lightcyan;
+  color: black;
   border: none;
 }
 

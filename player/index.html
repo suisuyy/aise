@@ -13,11 +13,17 @@
   <input id="fileInput" type="file" accept="audio/*,video/*"> or paster file url
   <textarea id="audioSources" placeholder="Enter audio URLs (one per line)">https://alistd.azurewebsites.net/d/odav/share/tmp/audio/voa/202405/VOA60_%20June%2010%2C%202024.mp3</textarea>
 </div>
-
+<div class="controls" id="controlDiv">
+  <button id="playPause">Play</button>
+  <button id="stop">Stop</button>
+  <button id="loadPlaylist">Load Playlist</button>
+  <br>
+</div>
 <div id="waveform"></div>
 
 <div class="slider">
-  volume<input type="range" id="volume" min="0" max="1" step="0.01" style="width:70vw" value="1"> <br>
+  volume <br>
+  <input type="range" id="volume" min="0" max="1" step="0.01" style="width:70vw" value="1"> <br>
 
   <label for="startTime">Start Time: <span id="startTimeValue">0</span> s</label>
   <input type="range" id="startTime" min="0" step="1" value="0">
@@ -35,12 +41,7 @@
   <input type="range" id="stopTimeSlider" min="0" max="10000" step="1" value="10000">
 </div>
 
-<div class="controls" id="controlDiv">
-  <button id="playPause">Play</button>
-  <button id="stop">Stop</button>
-  <button id="loadPlaylist">Load Playlist</button>
-  <br>
-</div>
+
 
 <audio id="audioPlayer" controls src="https://aio-suisuyy.koyeb.app/d/odav/share/tmp/audio/voa/voa0720.mp3"></audio>
 <video id="videoPlayer" controls style="display: none;"></video>
