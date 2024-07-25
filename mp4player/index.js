@@ -19,11 +19,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggleInfo = document.getElementById("toggleInfo");
     const subtitlesContainer = document.getElementById("subtitlesContainer");
     const subtitlesHeader = document.getElementById("subtitlesHeader");
+    
 
+    
     let originalWidth = 0;
     let subtitles = [];
     let isVideoFixed = false;
     let hideMenuBarTimeout;
+
+
+    const urlInput = document.getElementById("urlInput");
+    const playUrlButton = document.getElementById("playUrlButton");
+    playUrlButton.addEventListener("click", () => {
+        const url = urlInput.value.trim();
+        if (url) {
+            loadVideo(url);
+        }
+    });
+
 
     function debug(message) {
         console.log(message);
