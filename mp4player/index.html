@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>MP4 Player with Interactive Subtitles</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="menu-bar" id="menuBar">
+            <div class="menu-item">
+                File
+                <div class="dropdown">
+                    <div class="dropdown-item" id="fileMenuItem">
+                        Open MP4 File
+                    </div>
+                    <div class="dropdown-item" id="srtMenuItem">
+                        Load SRT Subtitle
+                    </div>
+                </div>
+            </div>
+            <div class="menu-item">
+                View
+                <div class="dropdown">
+                    <div class="dropdown-item" id="size2x">2x Size</div>
+                    <div class="dropdown-item" id="size4x">4x Size</div>
+                    <div class="dropdown-item" id="size05x">0.5x Size</div>
+                    <div class="dropdown-item" id="resetSize">Reset Size</div>
+                    <div class="dropdown-item" id="toggleFixVideo">
+                        Toggle Fix Video
+                    </div>
+                </div>
+            </div>
+            <div class="menu-item" id="toggleInfo">Toggle Info</div>
+        </div>
+        <div class="container">
+            <video id="videoPlayer" controls>
+                Your browser does not support the video tag.
+            </video>
+            <div id="videoInfo" class="hidden">
+                <p>
+                    <strong>Video Resolution:</strong>
+                    <span id="videoResolution">N/A</span>
+                </p>
+                <p>
+                    <strong>Current Video Size:</strong>
+                    <span id="currentVideoSize">N/A</span>
+                </p>
+                <p>
+                    <strong>Window Size:</strong>
+                    <span id="windowSize">N/A</span>
+                </p>
+            </div>
+            <div id="subtitlesContainer">
+                <div id="subtitlesHeader">Subtitles</div>
+                <div id="subtitlesText"></div>
+            </div>
+            <div id="debugInfo"></div>
+        </div>
+
+        <input
+            type="file"
+            id="fileInput"
+            accept="video/mp4"
+            style="display: none"
+        />
+        <input type="file" id="srtInput" accept=".srt" style="display: none" />
+
+        <script src="index.js"></script>
+    </body>
+</html>
