@@ -2,7 +2,11 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=yes"
+        />
         <title>MP4 Player with Interactive Subtitles</title>
         <link rel="stylesheet" href="style.css" />
     </head>
@@ -33,20 +37,22 @@
             <div class="menu-item">
                 View
                 <div class="dropdown">
+                    <div class="dropdown-item" id="size05x">0.5x Size</div>
+                    <div class="dropdown-item" id="resetSize">1x</div>
                     <div class="dropdown-item" id="size2x">2x Size</div>
                     <div class="dropdown-item" id="size4x">4x Size</div>
-                    <div class="dropdown-item" id="size05x">0.5x Size</div>
-                    <div class="dropdown-item" id="resetSize">Reset Size</div>
                     <div class="dropdown-item" id="toggleFixVideo">
-                        Toggle Fix Video
+                        Fix Video
                     </div>
+
+                    <div class="dropdown-item" id="fsbutton">[fullscreen]</div>
                 </div>
             </div>
 
             <div class="menu-item" id="toggleInfo">Toggle Info</div>
         </div>
         <div class="container">
-            <video id="videoPlayer" controls>
+            <video id="videoPlayer">
                 Your browser does not support the video tag.
             </video>
             <div id="videoInfo" class="hidden">

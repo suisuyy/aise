@@ -1,3 +1,43 @@
+function getPhysicalScreenWidth() {
+    const rawWidth = screen.width * window.devicePixelRatio;
+    return Math.floor(rawWidth);
+}
+
+function setViewportToDevicePixels() {
+    // Get the pixel ratio
+    const pixelRatio = window.devicePixelRatio || 1;
+
+    // Get the screen's width in CSS pixels
+    const screenWidth = window.screen.width;
+
+    // Calculate the actual pixel width
+    const actualWidth = getPhysicalScreenWidth();
+
+    console.log("pixelRatio:", pixelRatio);
+    console.log("screenWidth:", screenWidth);
+    console.log("actualWidth:", actualWidth);
+    //log al()
+    // Set the viewport meta tag
+    const viewport = document.querySelector('meta[name="viewport"]');
+    //user-scale need to yes, or the window size will be changed
+    viewport.setAttribute(
+        "content",
+        `width=${actualWidth}, initial-scale=1, maximum-scale=1.0, user-scalable=yes,shrink-to-fit=no`,
+    );
+}
+setViewportToDevicePixels();
+
+document.querySelector("#fsbutton").addEventListener("click", () => {
+    document.requestFullscreen();
+    setViewportToDevicePixels();
+});
+// Run on page load
+//setViewportToDevicePixels();
+
+// Optionally, run on orientation change
+window.addEventListener("resize", setViewportToDevicePixels);
+window.addEventListener("orientationchange", () => setViewportToDevicePixels());
+
 document.addEventListener("DOMContentLoaded", () => {
     const fileInput = document.getElementById("fileInput");
     const srtInput = document.getElementById("srtInput");
@@ -19,14 +59,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggleInfo = document.getElementById("toggleInfo");
     const subtitlesContainer = document.getElementById("subtitlesContainer");
     const subtitlesHeader = document.getElementById("subtitlesHeader");
-    
 
-    
     let originalWidth = 0;
     let subtitles = [];
     let isVideoFixed = false;
     let hideMenuBarTimeout;
-
 
     const urlInput = document.getElementById("urlInput");
     const playUrlButton = document.getElementById("playUrlButton");
@@ -36,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
             loadVideo(url);
         }
     });
-
 
     function debug(message) {
         console.log(message);
@@ -89,9 +125,11 @@ document.addEventListener("DOMContentLoaded", () => {
     size2xButton.addEventListener("click", () => resizeVideo(2));
     size4xButton.addEventListener("click", () => resizeVideo(4));
     size05xButton.addEventListener("click", () => resizeVideo(0.5));
-    resetSizeButton.addEventListener("click", ()=>resizeVideo(1));
+    resetSizeButton.addEventListener("click", () => resizeVideo(1));
 
     function resizeVideo(scale) {
+        videoPlayer.style.left = 0;
+        videoPlayer.style.top = 0;
         videoPlayer.style.width = `${videoPlayer.videoWidth * scale}px`;
         videoPlayer.style.height = `${videoPlayer.videoHeight * scale}px`;
 
@@ -119,6 +157,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     toggleInfo.addEventListener("click", () => {
+        updateVideoInfo();
+
         videoInfo.classList.toggle("hidden");
     });
 
@@ -198,6 +238,8 @@ document.addEventListener("DOMContentLoaded", () => {
         videoPlayer.play();
     }
 
+    makeMovable(videoPlayer);
+
     videoPlayer.addEventListener("timeupdate", function () {
         const currentTime = videoPlayer.currentTime;
         const currentSubtitle = subtitles.find(
@@ -276,4 +318,212 @@ document.addEventListener("DOMContentLoaded", () => {
         document.addEventListener("touchmove", drag);
         document.addEventListener("touchend", stopDrag);
     }
+
+    setTimeout(() => {
+        loadVideo(
+            "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_30mb.mp4",
+        );
+    }, 1000);
+
+    setInterval(() => {
+        updateVideoInfo();
+    }, 3000);
 });
+function controlVideo() {
+    // Create and append video player elements
+    const videoContainer = document.createElement("div");
+    videoContainer.id = "videoPlayerContainer";
+    videoContainer.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90vw;
+        background-color: #333;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        Z-index:101;
+    `;
+    let video = document.querySelector("#videoPlayer");
+    const controls = document.createElement("div");
+    controls.style.cssText = `
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+    `;
+    const playPauseBtn = document.createElement("button");
+    playPauseBtn.innerHTML = "▶";
+    playPauseBtn.style.cssText = `
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        margin-right: 10px;
+    `;
+    const progress = document.createElement("input");
+    progress.type = "range";
+    progress.style.cssText = `
+        flex-grow: 1;
+        margin: 0 10px;
+    `;
+    const muteBtn = document.createElement("button");
+    muteBtn.innerHTML = "🔊";
+    muteBtn.style.cssText = `
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+    `;
+    const timeDisplay = document.createElement("span");
+    timeDisplay.style.cssText = `
+        color: white;
+        font-size: 14px;
+        margin-left: 10px;
+    `;
+    controls.appendChild(playPauseBtn);
+    controls.appendChild(progress);
+    controls.appendChild(timeDisplay);
+    controls.appendChild(muteBtn);
+    videoContainer.appendChild(controls);
+    document.body.appendChild(videoContainer);
+
+    // Control functions
+    function togglePlay() {
+        if (video.paused) {
+            video.play();
+            playPauseBtn.innerHTML = "⏸";
+        } else {
+            video.pause();
+            playPauseBtn.innerHTML = "▶";
+        }
+    }
+
+    function updateProgress() {
+        progress.value = (video.currentTime / video.duration) * 100;
+        updateTimeDisplay();
+    }
+
+    function setVideoProgress() {
+        video.currentTime = (+progress.value * video.duration) / 100;
+    }
+
+    function toggleMute() {
+        video.muted = !video.muted;
+        muteBtn.innerHTML = video.muted ? "🔇" : "🔊";
+    }
+
+    function formatTime(timeInSeconds) {
+        const minutes = Math.floor(timeInSeconds / 60);
+        const seconds = Math.floor(timeInSeconds % 60);
+        return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    }
+
+    function updateTimeDisplay() {
+        const currentTime = formatTime(video.currentTime);
+        const duration = formatTime(video.duration);
+        timeDisplay.textContent = `${currentTime} / ${duration}`;
+    }
+
+    // Event listeners
+    playPauseBtn.addEventListener("click", togglePlay);
+    video.addEventListener("timeupdate", updateProgress);
+    progress.addEventListener("change", setVideoProgress);
+    muteBtn.addEventListener("click", toggleMute);
+
+    // Initialize progress bar and time display
+    video.addEventListener("loadedmetadata", () => {
+        progress.value = 0;
+        updateTimeDisplay();
+    });
+}
+controlVideo();
+
+function makeMovable(elem) {
+    // Select the element you want to make movable
+    const movableElement = elem;
+
+    let isDragging = false;
+    let currentX;
+    let currentY;
+    let initialX;
+    let initialY;
+    let xOffset = 0;
+    let yOffset = 0;
+
+    // Mouse event listeners
+    movableElement.addEventListener("mousedown", dragStart);
+    document.addEventListener("mousemove", drag);
+    document.addEventListener("mouseup", dragEnd);
+
+    // Touch event listeners
+    movableElement.addEventListener("touchstart", dragStart);
+    document.addEventListener("touchmove", drag);
+    document.addEventListener("touchend", dragEnd);
+
+    function dragStart(e) {
+        if (e.type === "touchstart") {
+            initialX = e.touches[0].clientX - xOffset;
+            initialY = e.touches[0].clientY - yOffset;
+        } else {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+        }
+
+        if (e.target === movableElement) {
+            isDragging = true;
+        }
+    }
+
+    function drag(e) {
+        if (isDragging) {
+            e.preventDefault();
+            if (e.type === "touchmove") {
+                currentX = e.touches[0].clientX - initialX;
+                currentY = e.touches[0].clientY - initialY;
+            } else {
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+            }
+
+            xOffset = currentX;
+            yOffset = currentY;
+
+            setTranslate(currentX * 3, currentY * 3, movableElement);
+        }
+    }
+
+    function dragEnd(e) {
+        initialX = currentX;
+        initialY = currentY;
+
+        isDragging = false;
+    }
+
+    function setTranslate(xPos, yPos, el) {
+        el.style.left = `${xPos}px`;
+        el.style.top = `${yPos}px`;
+    }
+}
+
+function preventZoom() {
+    let container = document.querySelector(".container");
+    // Prevent zooming
+    document.addEventListener(
+        "touchmove",
+        function (event) {
+            if (event.scale !== 1) {
+                event.preventDefault();
+            }
+        },
+        { passive: false },
+    );
+    document.addEventListener("gesturestart", function (event) {
+        event.preventDefault();
+    });
+}
+
+preventZoom();
