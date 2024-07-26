@@ -240,27 +240,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
     makeMovable(videoPlayer);
 
+    let preSubtitleElement;
     videoPlayer.addEventListener("timeupdate", function () {
         const currentTime = videoPlayer.currentTime;
         const currentSubtitle = subtitles.find(
             (s) => currentTime >= s.startTime && currentTime <= s.endTime,
         );
 
-        document
-            .querySelectorAll(".current-subtitle")
-            .forEach((el) => el.classList.remove("current-subtitle"));
+        // document
+        //     .querySelectorAll(".current-subtitle")
+        //     .forEach((el) => el.classList.remove("current-subtitle"));
 
         if (currentSubtitle) {
-            const subtitleElement = document.getElementById(
+             let currentSubtitleElement = document.getElementById(
                 `subtitle-${currentSubtitle.index}`,
             );
-            if (subtitleElement) {
-                subtitleElement.classList.add("current-subtitle");
-                subtitleElement.scrollIntoView({
-                    behavior: "smooth",
-                    block: "center",
+           
+            if (currentSubtitleElement) {
+                currentSubtitleElement.classList.add("current-subtitle");
+                currentSubtitleElement.scrollIntoView({
+                    behavior: "instant",
+                    block: "start",
                 });
+
+                if(preSubtitleElement && preSubtitleElement.id!==currentSubtitleElement.id){
+                    console.log(currentSubtitleElement,preSubtitleElement)
+                    preSubtitleElement.classList.remove("current-subtitle")
+                }
+                preSubtitleElement=currentSubtitleElement;
+    
+
             }
+           
         }
     });
 
