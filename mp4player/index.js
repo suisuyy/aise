@@ -1,6 +1,7 @@
 function getPhysicalScreenWidth() {
     const rawWidth = screen.width * window.devicePixelRatio;
-    return Math.floor(rawWidth);
+    return Math.round(rawWidth / 10) * 10;
+    
 }
 
 function setViewportToDevicePixels() {
