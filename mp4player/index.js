@@ -22,7 +22,7 @@ function setViewportToDevicePixels() {
     //user-scale need to yes, or the window size will be changed
     viewport.setAttribute(
         "content",
-        `width=${actualWidth}, initial-scale=1, maximum-scale=1.0, user-scalable=yes,shrink-to-fit=no`,
+        `width=${actualWidth}, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes`,
     );
 }
 setViewportToDevicePixels();
@@ -119,7 +119,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateVideoInfo() {
         videoResolution.textContent = `${videoPlayer.videoWidth}x${videoPlayer.videoHeight}`;
         currentVideoSize.textContent = `${videoPlayer.offsetWidth}x${videoPlayer.offsetHeight}`;
-        windowSize.textContent = `${window.innerWidth}x${window.innerHeight}`;
+        windowSize.textContent = `${window.innerWidth}x${window.innerHeight} ${window.outerWidth}x${window.outerHeight}`;
+        viewportSize.textContent=`${ document.documentElement.clientWidth}x ${document.documentElement.clientHeight } ${window.visualViewport.scale}`
     }
 
     size2xButton.addEventListener("click", () => resizeVideo(2));
@@ -520,6 +521,7 @@ function makeMovable(elem) {
     }
 }
 
+//same effect as touchaction:none in css
 function preventZoom() {
     let container = document.querySelector(".container");
     // Prevent zooming
@@ -536,5 +538,4 @@ function preventZoom() {
         event.preventDefault();
     });
 }
-
-preventZoom();
+//preventZoom();

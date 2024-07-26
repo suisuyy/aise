@@ -7,8 +7,11 @@ body {
   top: 0;
   left: 0;
   overscroll-behavior-y: contain;
-  touch-action: none;
+/* this disable zoom on mobile  */
+  /* touch-action: none; */
   font-size: 30px;
+  width: 100vw;
+  height: 100vh;
 
 
 }
@@ -103,7 +106,7 @@ button:hover {
 #videoInfo {
   position: fixed;
   z-index: 100;
-  top: 600px;
+  top: 200px;
   margin-top: 20px;
   background-color: #fff;
   padding: 15px;
