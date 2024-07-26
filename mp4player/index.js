@@ -33,7 +33,7 @@ document.querySelector("#fsbutton").addEventListener("click", () => {
     setViewportToDevicePixels();
 });
 // Run on page load
-//setViewportToDevicePixels();
+setViewportToDevicePixels();
 
 // Optionally, run on orientation change
 window.addEventListener("resize", setViewportToDevicePixels);
@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentSubtitleElement.classList.add("current-subtitle");
                 currentSubtitleElement.scrollIntoView({
                     behavior: "instant",
-                    block: "start",
+                    block: "center",
                 });
 
                 if(preSubtitleElement && preSubtitleElement.id!==currentSubtitleElement.id){

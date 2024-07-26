@@ -120,7 +120,7 @@ button:hover {
 
 #subtitlesContainer {
   width: 60vw;
-  min-width: 340px;
+  min-width: 400px;
   height: 240px;
   position: fixed;
   bottom: 0;
@@ -131,12 +131,13 @@ button:hover {
   border-top: 2px solid #ccc;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
   cursor: move;
+  font-size: 15px;
 }
 
 #subtitlesText {
-  max-height: 250px;
+  font-size: 20px;
+  max-height: 300px;
   overflow-y: auto;
-  font-size: inherit;
   line-height: 1.5;
 }
 

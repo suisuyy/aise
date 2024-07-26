@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Local Image</title>
+    <style>
+        #imageContainer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #imagePreview {
+            
+            margin-bottom: 10px;
+        }
+        #imageInfo {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .scaleButton {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Upload an Image</h2>
+    <div>
+        <button class="scaleButton" onclick="scaleImage(0.5)">0.5x</button>
+        <button class="scaleButton" onclick="scaleImage(1)">1x</button>
+        <button class="scaleButton" onclick="scaleImage(2)">2x</button>
+        <button class="scaleButton" onclick="scaleImage(4)">4x</button>
+        <button class="scaleButton" onclick="scaleImage(8)">8x</button>
+    </div>
+    <input type="file" id="imageUpload" accept="image/*">
+    <div id="imageContainer">
+        <img id="imagePreview" src="#" alt="Image Preview">
+        <div id="imageInfo"></div>
+    </div>
+
+    <script>
+
+        
+        const imageUpload = document.getElementById('imageUpload');
+        const imagePreview = document.getElementById('imagePreview');
+        const imageInfo = document.getElementById('imageInfo');
+        let originalWidth = 0;
+        let originalHeight = 0;
+
+        imageUpload.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    imagePreview.src = event.target.result;
+                    getImageInfo(file);
+                    resetSize(); // Reset size to original when a new image is loaded
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function getImageInfo(file) {
+            const img = new Image();
+            img.onload = function() {
+                const fileSizeMB = file.size / (1024 * 1024);
+                const resolution = this.width + 'x' + this.height;
+                imageInfo.textContent = `Resolution: ${resolution} | File Size: ${fileSizeMB.toFixed(2)} MB`;
+                originalWidth = this.width;
+                originalHeight = this.height;
+            };
+            img.src = URL.createObjectURL(file);
+        }
+
+        function scaleImage(scale) {
+            const newWidth = originalWidth * scale;
+            const newHeight = originalHeight * scale;
+            imagePreview.style.width = `${newWidth}px`;
+            imagePreview.style.height = `${newHeight}px`;
+        }
+
+        function resetSize() {
+            imagePreview.style.width = `${originalWidth}px`;
+            imagePreview.style.height = `${originalHeight}px`;
+        }
+
+
+        function getPhysicalScreenWidth() {
+    const rawWidth = screen.width * window.devicePixelRatio;
+    return Math.round(rawWidth / 10) * 10;
+    
+}
+
+function setViewportToDevicePixels() {
+    // Get the pixel ratio
+    const pixelRatio = window.devicePixelRatio || 1;
+
+    // Get the screen's width in CSS pixels
+    const screenWidth = window.screen.width;
+
+    // Calculate the actual pixel width
+    const actualWidth = getPhysicalScreenWidth();
+
+    console.log("pixelRatio:", pixelRatio);
+    console.log("screenWidth:", screenWidth);
+    console.log("actualWidth:", actualWidth);
+    //log al()
+    // Set the viewport meta tag
+    const viewport = document.querySelector('meta[name="viewport"]');
+    //user-scale need to yes, or the window size will be changed
+    viewport.setAttribute(
+        "content",
+        `width=${actualWidth}, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes`,
+    );
+}
+setViewportToDevicePixels();
+
+document.querySelector("#fsbutton").addEventListener("click", () => {
+    document.requestFullscreen();
+    setViewportToDevicePixels();
+});
+// Run on page load
+setViewportToDevicePixels();
+
+// Optionally, run on orientation change
+window.addEventListener("resize", setViewportToDevicePixels);
+window.addEventListener("orientationchange", () => setViewportToDevicePixels());
+
+
+
+// Function to update video information
+function updateVideoInfo() {
+
+    
+    // Clear previous info if any
+    const videoInfoContainer = document.getElementById('videoInfoContainer');
+    if(!videoInfoContainer){
+        // Create a container for video information
+const videoInfoContainer = document.createElement('div');
+videoInfoContainer.id = 'videoInfoContainer';
+videoInfoContainer.style.position = 'fixed';
+videoInfoContainer.style.top = '200px';
+videoInfoContainer.style.left = '10px';
+videoInfoContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+videoInfoContainer.style.padding = '10px';
+videoInfoContainer.style.border = '1px solid #ccc';
+
+// Append the container to the body
+document.body.appendChild(videoInfoContainer);
+    }
+
+    // Create <p> elements for each piece of information
+    const videoResolution = document.createElement('p');
+    const currentVideoSize = document.createElement('p');
+    const windowSize = document.createElement('p');
+    const viewportSize = document.createElement('p');
+
+    // Set IDs for each <p> element (optional, for future reference)
+    videoResolution.id = 'videoResolution';
+    currentVideoSize.id = 'currentVideoSize';
+    windowSize.id = 'windowSize';
+    viewportSize.id = 'viewportSize';
+
+    // Update the text content of each <p> element
+    videoResolution.textContent = `Video Resolution: ${videoPlayer.videoWidth}x${videoPlayer.videoHeight}`;
+    currentVideoSize.textContent = `Current Video Size: ${videoPlayer.offsetWidth}x${videoPlayer.offsetHeight}`;
+    windowSize.textContent = `Window Size: ${window.innerWidth}x${window.innerHeight} ${window.outerWidth}x${window.outerHeight}`;
+    viewportSize.textContent = `Viewport Size: ${document.documentElement.clientWidth}x${document.documentElement.clientHeight} ${window.visualViewport.scale}`;
+
+    // Append <p> elements to the videoInfoContainer
+    videoInfoContainer.appendChild(videoResolution);
+    videoInfoContainer.appendChild(currentVideoSize);
+    videoInfoContainer.appendChild(windowSize);
+    videoInfoContainer.appendChild(viewportSize);
+}
+
+
+
+// Update the information every 2 seconds
+setInterval(updateVideoInfo, 2000);
+
+    </script>
+</body>
+</html>
