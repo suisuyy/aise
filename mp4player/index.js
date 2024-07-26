@@ -504,7 +504,7 @@ function makeMovable(elem) {
             xOffset = currentX;
             yOffset = currentY;
 
-            setTranslate(currentX * 3, currentY * 3, movableElement);
+            setTranslate(currentX * 2, currentY * 2, movableElement);
         }
     }
 
