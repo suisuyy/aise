@@ -1,0 +1,129 @@
+To enhance the image viewer with buttons that allow users to set the image size to specific dimensions (original size, 720x1280, 1080x1920, 1280x720, and 1920x1080), we can modify the HTML and JavaScript of our previous example. Here’s how you can achieve this:
+
+1. **HTML (index.html)**: Add buttons for different image sizes and modify the structure accordingly.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Info Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        img {
+        }
+        .button-container {
+            margin-bottom: 20px;
+        }
+        .button-container button {
+            margin: 5px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Information Viewer</h1>
+    <div class="button-container">
+        <button onclick="setImageSize('original')">Original Size</button>
+        <button onclick="setImageSize('720x1280')">720x1280</button>
+        <button onclick="setImageSize('1080x1920')">1080x1920</button>
+        <button onclick="setImageSize('1280x720')">1280x720</button>
+        <button onclick="setImageSize('1920x1080')">1920x1080</button>
+    </div>
+    <label for="imageInput">Enter Image URL:</label>
+    <input type="text" id="imageInput" value="https://www.setaswall.com/720x1280-wallpapers/motivational-msg-1-wallpaper-720x1280.jpg">
+    <button onclick="loadImage()">Load Image</button>
+    <div id="imageContainer">
+        <img id="imageDisplay" src="https://www.setaswall.com/wp-content/uploads/2017/10/Motivational-Msg-1-Wallpaper-720x1280.jpg" alt="Motivational Message">
+    </div>
+    <div id="imageInfo">
+        <p><strong>Resolution:</strong> <span id="resolution"></span></p>
+        <p><strong>File Size:</strong> <span id="fileSize"></span> bytes</p>
+    </div>
+
+    <script>
+        function loadImage() {
+            var imageUrl = document.getElementById('imageInput').value;
+            var img = document.getElementById('imageDisplay');
+            img.src = imageUrl;
+
+            img.onload = function() {
+                // Display image resolution
+                document.getElementById('resolution').textContent = img.naturalWidth + ' x ' + img.naturalHeight;
+
+                // Display image file size
+                var xhr = new XMLHttpRequest();
+                xhr.open('HEAD', imageUrl, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var sizeInBytes = xhr.getResponseHeader('Content-Length');
+                        document.getElementById('fileSize').textContent = sizeInBytes;
+                    }
+                };
+                xhr.send(null);
+            };
+        }
+
+        function setImageSize(size) {
+            var img = document.getElementById('imageDisplay');
+            switch (size) {
+                case 'original':
+                    img.style.width = 'auto';
+                    img.style.height = 'auto';
+                    break;
+                case '720x1280':
+                    img.style.width = '750px';
+                    img.style.height = '1300px';
+                    break;
+                case '1080x1920':
+                    img.style.width = '1080px';
+                    img.style.height = '1920px';
+                    break;
+                case '1280x720':
+                    img.style.width = '1280px';
+                    img.style.height = '720px';
+                    break;
+                case '1920x1080':
+                    img.style.width = '1920px';
+                    img.style.height = '1080px';
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Load initial image and info on page load
+        window.onload = loadImage;
+    </script>
+</body>
+</html>
+```
+
+### Explanation:
+
+- **HTML Structure**: 
+  - Added a `.button-container` div to hold the size-setting buttons.
+  - Each button has an `onclick` attribute that calls the `setImageSize()` function with a corresponding size identifier (`original`, `720x1280`, etc.).
+  - The `<img>` tag initially displays the default image (`motivational-msg-1-wallpaper-720x1280.jpg`).
+  - `<span>` elements (`#resolution` and `#fileSize`) display the image resolution and file size.
+
+- **CSS**:
+  - Basic styling for buttons and alignment.
+
+- **JavaScript**:
+  - The `setImageSize(size)` function sets the dimensions of the image based on the `size` parameter.
+  - It adjusts the `width` and `height` styles of the `<img>` element accordingly for each size option.
+  - The `loadImage()` function now also updates the image size when a new image is loaded.
+
+### Notes:
+- This example allows users to load an image by entering its URL, display its resolution and file size, and adjust its size using predefined dimensions.
+- Ensure that the image URLs provided are accessible and point to valid image files.
+- You can further enhance error handling and user feedback as needed for a production environment.
+
+Now, users can click on the buttons to set the image size to specific dimensions such as original size, 720x1280, 1080x1920, 1280x720, or 1920x1080.

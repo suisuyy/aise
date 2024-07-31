@@ -43,6 +43,7 @@ window.addEventListener("orientationchange", () => setViewportToDevicePixels());
 const fileInput = document.getElementById("fileInput");
 const srtInput = document.getElementById("srtInput");
 const videoPlayer = document.getElementById("videoPlayer");
+const imgViewer=document.getElementById('imgViewer');
 const videoResolution = document.getElementById("videoResolution");
 const currentVideoSize = document.getElementById("currentVideoSize");
 const windowSize = document.getElementById("windowSize");
@@ -105,6 +106,12 @@ srtInput.addEventListener("change", function (e) {
         reader.readAsText(file);
     }
 });
+
+function loadImg(url){
+    imgViewer.src=url;
+    videoPlayer.style.display='none';
+    
+}
 
 function loadVideo(url) {
     videoPlayer.src = url;

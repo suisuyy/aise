@@ -1,0 +1,165 @@
+body {
+  padding: 0;
+  background-color: #f0f0f0;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overscroll-behavior-y: contain;
+/* this disable zoom on mobile  */
+  /* touch-action: none; */
+  font-size: 30px;
+  width: 100vw;
+  height: 100vh;
+
+
+}
+
+html {
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+}
+
+
+
+.menu-bar {
+  display: flex;
+  justify-content: flex-start;
+  background-color: #e0e0e0;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+.menu-bar.hidden {
+  display: none;
+}
+
+.menu-bar .menu-item {
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.menu-bar .menu-item:hover .dropdown {
+  display: block;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.dropdown-item {
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
+.container {
+  margin-top: 0px;
+  /* Adjust based on menu bar height */
+  padding: 0;
+}
+
+#videoPlayer {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+
+}
+
+input {
+  font-size: inherit;
+}
+
+button {
+  padding: 10px 15px;
+  font-size: inherit;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+#videoInfo {
+  position: fixed;
+  z-index: 100;
+  top: 200px;
+  margin-top: 20px;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#videoInfo.hidden {
+  display: none;
+}
+
+#subtitlesContainer {
+  width: 60vw;
+  min-width: 400px;
+  height: 320px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  background-color: #fff;
+  padding: 15px;
+  border-top: 2px solid #ccc;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  cursor: move;
+  font-size: 15px;
+}
+
+#subtitlesText {
+  font-size: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+.subtitle-item {
+  padding: 5px 0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.subtitle-item:hover {
+  background-color: #f0f0f0;
+}
+
+.current-subtitle {
+  background-color: lightgray;
+}
+
+#debugInfo {
+  margin-top: 20px;
+  background-color: #f8f8f8;
+  padding: 15px;
+  border-radius: 5px;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
