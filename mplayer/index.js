@@ -323,14 +323,24 @@ videoPlayer.addEventListener("resize", updateVideoInfo);
 
 updateVideoInfo();
 
-document.addEventListener("pointerdown", resetMenuBarTimeout);
-document.addEventListener("keydown", resetMenuBarTimeout);
+document.addEventListener("dblclick", ()=>{
+    resetMenuBarTimeout();
+    console.log('show menubar and control dbclick');
+
+});
 
 function resetMenuBarTimeout() {
     clearTimeout(hideMenuBarTimeout);
     menuBar.classList.remove("hidden");
+    let control=document.getElementById('videoPlayerContainer');
+    control.classList.remove('hidden');
+    control.style.display='block';
+
+
     hideMenuBarTimeout = setTimeout(() => {
         menuBar.classList.add("hidden");
+        control.style.display='none';
+
     }, 5000);
 }
 

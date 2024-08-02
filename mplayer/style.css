@@ -105,7 +105,7 @@ button:hover {
 
 #videoInfo {
   position: fixed;
-  z-index: 100;
+  z-index: 103;
   top: 200px;
   margin-top: 20px;
   background-color: #fff;

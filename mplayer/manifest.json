@@ -1,0 +1,17 @@
+{
+    "short_name": "mplayer",
+    "name": "mplayer",
+    "description": "pixel to pixel player by AI ",
+    "icons": [
+      {
+        "src": "./pic192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }
+    ],
+    "start_url": "/mplayer/index.html",
+    "background_color": "#ffffff",
+    "display": "fullscreen",
+    "scope": "/mplayer/",
+    "theme_color": "#ffffff"
+  }

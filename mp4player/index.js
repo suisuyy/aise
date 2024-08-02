@@ -290,14 +290,19 @@ videoPlayer.addEventListener("resize", updateVideoInfo);
 
 updateVideoInfo();
 
-document.addEventListener("pointerdown", resetMenuBarTimeout);
-document.addEventListener("keydown", resetMenuBarTimeout);
+document.addEventListener("dblclick", ()=>{
+    resetMenuBarTimeout();
+    console.log('show menubar dbclick');
+
+});
 
 function resetMenuBarTimeout() {
+    
     clearTimeout(hideMenuBarTimeout);
     menuBar.classList.remove("hidden");
     hideMenuBarTimeout = setTimeout(() => {
         menuBar.classList.add("hidden");
+        //todo
     }, 5000);
 }
 
