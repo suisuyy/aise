@@ -9,7 +9,7 @@
         "type": "image/png"
       }
     ],
-    "start_url": "/mplayer/index.html",
+    "start_url": "/mplayer/",
     "background_color": "#ffffff",
     "display": "fullscreen",
     "scope": "/mplayer/",
