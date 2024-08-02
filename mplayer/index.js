@@ -91,12 +91,12 @@ fileInput.addEventListener("change", function (e) {
     if (file) {
         const fileType = file.type;
         const videoTypes = ["video/mp4", "video/webm", "video/ogg"];
-        const imageTypes = ["image/jpeg", "image/png"];
+        const imageTypes = ["image/jpeg", "image/png","image/webp"];
 
-        if (videoTypes.includes(fileType)) {
+        if (fileType.includes('video') || fileType.includes('audio') ) {
             const videoUrl = URL.createObjectURL(file);
             loadVideo(videoUrl);
-        } else if (imageTypes.includes(fileType)) {
+        } else if (fileType.includes('image')) {
             const imageUrl = URL.createObjectURL(file);
             currentImgFile=file;
             
@@ -534,11 +534,11 @@ function makeMovable(elem) {
     function dragStart(e) {
         e.preventDefault();
         if (e.type === "touchstart") {
-            initialX = e.touches[0].clientX - xOffset;
-            initialY = e.touches[0].clientY - yOffset;
+            initialX = e.touches[0].clientX - movableElement.offsetLeft;
+            initialY = e.touches[0].clientY - movableElement.offsetTop;
         } else {
-            initialX = e.clientX - xOffset;
-            initialY = e.clientY - yOffset;
+            initialX = e.clientX - movableElement.offsetLeft;
+            initialY = e.clientY - movableElement.offsetTop;
         }
 
         if (e.target === movableElement) {
@@ -560,7 +560,7 @@ function makeMovable(elem) {
             xOffset = currentX;
             yOffset = currentY;
 
-            setTranslate(currentX * 2, currentY * 2, movableElement);
+            setTranslate(currentX , currentY , movableElement);
         }
     }
 
@@ -595,3 +595,45 @@ function preventZoom() {
     });
 }
 //preventZoom();
+
+
+ function createRuler() {
+    const rulerContainer = document.createElement('div');
+    rulerContainer.id = 'pixel-ruler';
+  
+    // Set styles for the ruler container
+    rulerContainer.style.position = 'fixed';
+    rulerContainer.style.top = '50px';
+    rulerContainer.style.left = '0';
+    rulerContainer.style.height = '20px';
+    rulerContainer.style.width = '6000px';
+    rulerContainer.style.backgroundColor = '#f0f0f0';
+    rulerContainer.style.border = '1px solid #ccc';
+    rulerContainer.style.overflow = 'hidden';
+    rulerContainer.style.padding = '0';
+    rulerContainer.style.margin = '0';
+    rulerContainer.style.zIndex = '1';
+    
+    for (let i = 0; i <= 6000; i += 100) {
+      const tick = document.createElement('div');
+      tick.style.height = '100%';
+      tick.style.width = '1px';
+      tick.style.backgroundColor = '#333';
+      tick.style.position = 'absolute';
+      tick.style.left = `${i}px`;
+  
+      // Create the label inside each tick
+      const label = document.createElement('div');
+      label.textContent = i;
+      label.style.fontSize = '10px';
+      label.style.transform = 'translateX(-50%)';
+  
+      tick.appendChild(label);
+      rulerContainer.appendChild(tick);
+    }
+  
+    document.body.appendChild(rulerContainer);
+  }
+
+  
+  createRuler();

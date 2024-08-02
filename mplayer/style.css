@@ -33,7 +33,7 @@ html {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 100;
+  z-index: 102;
 }
 
 .menu-bar.hidden {
@@ -79,7 +79,7 @@ html {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 101;
 
 }
 
@@ -162,4 +162,8 @@ button:hover {
   border-radius: 5px;
   font-family: monospace;
   white-space: pre-wrap;
+}
+
+#imgViewer{
+ z-index: 100;
 }
