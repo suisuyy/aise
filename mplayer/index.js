@@ -341,8 +341,10 @@ function resetMenuBarTimeout() {
         menuBar.classList.add("hidden");
         control.style.display='none';
 
-    }, 5000);
+    }, 10000);
 }
+
+
 
 subtitlesHeader.addEventListener("mousedown", startDrag);
 subtitlesHeader.addEventListener("touchstart", startDrag);
@@ -389,6 +391,7 @@ setTimeout(() => {
     loadVideo(
         "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_30mb.mp4",
     );
+    resetMenuBarTimeout();
 }, 1000);
 
 setInterval(() => {
