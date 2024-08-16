@@ -1,7 +1,7 @@
-let zindexLevel={
+let zindexLevel = {
     one: 100,
     two: 200,
-    three:300,
+    three: 300,
     four: 400,
     click: 350,
     highest: 1000000,
@@ -101,15 +101,15 @@ fileInput.addEventListener("change", function (e) {
     if (file) {
         const fileType = file.type;
         const videoTypes = ["video/mp4", "video/webm", "video/ogg"];
-        const imageTypes = ["image/jpeg", "image/png","image/webp"];
+        const imageTypes = ["image/jpeg", "image/png", "image/webp"];
 
-        if (fileType.includes('video') || fileType.includes('audio') ) {
+        if (fileType.includes('video') || fileType.includes('audio')) {
             const videoUrl = URL.createObjectURL(file);
             loadVideo(videoUrl);
         } else if (fileType.includes('image')) {
             const imageUrl = URL.createObjectURL(file);
-            currentImgFile=file;
-            
+            currentImgFile = file;
+
             loadImg(imageUrl);
         } else {
             console.error("Unsupported file type");
@@ -129,28 +129,28 @@ srtInput.addEventListener("change", function (e) {
             );
             parseSRT(e.target.result);
         };
-        
+
         reader.readAsText(file);
     }
 });
 
-function loadImg(url){
-    imgViewer.src=url;
-    videoPlayer.style.display='none';
+function loadImg(url) {
+    imgViewer.src = url;
+    videoPlayer.style.display = 'none';
     setTimeout(() => {
         const width = imgViewer.naturalWidth;
-    const height = imgViewer.naturalHeight;
-    // Get file size
-    const fileSize = (currentImgFile.size / 1024).toFixed(2); // size in KB
-    console.log(width,height,fileSize+"KB");    
+        const height = imgViewer.naturalHeight;
+        // Get file size
+        const fileSize = (currentImgFile.size / 1024).toFixed(2); // size in KB
+        console.log(width, height, fileSize + "KB");
     }, 500);
-    
+
 
 
 }
 function loadVideo(url) {
-    videoPlayer.style.display='block';
-    
+    videoPlayer.style.display = 'block';
+
     videoPlayer.src = url;
     videoPlayer.onloadedmetadata = function () {
         videoPlayer.style.width = `${videoPlayer.videoWidth}px`;
@@ -164,10 +164,10 @@ function loadVideo(url) {
 function updateVideoInfo() {
     videoResolution.textContent = `${videoPlayer.videoWidth}x${videoPlayer.videoHeight}`;
     currentVideoSize.textContent = `${videoPlayer.offsetWidth}x${videoPlayer.offsetHeight}`;
-    document.querySelector('#imgResolution').textContent=`${imgViewer.naturalWidth}x${imgViewer.naturalHeight} ${currentImgFile?(currentImgFile.size / 1024).toFixed(2)+'KB':''}  `
-    document.querySelector('#currentImgSize').textContent=`${imgViewer.width}x${imgViewer.height}  `
+    document.querySelector('#imgResolution').textContent = `${imgViewer.naturalWidth}x${imgViewer.naturalHeight} ${currentImgFile ? (currentImgFile.size / 1024).toFixed(2) + 'KB' : ''}  `
+    document.querySelector('#currentImgSize').textContent = `${imgViewer.width}x${imgViewer.height}  `
     windowSize.textContent = `${window.innerWidth}x${window.innerHeight} ${window.outerWidth}x${window.outerHeight}`;
-    
+
     viewportSize.textContent = `${document.documentElement.clientWidth}x ${document.documentElement.clientHeight} ${window.visualViewport.scale}`
 }
 
@@ -334,7 +334,7 @@ videoPlayer.addEventListener("resize", updateVideoInfo);
 
 updateVideoInfo();
 
-document.addEventListener("dblclick", ()=>{
+document.addEventListener("dblclick", () => {
     resetMenuBarTimeout();
     console.log('show menubar and control dbclick');
 
@@ -343,9 +343,9 @@ document.addEventListener("dblclick", ()=>{
 function resetMenuBarTimeout() {
     clearTimeout(hideMenuBarTimeout);
     menuBar.classList.remove("hidden");
-    let control=document.getElementById('videoPlayerContainer');
+    let control = document.getElementById('videoPlayerContainer');
     control.classList.remove('hidden');
-    control.style.display='block';
+    control.style.display = 'block';
 
 
     hideMenuBarTimeout = setTimeout(() => {
@@ -358,7 +358,7 @@ function resetMenuBarTimeout() {
 
 subtitlesHeader.addEventListener("mousedown", startDrag);
 subtitlesHeader.addEventListener("touchstart", startDrag);
-subtitlesContainer.addEventListener('dblclick', ()=>{
+subtitlesContainer.addEventListener('dblclick', () => {
     videoPlayer.pause();
 });
 
@@ -408,6 +408,7 @@ setInterval(() => {
     updateVideoInfo();
 }, 3000);
 
+// index.js
 function controlVideo() {
     // Create and append video player elements
     const videoContainer = document.createElement("div");
@@ -422,7 +423,7 @@ function controlVideo() {
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        Z-index:101;
+        z-index: 101;
     `;
     let video = document.querySelector("#videoPlayer");
     const controls = document.createElement("div");
@@ -432,6 +433,8 @@ function controlVideo() {
         padding: 10px;
         background-color: rgba(0, 0, 0, 0.5);
     `;
+    
+    // Create play/pause button
     const playPauseBtn = document.createElement("button");
     playPauseBtn.innerHTML = "▶";
     playPauseBtn.style.cssText = `
@@ -442,12 +445,40 @@ function controlVideo() {
         cursor: pointer;
         margin-right: 10px;
     `;
+    
+    // Create backward button
+    const backwardBtn = document.createElement("button");
+    backwardBtn.innerHTML = "⏪ -5s";
+    backwardBtn.style.cssText = `
+        background: none;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        margin-right: 10px;
+    `;
+    
+    // Create forward button
+    const forwardBtn = document.createElement("button");
+    forwardBtn.innerHTML = "+5s ⏩";
+    forwardBtn.style.cssText = `
+        background: none;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        margin-right: 10px;
+    `;
+    
+    // Create progress bar
     const progress = document.createElement("input");
     progress.type = "range";
     progress.style.cssText = `
         flex-grow: 1;
         margin: 0 10px;
     `;
+    
+    // Create mute button
     const muteBtn = document.createElement("button");
     muteBtn.innerHTML = "🔊";
     muteBtn.style.cssText = `
@@ -457,16 +488,34 @@ function controlVideo() {
         font-size: 20px;
         cursor: pointer;
     `;
+    
+    // Create time display
     const timeDisplay = document.createElement("span");
     timeDisplay.style.cssText = `
         color: white;
         font-size: 14px;
         margin-left: 10px;
     `;
+    
+    // Create hide button
+    const hideBtn = document.createElement("button");
+    hideBtn.innerHTML = "Hide Controls";
+    hideBtn.style.cssText = `
+        background: none;
+        border: none;
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+        margin-left: 10px;
+    `;
+    
     controls.appendChild(playPauseBtn);
+    controls.appendChild(backwardBtn);
+    controls.appendChild(forwardBtn);
     controls.appendChild(progress);
     controls.appendChild(timeDisplay);
     controls.appendChild(muteBtn);
+    controls.appendChild(hideBtn);
     videoContainer.appendChild(controls);
     document.body.appendChild(videoContainer);
 
@@ -495,6 +544,16 @@ function controlVideo() {
         muteBtn.innerHTML = video.muted ? "🔇" : "🔊";
     }
 
+    function forward5s() {
+        video.currentTime = Math.min(video.currentTime + 5, video.duration);
+        updateProgress();
+    }
+
+    function backward5s() {
+        video.currentTime = Math.max(video.currentTime - 5, 0);
+        updateProgress();
+    }
+
     function formatTime(timeInSeconds) {
         const minutes = Math.floor(timeInSeconds / 60);
         const seconds = Math.floor(timeInSeconds % 60);
@@ -507,11 +566,24 @@ function controlVideo() {
         timeDisplay.textContent = `${currentTime} / ${duration}`;
     }
 
+    function toggleControlsVisibility() {
+        if (controls.style.display === "none") {
+            controls.style.display = "flex";
+            hideBtn.innerHTML = "Hide Controls";
+        } else {
+            controls.style.display = "none";
+            hideBtn.innerHTML = "Show Controls";
+        }
+    }
+
     // Event listeners
     playPauseBtn.addEventListener("click", togglePlay);
     video.addEventListener("timeupdate", updateProgress);
     progress.addEventListener("change", setVideoProgress);
     muteBtn.addEventListener("click", toggleMute);
+    forwardBtn.addEventListener("click", forward5s);
+    backwardBtn.addEventListener("click", backward5s);
+    hideBtn.addEventListener("click", toggleControlsVisibility);
 
     // Initialize progress bar and time display
     video.addEventListener("loadedmetadata", () => {
@@ -519,6 +591,7 @@ function controlVideo() {
         updateTimeDisplay();
     });
 }
+
 controlVideo();
 
 
@@ -529,10 +602,10 @@ function makeMovable(elem) {
 
     // Select the element you want to make movable
     const movableElement = elem;
-    movableElement.style.position='fixed';
-    movableElement.style.top='0';
-    movableElement.style.left='0';
-    movableElement.style.touchAction='none';
+    movableElement.style.position = 'fixed';
+    movableElement.style.top = '0';
+    movableElement.style.left = '0';
+    movableElement.style.touchAction = 'none';
 
 
 
@@ -580,11 +653,44 @@ function makeMovable(elem) {
                 currentY = e.clientY - initialY;
             }
 
+            currentX=Math.floor(currentX);
+            currentY=Math.floor(currentY);
             xOffset = currentX;
             yOffset = currentY;
 
-            setTranslate(currentX , currentY , movableElement);
+            setTranslate(currentX, currentY, movableElement);
+            createCoordinateDisplay(currentX, currentY);
         }
+
+        function createCoordinateDisplay(x, y) {
+            let coordinateDisplay = document.getElementById('posinfo');
+
+            // Create the div if it doesn't exist
+            if (!coordinateDisplay) {
+                coordinateDisplay = document.createElement('div');
+                coordinateDisplay.id = 'posinfo';
+                coordinateDisplay.style.position = 'fixed';
+                coordinateDisplay.style.top = '10px';
+                coordinateDisplay.style.right = '10px';
+                coordinateDisplay.style.zIndex = '1000';
+                coordinateDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+                coordinateDisplay.style.color = 'white';
+                coordinateDisplay.style.padding = '5px';
+                coordinateDisplay.style.borderRadius = '5px';
+                coordinateDisplay.style.fontFamily = 'Arial, sans-serif';
+                coordinateDisplay.style.fontSize = '12px';
+
+                document.body.appendChild(coordinateDisplay);
+            }
+            coordinateDisplay.style.display = 'block';
+
+            coordinateDisplay.textContent = `X: ${x}, Y: ${y}`;
+
+            
+            return coordinateDisplay;
+
+        }
+
     }
 
     function dragEnd(e) {
@@ -592,6 +698,9 @@ function makeMovable(elem) {
         initialY = currentY;
 
         isDragging = false;
+        let coordinateDisplay = document.getElementById('posinfo');
+        coordinateDisplay.style.display='none';
+
     }
 
     function setTranslate(xPos, yPos, el) {
@@ -620,10 +729,10 @@ function preventZoom() {
 //preventZoom();
 
 
- function createRuler() {
+function createRuler() {
     const rulerContainer = document.createElement('div');
     rulerContainer.id = 'pixel-ruler';
-  
+
     // Set styles for the ruler container
     rulerContainer.style.position = 'fixed';
     rulerContainer.style.top = '50px';
@@ -636,27 +745,27 @@ function preventZoom() {
     rulerContainer.style.padding = '0';
     rulerContainer.style.margin = '0';
     rulerContainer.style.zIndex = '1';
-    
-    for (let i = 0; i <= 6000; i += 100) {
-      const tick = document.createElement('div');
-      tick.style.height = '100%';
-      tick.style.width = '1px';
-      tick.style.backgroundColor = '#333';
-      tick.style.position = 'absolute';
-      tick.style.left = `${i}px`;
-  
-      // Create the label inside each tick
-      const label = document.createElement('div');
-      label.textContent = i;
-      label.style.fontSize = '10px';
-      label.style.transform = 'translateX(-50%)';
-  
-      tick.appendChild(label);
-      rulerContainer.appendChild(tick);
-    }
-  
-    document.body.appendChild(rulerContainer);
-  }
 
-  
-  createRuler();
+    for (let i = 0; i <= 6000; i += 100) {
+        const tick = document.createElement('div');
+        tick.style.height = '100%';
+        tick.style.width = '1px';
+        tick.style.backgroundColor = '#333';
+        tick.style.position = 'absolute';
+        tick.style.left = `${i}px`;
+
+        // Create the label inside each tick
+        const label = document.createElement('div');
+        label.textContent = i;
+        label.style.fontSize = '10px';
+        label.style.transform = 'translateX(-50%)';
+
+        tick.appendChild(label);
+        rulerContainer.appendChild(tick);
+    }
+
+    document.body.appendChild(rulerContainer);
+}
+
+
+createRuler();
