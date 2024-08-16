@@ -1,3 +1,13 @@
+let zindexLevel={
+    one: 100,
+    two: 200,
+    three:300,
+    four: 400,
+    click: 350,
+    highest: 1000000,
+}
+
+
 function getPhysicalScreenWidth() {
     const rawWidth = screen.width * window.devicePixelRatio;
     return Math.round(rawWidth / 10) * 10;
@@ -119,6 +129,7 @@ srtInput.addEventListener("change", function (e) {
             );
             parseSRT(e.target.result);
         };
+        
         reader.readAsText(file);
     }
 });
@@ -339,7 +350,6 @@ function resetMenuBarTimeout() {
 
     hideMenuBarTimeout = setTimeout(() => {
         menuBar.classList.add("hidden");
-        control.style.display='none';
 
     }, 10000);
 }
