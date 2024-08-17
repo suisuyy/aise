@@ -32,12 +32,15 @@ textarea {
 }
 
 button {
-  padding: 0;
-  margin-right: 10px;
+  padding: 12px 24px;
+  margin: 8px;
   cursor: pointer;
   background-color: lightcyan;
   color: black;
   border: none;
+  font-size: large;
+  border-radius: 5px;
+  width: auto;
 }
 
 button:hover {

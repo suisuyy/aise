@@ -260,3 +260,73 @@ export default {readFromLocalStorage,writeToLocalStorage};
 startTimeSlider.addEventListener("input", updateAdjustedTimeDisplay);
 endTimeSlider.addEventListener("input", updateAdjustedTimeDisplay);
 currentTimeSlider.addEventListener("input", updateAdjustedTimeDisplay);
+
+
+
+ // Create the tab bar container
+ const tabBar = document.createElement('div');
+ tabBar.style.display = 'flex';
+ tabBar.style.justifyContent = 'left';
+ tabBar.style.padding = '10px';
+ tabBar.style.backgroundColor = '#f4f4f4';
+ tabBar.style.borderBottom = '2px solid #ddd';
+ tabBar.style.boxShadow = '0px 2px 5px rgba(0, 0, 0, 0.1)';
+
+ // Create tab buttons for playlist, controlDiv, and cloudstorage
+ const tabs = ['playlist', 'controlDiv', 'cloudstorage'];
+ 
+ tabs.forEach(id => {
+   const button = document.createElement('button');
+   button.textContent = id.charAt(0).toUpperCase() + id.slice(1); // Capitalize text
+   button.id = `${id}-tab`;
+   button.style.padding = '10px 20px';
+   button.style.margin = '0 5px';
+   button.style.border = 'none';
+   button.style.borderRadius = '5px';
+   button.style.backgroundColor = '#ffffff';
+   button.style.color = '#333';
+   button.style.cursor = 'pointer';
+   button.style.fontSize = '16px';
+   button.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+   
+   // Add hover effect
+   button.addEventListener('mouseover', () => {
+     button.style.backgroundColor = '#ddd';
+   });
+   button.addEventListener('mouseout', () => {
+     button.style.backgroundColor = '#ffffff';
+   });
+
+   // Add event listener to each button
+   button.addEventListener('click', () => {
+     // Show the clicked tab content and hide others
+     tabs.forEach(tabId => {
+       const tabElement = document.getElementById(tabId);
+       const tabButton = document.getElementById(`${tabId}-tab`);
+       if (tabId === id) {
+         tabElement.style.display = 'block'; // Show current tab
+         tabButton.style.backgroundColor = '#333'; // Highlight active tab
+         tabButton.style.color = 'blue';
+       } else {
+         tabElement.style.display = 'none'; // Hide other tabs
+         tabButton.style.backgroundColor = '#ffffff'; // Reset other tabs
+         tabButton.style.color = '#333';
+       }
+     });
+   });
+
+   tabBar.appendChild(button);
+ });
+
+ // Prepend the tab bar to the body
+ document.body.prepend(tabBar);
+
+ // Hide all tabs initially, except the first one
+ tabs.forEach((id, index) => {
+   const tabElement = document.getElementById(id);
+   if (index === 0) {
+     tabElement.style.display = 'block'; // Show the first tab initially
+   } else {
+     tabElement.style.display = 'none'; // Hide others
+   }
+ });
