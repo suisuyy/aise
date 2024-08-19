@@ -288,15 +288,7 @@ currentTimeSlider.addEventListener("input", updateAdjustedTimeDisplay);
    button.style.cursor = 'pointer';
    button.style.fontSize = '16px';
    button.style.transition = 'background-color 0.3s ease, color 0.3s ease';
-   
-   // Add hover effect
-   button.addEventListener('mouseover', () => {
-     button.style.backgroundColor = '#ddd';
-   });
-   button.addEventListener('mouseout', () => {
-     button.style.backgroundColor = '#ffffff';
-   });
-
+  
    // Add event listener to each button
    button.addEventListener('click', () => {
      // Show the clicked tab content and hide others
@@ -305,7 +297,7 @@ currentTimeSlider.addEventListener("input", updateAdjustedTimeDisplay);
        const tabButton = document.getElementById(`${tabId}-tab`);
        if (tabId === id) {
          tabElement.style.display = 'block'; // Show current tab
-         tabButton.style.backgroundColor = '#333'; // Highlight active tab
+         tabButton.style.backgroundColor = 'lightgreen'; // Highlight active tab
          tabButton.style.color = 'blue';
        } else {
          tabElement.style.display = 'none'; // Hide other tabs
