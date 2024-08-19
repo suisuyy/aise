@@ -322,3 +322,4 @@ currentTimeSlider.addEventListener("input", updateAdjustedTimeDisplay);
      tabElement.style.display = 'none'; // Hide others
    }
  });
+
