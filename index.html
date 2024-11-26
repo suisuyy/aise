@@ -238,6 +238,13 @@
                 } 
                 else if(target==='perplexity'){
                     currentTab='perplexity';
+                    framesWrapper.classList.remove('all-tab');
+                    frameContainers.forEach(container => {
+                        container.style.display = 'none';
+                    });
+                    const targetContainer = document.getElementById(`${target}-container`);
+                    targetContainer.style.display = 'flex';
+                    targetContainer.scrollIntoView({ behavior: 'smooth' });
                 }
                 else {
                     currentTab='else'
