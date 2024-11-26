@@ -142,7 +142,6 @@
         <button class="tab active" data-target="all">All</button>
         <button class="tab" data-target="perplexity">mplx</button>
         <button class="tab" data-target="google" id="google-tab">Google</button>
-        <button class="tab" data-target="gpt" id="gpt-tab">chatgpt</button>
 
 
        
@@ -164,11 +163,6 @@
                 <iframe id="google-frame" class="results-frame" src="about:blank" tabindex="-1"
                     allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
             </div>
-            <div id="gpt-container" class="frame-container">
-                <div id="gpt-url" class="url-display"></div>
-                <iframe id="gpt-frame" class="results-frame" src="about:blank" tabindex="-1"
-                    allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
-            </div>
         </div>
     </div>
 
@@ -180,15 +174,11 @@
             if (query) {
                 var perplexityUrl = 'https://mplx.run/search?model=anthropic:claude-3-5-haiku-20241022&query=' + encodeURIComponent(query);
                 var googleUrl = 'https://www.google.com/search?&q=' + encodeURIComponent(query);
-                let chatgptUrl='https://chatgpt.com?q='
                 document.getElementById('perplexity-frame').src = perplexityUrl;
                 document.getElementById('google-frame').src = googleUrl;
-                document.getElementById('gpt-frame').src = chatgptUrl;
-
 
                 document.getElementById('perplexity-url').textContent = perplexityUrl;
                 document.getElementById('google-url').textContent = googleUrl;
-                document.getElementById('gpt-url').textContent = chatgptUrl;
             }
         }
 
