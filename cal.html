@@ -158,7 +158,11 @@
         }
 
         // Add keyboard support
-        display.addEventListener('keydown', function(event) {
+        document.addEventListener('keydown', function(event) {
+            // Only handle keyboard events when textarea is focused
+            if (document.activeElement !== display) {
+                return;
+            }
             if (event.key === 'Enter') {
                 event.preventDefault();
                 evaluateExpression();
