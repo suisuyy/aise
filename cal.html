@@ -117,7 +117,6 @@
     <script>
         const display = document.getElementById('display');
         const result = document.getElementById('result');
-        display.contentEditable=true ;
 
         function appendToDisplay(value) {
             display.textContent += value;
@@ -153,17 +152,52 @@
 
         // Add keyboard support
         document.addEventListener('keydown', function(event) {
-            const key = event.key;
-            if (/[\d\+\-\*\/\(\)\.\%\^]/.test(key)) {
-                appendToDisplay(key === '^' ? '**' : key);
-            } else if (key === 'Enter') {
+            event.preventDefault();
+            
+            // Get current cursor position
+            const selection = window.getSelection();
+            const position = selection.focusOffset;
+            const text = display.textContent;
+            
+            if (/[\d\+\-\*\/\(\)\.\%\^]/.test(event.key)) {
+                // Insert at cursor position
+                const newText = text.slice(0, position) + (event.key === '^' ? '**' : event.key) + text.slice(position);
+                display.textContent = newText;
+                
+                // Restore cursor position
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.setStart(display.firstChild || display, position + 1);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+                
                 evaluateExpression();
-            } else if (key === 'Backspace') {
-                backspace();
-            } else if (key === 'Escape') {
+            } else if (event.key === 'Enter') {
+                evaluateExpression();
+            } else if (event.key === 'Backspace') {
+                if (position > 0) {
+                    // Delete character before cursor
+                    const newText = text.slice(0, position - 1) + text.slice(position);
+                    display.textContent = newText;
+                    
+                    // Restore cursor position
+                    const range = document.createRange();
+                    const sel = window.getSelection();
+                    range.setStart(display.firstChild || display, position - 1);
+                    range.collapse(true);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                    
+                    evaluateExpression();
+                }
+            } else if (event.key === 'Escape') {
                 clearDisplay();
             }
         });
+
+        // Make display focusable
+        display.tabIndex = 0;
     </script>
 </body>
 </html>
