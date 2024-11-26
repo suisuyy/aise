@@ -111,6 +111,19 @@
           bottom: 0;
           z-index: 100000;
         }
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 16px;
+            border-radius: 4px;
+            display: none;
+            z-index: 100001;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
@@ -133,6 +146,7 @@
         <div id="result"></div>
     </div>
 
+    <div class="notification" id="copyNotification">Copied to clipboard!</div>
     <div id="GenerateTab" class="tabcontent">
         <div id="generate-container">
             <input type="text" id="qr-text" placeholder="Enter text for QR code">
@@ -173,8 +187,11 @@
                     try {
                         await navigator.clipboard.writeText(decodedText);
                         resultDiv.style.backgroundColor = '#90EE90';
+                        const notification = document.getElementById('copyNotification');
+                        notification.style.display = 'block';
                         setTimeout(() => {
                             resultDiv.style.backgroundColor = 'transparent';
+                            notification.style.display = 'none';
                         }, 1000);
                     } catch (err) {
                         console.error('Failed to copy text:', err);
