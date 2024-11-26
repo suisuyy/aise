@@ -185,6 +185,11 @@
 
         // Handle ^ to ** conversion and evaluation
         display.addEventListener('input', function(event) {
+            // Only handle input events when textarea is focused
+            if (document.activeElement !== display) {
+                return;
+            }
+            
             const cursorPos = display.selectionStart;
             const beforeCursor = display.value.slice(0, cursorPos);
             const afterCursor = display.value.slice(cursorPos);
