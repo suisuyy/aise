@@ -296,9 +296,26 @@
         function downloadQR() {
             const qrCanvas = document.querySelector("#qrcode canvas");
             if (qrCanvas) {
+                // Create a new canvas with extra space for border
+                const borderCanvas = document.createElement('canvas');
+                const borderContext = borderCanvas.getContext('2d');
+                const border = 20; // 20px border
+                
+                // Set new canvas size (original + border on all sides)
+                borderCanvas.width = qrCanvas.width + (border * 2);
+                borderCanvas.height = qrCanvas.height + (border * 2);
+                
+                // Fill with white background
+                borderContext.fillStyle = '#ffffff';
+                borderContext.fillRect(0, 0, borderCanvas.width, borderCanvas.height);
+                
+                // Draw original QR code in the center
+                borderContext.drawImage(qrCanvas, border, border);
+                
+                // Create download link
                 const link = document.createElement('a');
                 link.download = 'qrcode.png';
-                link.href = qrCanvas.toDataURL("image/png");
+                link.href = borderCanvas.toDataURL("image/png");
                 link.click();
             }
         }
