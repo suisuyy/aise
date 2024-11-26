@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Scanner and Generator</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.4/html5-qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
@@ -80,16 +81,25 @@
             margin-bottom: 10px;
             box-sizing: border-box;
         }
-        #generate-btn {
+        #generate-btn, #download-btn {
             width: 100%;
             padding: 10px;
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        #generate-btn:hover {
+        #generate-btn:hover, #download-btn:hover {
             background-color: #45a049;
+        }
+        .material-icons {
+            font-size: 20px;
+            vertical-align: middle;
         }
         #qrcode {
             display: flex;
@@ -105,8 +115,12 @@
 </head>
 <body>
     <div class="tab">
-        <button class="tablinks" onclick="openTab(event, 'ScanTab')" id="defaultOpen">Scan</button>
-        <button class="tablinks" onclick="openTab(event, 'GenerateTab')">Generate</button>
+        <button class="tablinks" onclick="openTab(event, 'ScanTab')" id="defaultOpen">
+            <span class="material-icons">qr_code_scanner</span> Scan
+        </button>
+        <button class="tablinks" onclick="openTab(event, 'GenerateTab')">
+            <span class="material-icons">qr_code</span> Generate
+        </button>
     </div>
 
     <div id="ScanTab" class="tabcontent">
@@ -122,7 +136,12 @@
     <div id="GenerateTab" class="tabcontent">
         <div id="generate-container">
             <input type="text" id="qr-text" placeholder="Enter text for QR code">
-            <button id="generate-btn" onclick="generateQRCode()">Generate QR Code</button>
+            <button id="generate-btn" onclick="generateQRCode()">
+                <span class="material-icons">qr_code_2</span>Generate QR Code
+            </button>
+            <button id="download-btn" onclick="downloadQR()" style="display: none;">
+                <span class="material-icons">download</span>Download QR Code
+            </button>
         </div>
         <div id="qrcode"></div>
     </div>
@@ -135,23 +154,37 @@
 
         function displayResult(decodedText) {
             if (decodedText !== lastResult) {
-                resultElement.innerText = decodedText + '\n' + resultElement.innerText;
+                const resultDiv = document.createElement('div');
+                resultDiv.textContent = decodedText;
+                resultDiv.style.padding = '10px';
+                resultDiv.style.borderBottom = '1px solid #ccc';
+                resultDiv.style.cursor = 'pointer';
+                
+                // Add hover effect
+                resultDiv.addEventListener('mouseover', () => {
+                    resultDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                });
+                resultDiv.addEventListener('mouseout', () => {
+                    resultDiv.style.backgroundColor = 'transparent';
+                });
+                
+                // Click to copy individual result
+                resultDiv.addEventListener('click', async () => {
+                    try {
+                        await navigator.clipboard.writeText(decodedText);
+                        resultDiv.style.backgroundColor = '#90EE90';
+                        setTimeout(() => {
+                            resultDiv.style.backgroundColor = 'transparent';
+                        }, 1000);
+                    } catch (err) {
+                        console.error('Failed to copy text:', err);
+                    }
+                });
+
+                resultElement.insertBefore(resultDiv, resultElement.firstChild);
                 lastResult = decodedText;
             }
         }
-
-        // Click to copy functionality
-        resultElement.addEventListener('click', async () => {
-            try {
-                await navigator.clipboard.writeText(resultElement.innerText);
-                resultElement.classList.add('copied');
-                setTimeout(() => {
-                    resultElement.classList.remove('copied');
-                }, 1000);
-            } catch (err) {
-                console.error('Failed to copy text:', err);
-            }
-        });
 
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             displayResult(decodedText);
@@ -236,6 +269,17 @@
                     width: 200,
                     height: 200
                 });
+                document.getElementById("download-btn").style.display = "block";
+            }
+        }
+
+        function downloadQR() {
+            const qrCanvas = document.querySelector("#qrcode canvas");
+            if (qrCanvas) {
+                const link = document.createElement('a');
+                link.download = 'qrcode.png';
+                link.href = qrCanvas.toDataURL("image/png");
+                link.click();
             }
         }
 
