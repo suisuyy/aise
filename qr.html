@@ -65,6 +65,14 @@
           width: 90vw;
           background-color: lightblue;
           opacity: 0.8;
+          font-size: 1.5em;
+          padding: 15px;
+          cursor: pointer;
+          overflow-y: auto;
+        }
+        #result.copied {
+          background-color: #90EE90;
+          transition: background-color 0.3s;
         }
         #qr-text {
             width: 100%;
@@ -131,6 +139,19 @@
                 lastResult = decodedText;
             }
         }
+
+        // Click to copy functionality
+        resultElement.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(resultElement.innerText);
+                resultElement.classList.add('copied');
+                setTimeout(() => {
+                    resultElement.classList.remove('copied');
+                }, 1000);
+            } catch (err) {
+                console.error('Failed to copy text:', err);
+            }
+        });
 
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             displayResult(decodedText);
