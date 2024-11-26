@@ -75,20 +75,6 @@
             right: 0;
         }
 
-        .search-button {
-            margin-left: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #4285f4;
-            color: white;
-            border: none;
-            border-radius: 24px;
-            cursor: pointer;
-        }
-
-        .search-button:hover {
-            background-color: #357ae8;
-        }
 
         .results-container {
             display: flex;
@@ -149,7 +135,6 @@
 
     <div class="search-container" id="searchContainer">
         <textarea id="search-textarea" class="search-textarea" rows="1" placeholder="Search..."></textarea>
-        <button id="search-button" class="search-button">Run</button>
     </div>
     <div class="results-container">
         <div class="frames-wrapper all-tab">
@@ -182,11 +167,6 @@
             }
         }
 
-        document.getElementById('search-button').addEventListener('click', function (e) {
-            e.preventDefault();
-            var query = document.getElementById('search-textarea').value;
-            performSearch(query);
-        });
 
         window.onload = function () {
             var urlParams = new URLSearchParams(window.location.search);
