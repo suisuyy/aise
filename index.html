@@ -51,6 +51,31 @@
             align-items: flex-start;
         }
 
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .clear-button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 50%;
+        }
+
+        .clear-button:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
         .search-textarea {
             height: 100%;
             flex-grow: 1;
@@ -134,7 +159,10 @@
     </div>
 
     <div class="search-container" id="searchContainer">
-        <textarea id="search-textarea" class="search-textarea" rows="1" placeholder="Type your search and press Enter..."></textarea>
+        <div class="search-wrapper">
+            <textarea id="search-textarea" class="search-textarea" rows="1" placeholder="Type your search and press Enter..."></textarea>
+            <button id="clear-button" class="clear-button" style="display: none;">×</button>
+        </div>
     </div>
     <div class="results-container">
         <div class="frames-wrapper all-tab">
@@ -153,8 +181,15 @@
 
     <script>
         let currentTab='all';
+        let lastQuery = '';  // Track the last search query
 
         function performSearch(query) {
+            // If the new query is the same as the last one, do nothing
+            if (query === lastQuery) {
+                console.log('Skipping duplicate search: ' + query);
+                return;
+            }
+            lastQuery = query;  // Update the last query
             console.log('query: ' + query)
             if (query) {
                 var perplexityUrl = 'https://mplx.run/search?model=anthropic:claude-3-5-haiku-20241022&query=' + encodeURIComponent(query);
@@ -276,7 +311,12 @@
 });
 
 
+        const clearButton = document.getElementById('clear-button');
+        
         textarea.addEventListener('input', function () {
+            // Show/hide clear button based on text content
+            clearButton.style.display = this.value ? 'block' : 'none';
+            
             if (this.value !== '') {
                 searchContainer.classList.add('expanded');
                 // Update URL with current query
@@ -292,6 +332,25 @@
                 newUrl.searchParams.delete('query');
                 history.replaceState({}, '', newUrl.toString());
             }
+        });
+
+        // Clear button functionality
+        clearButton.addEventListener('click', function() {
+            textarea.value = '';
+            lastQuery = '';  // Reset last query
+            clearButton.style.display = 'none';
+            textarea.focus();
+            
+            // Clear URL parameter
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.delete('query');
+            history.replaceState({}, '', newUrl.toString());
+            
+            // Clear iframes
+            document.getElementById('perplexity-frame').src = 'about:blank';
+            document.getElementById('google-frame').src = 'about:blank';
+            document.getElementById('perplexity-url').textContent = '';
+            document.getElementById('google-url').textContent = '';
         });
 
         // Add paste event listener
