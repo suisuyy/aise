@@ -159,11 +159,15 @@
 
         // Add keyboard support
         document.addEventListener('keydown', function(event) {
-            // Only handle keyboard events when textarea is focused
-            if (document.activeElement !== display) {
-                return;
-            }
-            if (event.key === 'Enter') {
+            // Handle numeric keys and operators
+            const validKeys = /^[0-9+\-*/.()%]$/;
+            if (validKeys.test(event.key)) {
+                appendToDisplay(event.key);
+                event.preventDefault();
+            } else if (event.key === '^') {
+                appendToDisplay('**');
+                event.preventDefault();
+            } else if (event.key === 'Enter') {
                 event.preventDefault();
                 evaluateExpression();
             } else if (event.key === 'Escape') {
