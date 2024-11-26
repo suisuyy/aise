@@ -33,6 +33,12 @@
             height: 60px;
             overflow-y: auto;
             word-wrap: break-word;
+            resize: none;
+            font-family: Arial, sans-serif;
+        }
+        #display::selection {
+            background-color: yellow;
+            color: black;
         }
         #result {
             height: 60px;
@@ -82,7 +88,7 @@
 <body>
     <div class="calculator">
 
-        <div id="display" ></div>
+        <textarea id="display" spellcheck="false"></textarea>
         <div id="result"></div>
         <div class="keyboard">
             <button onclick="appendToDisplay('7')">7</button>
@@ -119,22 +125,37 @@
         const result = document.getElementById('result');
 
         function appendToDisplay(value) {
-            display.textContent += value;
+            const cursorPos = display.selectionStart;
+            const text = display.value;
+            display.value = text.slice(0, cursorPos) + value + text.slice(display.selectionEnd);
+            display.selectionStart = display.selectionEnd = cursorPos + value.length;
             evaluateExpression();
         }
 
         function clearDisplay() {
-            display.textContent = '';
+            display.value = '';
             result.textContent = '';
         }
 
         function backspace() {
-            display.textContent = display.textContent.slice(0, -1);
+            const cursorPos = display.selectionStart;
+            const text = display.value;
+            if (display.selectionStart === display.selectionEnd) {
+                // No selection, delete single character
+                if (cursorPos > 0) {
+                    display.value = text.slice(0, cursorPos - 1) + text.slice(cursorPos);
+                    display.selectionStart = display.selectionEnd = cursorPos - 1;
+                }
+            } else {
+                // Delete selection
+                display.value = text.slice(0, display.selectionStart) + text.slice(display.selectionEnd);
+                display.selectionStart = display.selectionEnd = cursorPos;
+            }
             evaluateExpression();
         }
 
         function evaluateExpression() {
-            const expression = display.textContent;
+            const expression = display.value;
 
             if (expression.trim() === '') {
                 result.textContent = '';
@@ -151,53 +172,44 @@
         }
 
         // Add keyboard support
-        document.addEventListener('keydown', function(event) {
-            event.preventDefault();
-            
-            // Get current cursor position
-            const selection = window.getSelection();
-            const position = selection.focusOffset;
-            const text = display.textContent;
-            
-            if (/[\d\+\-\*\/\(\)\.\%\^]/.test(event.key)) {
-                // Insert at cursor position
-                const newText = text.slice(0, position) + (event.key === '^' ? '**' : event.key) + text.slice(position);
-                display.textContent = newText;
-                
-                // Restore cursor position
-                const range = document.createRange();
-                const sel = window.getSelection();
-                range.setStart(display.firstChild || display, position + 1);
-                range.collapse(true);
-                sel.removeAllRanges();
-                sel.addRange(range);
-                
+        display.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
                 evaluateExpression();
-            } else if (event.key === 'Enter') {
-                evaluateExpression();
-            } else if (event.key === 'Backspace') {
-                if (position > 0) {
-                    // Delete character before cursor
-                    const newText = text.slice(0, position - 1) + text.slice(position);
-                    display.textContent = newText;
-                    
-                    // Restore cursor position
-                    const range = document.createRange();
-                    const sel = window.getSelection();
-                    range.setStart(display.firstChild || display, position - 1);
-                    range.collapse(true);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                    
-                    evaluateExpression();
-                }
             } else if (event.key === 'Escape') {
+                event.preventDefault();
                 clearDisplay();
+            } else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+                const hasSelection = display.selectionStart !== display.selectionEnd;
+                if (hasSelection) {
+                    event.preventDefault();
+                    // Move cursor to the appropriate end of selection
+                    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+                        display.selectionEnd = display.selectionStart;
+                    } else {
+                        display.selectionStart = display.selectionEnd;
+                    }
+                }
             }
         });
 
-        // Make display focusable
-        display.tabIndex = 0;
+        // Handle ^ to ** conversion and evaluation
+        display.addEventListener('input', function(event) {
+            const cursorPos = display.selectionStart;
+            const beforeCursor = display.value.slice(0, cursorPos);
+            const afterCursor = display.value.slice(cursorPos);
+            
+            // Count ^ characters before cursor to adjust position
+            const caretAdjustment = (beforeCursor.match(/\^/g) || []).length;
+            
+            // Replace ^ with ** in the whole text
+            display.value = display.value.replace(/\^/g, '**');
+            
+            // Adjust cursor position: add one extra space for each ^ replaced with **
+            display.selectionStart = display.selectionEnd = cursorPos + caretAdjustment;
+            
+            evaluateExpression();
+        });
     </script>
 </body>
 </html>
