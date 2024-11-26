@@ -92,8 +92,17 @@
             transition: all 0.3s ease;
         }
 
+        .textarea-placeholder {
+            height: 80px; /* Height difference between expanded and collapsed textarea */
+            display: none;
+        }
+
         .search-textarea:focus {
             height: 120px;
+        }
+
+        #searchContainer.expanded + .textarea-placeholder {
+            display: block;
         }
 
         #searchContainer.expanded {
@@ -167,6 +176,7 @@
             <button id="clear-button" class="clear-button" style="display: none;">×</button>
         </div>
     </div>
+    <div class="textarea-placeholder"></div>
     <div class="results-container">
         <div class="frames-wrapper all-tab">
             <div id="perplexity-container" class="frame-container">
