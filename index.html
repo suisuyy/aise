@@ -140,7 +140,7 @@
     
     <div class="tab-container">
         <button class="tab active" data-target="all">All</button>
-        <button class="tab" data-target="perplexity">Perplexity</button>
+        <button class="tab" data-target="perplexity">mplx</button>
         <button class="tab" data-target="bing">Bing</button>
         <button class="tab" data-target="google" id="google-tab">Google</button>
         <button class="tab" data-target="gpt" id="gpt-tab">chatgpt</button>
@@ -184,7 +184,7 @@
         function performSearch(query) {
             console.log('query: ' + query)
             if (query) {
-                var perplexityUrl = 'https://mpere.suisuy.eu.org/search?s=o&q=' + encodeURIComponent(query);
+                var perplexityUrl = 'https://mplx.run/search?model=anthropic:claude-3-5-haiku-20241022&query=' + encodeURIComponent(query);
                 var bingUrl = 'https://www.bing.com/search?showconv=1&q=' + encodeURIComponent(query) + '&sendquery=1&FORM=SCCODX';
                 var googleUrl = 'https://www.google.com/search?&q=' + encodeURIComponent(query);
                 let chatgptUrl='https://chatgpt.com?q='
@@ -209,11 +209,27 @@
 
         window.onload = function () {
             var urlParams = new URLSearchParams(window.location.search);
-            var query = urlParams.get('q');
+            var query = urlParams.get('query') || urlParams.get('q');
+            var model = urlParams.get('model');
             if (query) {
                 document.getElementById('search-textarea').value = query;
                 document.getElementById('search-textarea').classList.add('expanded');
                 performSearch(query);
+                if (model) {
+                    // If model parameter exists, switch to perplexity tab
+                    document.querySelector('[data-target="perplexity"]').click();
+                    // Focus the textarea
+                    setTimeout(() => {
+                        document.getElementById('search-textarea').focus();
+                    }, 100);
+                }
+            }
+            // Always focus textarea when model parameter exists
+            else if (model) {
+                document.querySelector('[data-target="perplexity"]').click();
+                setTimeout(() => {
+                    document.getElementById('search-textarea').focus();
+                }, 100);
             }
             if (!window.location.href.includes('q=')) {
                 document.getElementById('search-textarea').focus();
@@ -299,7 +315,29 @@
         textarea.addEventListener('input', function () {
             if (this.value !== '') {
                 searchContainer.classList.add('expanded');
+                // Update URL with current query
+                const newUrl = new URL(window.location.href);
+                newUrl.searchParams.set('query', this.value);
+                if (!newUrl.searchParams.has('model')) {
+                    newUrl.searchParams.set('model', 'anthropic:claude-3-5-haiku-20241022');
+                }
+                history.replaceState({}, '', newUrl.toString());
+            } else {
+                // If textarea is empty, remove query parameter
+                const newUrl = new URL(window.location.href);
+                newUrl.searchParams.delete('query');
+                history.replaceState({}, '', newUrl.toString());
             }
+        });
+
+        // Add paste event listener
+        textarea.addEventListener('paste', function(e) {
+            // Small delay to ensure the pasted content is in the textarea
+            setTimeout(() => {
+                if (this.value !== '') {
+                    performSearch(this.value);
+                }
+            }, 100);
         });
     </script>
 </body>
