@@ -125,10 +125,8 @@
         const result = document.getElementById('result');
 
         function appendToDisplay(value) {
-            const cursorPos = display.selectionStart;
-            const text = display.value;
-            display.value = text.slice(0, cursorPos) + value + text.slice(display.selectionEnd);
-            display.selectionStart = display.selectionEnd = cursorPos + value.length;
+            display.value += value;
+            display.selectionStart = display.selectionEnd = display.value.length;
             evaluateExpression();
         }
 
@@ -138,19 +136,7 @@
         }
 
         function backspace() {
-            const cursorPos = display.selectionStart;
-            const text = display.value;
-            if (display.selectionStart === display.selectionEnd) {
-                // No selection, delete single character
-                if (cursorPos > 0) {
-                    display.value = text.slice(0, cursorPos - 1) + text.slice(cursorPos);
-                    display.selectionStart = display.selectionEnd = cursorPos - 1;
-                }
-            } else {
-                // Delete selection
-                display.value = text.slice(0, display.selectionStart) + text.slice(display.selectionEnd);
-                display.selectionStart = display.selectionEnd = cursorPos;
-            }
+            display.value = display.value.slice(0, -1);
             evaluateExpression();
         }
 
