@@ -167,7 +167,6 @@
         <button class="tab active" data-target="all">All</button>
         <button class="tab" data-target="perplexity">MPLX</button>
         <button class="tab" data-target="google" id="google-tab">Google</button>
-        <button class="tab" data-target="groq">GroqAI</button>
     </div>
 
     <div class="search-container" id="searchContainer">
@@ -189,10 +188,6 @@
                 <iframe id="google-frame" class="results-frame" src="about:blank" tabindex="-1"
                     allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
             </div>
-            <div id="groq-container" class="frame-container">
-                <div id="groq-url" class="url-display"></div>
-                <div id="groq-content" class="results-frame" style="background: white; padding: 20px; overflow-y: auto;"></div>
-            </div>
         </div>
     </div>
 
@@ -211,26 +206,12 @@
             if (query) {
                 var perplexityUrl = 'https://mplx.run/search?model=anthropic:claude-3-5-haiku-20241022&query=' + encodeURIComponent(query);
                 var googleUrl = 'https://www.google.com/search?&q=' + encodeURIComponent(query);
-                var groqUrl = 'https://simpleai.devilent2.workers.dev/?q=' + encodeURIComponent(query);
 
                 document.getElementById('perplexity-frame').src = perplexityUrl;
                 document.getElementById('google-frame').src = googleUrl;
 
                 document.getElementById('perplexity-url').textContent = perplexityUrl;
                 document.getElementById('google-url').textContent = googleUrl;
-                document.getElementById('groq-url').textContent = groqUrl;
-
-                // Fetch and render GroqAI response
-                fetch(groqUrl)
-                    .then(response => response.text())
-                    .then(text => {
-                        const groqContent = document.getElementById('groq-content');
-                        groqContent.innerHTML = marked.parse(text);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching GroqAI response:', error);
-                        document.getElementById('groq-content').innerHTML = 'Error loading GroqAI response';
-                    });
             }
         }
 
