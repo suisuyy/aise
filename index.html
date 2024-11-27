@@ -299,13 +299,12 @@
         textarea.addEventListener('blur', function () {
             setTimeout(() => {
                 searchContainer.classList.remove('expanded');
+                // Only perform search if query has changed
+                const query = textarea.value;
+                if (query !== lastQuery && query.trim() !== '') {
+                    performSearch(query);
+                }
             }, 200);
-        });
-        textarea.addEventListener('change', () => {
-            var query = document.getElementById('search-textarea').value;
-            if (query !== lastQuery) {
-                performSearch(query);
-            }
         })
         textarea.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') {
