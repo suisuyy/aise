@@ -301,7 +301,7 @@
                 searchContainer.classList.remove('expanded');
                 // Only perform search if query has changed
                 const query = textarea.value;
-                if (query !== lastQuery && query.trim() !== '') {
+                if (query.trim() !== lastQuery.trim() && query.trim() !== '') {
                     performSearch(query);
                 }
             }, 200);
@@ -309,7 +309,10 @@
         textarea.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') {
                 var query = document.getElementById('search-textarea').value;
+                if(query.trim()!==lastQuery.trim()){
                 performSearch(query);
+
+                }
             }
         });
 
