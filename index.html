@@ -556,7 +556,7 @@
       });
 
       // Monitor selection on mouse up
-      document.addEventListener("mouseup", function () {
+      document.addEventListener("pointerup ", function () {
         const selection = window.getSelection().toString().trim();
         if (selection && selection !== lastQuery) {
           performSearch(selection);
@@ -580,6 +580,8 @@
           history.replaceState({}, "", newUrl.toString());
         }
       });
+    
+    
     </script>
   </body>
 </html>
