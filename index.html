@@ -332,6 +332,7 @@
     <script>
       let currentTab = localStorage.getItem("defaultTab") || "help";
       let lastQuery = ""; // Track the last search query
+      let lastSearchWasSelection = false; // Track if last search was from selection
 
       // Function to switch tabs
       function switchTab(target) {
@@ -470,11 +471,12 @@
       textarea.addEventListener("blur", function () {
         setTimeout(() => {
           searchContainer.classList.remove("expanded");
-          // Only perform search if query has changed
+          // Only perform search if query has changed and last search wasn't from selection
           const query = textarea.value;
-          if (query.trim() !== lastQuery.trim() && query.trim() !== "") {
+          if (!lastSearchWasSelection && query.trim() !== lastQuery.trim() && query.trim() !== "") {
             performSearch(query);
           }
+          lastSearchWasSelection = false; // Reset the flag
         }, 200);
       });
       textarea.addEventListener("keypress", (event) => {
@@ -558,6 +560,7 @@
         const selection = window.getSelection().toString().trim();
         if (selection && selection !== lastQuery) {
           performSearch(selection);
+          lastSearchWasSelection = true; // Mark that this search came from selection
 
           // Update URL with selected text
           const newUrl = new URL(window.location.href);
