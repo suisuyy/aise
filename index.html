@@ -164,10 +164,10 @@
 <body>
     
     <div class="tab-container">
-        <button class="tab active" data-target="all">All</button>
+        <button class="tab active" data-target="groq">Groq</button>
+        <button class="tab" data-target="all">All</button>
         <button class="tab" data-target="perplexity">MPLX</button>
         <button class="tab" data-target="google" id="google-tab">Google</button>
-        <button class="tab" data-target="groq">Groq</button>
     </div>
 
     <div class="search-container" id="searchContainer">
@@ -189,7 +189,7 @@
                 <iframe id="google-frame" class="results-frame" src="about:blank" tabindex="-1"
                     allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
             </div>
-            <div id="groq-container" class="frame-container" style="display: none;">
+            <div id="groq-container" class="frame-container">
                 <div id="groq-url" class="url-display"></div>
                 <div id="groq-content" class="results-frame" style="background: white; padding: 20px; overflow-y: auto;"></div>
             </div>
@@ -197,7 +197,7 @@
     </div>
 
     <script>
-        let currentTab='all';
+        let currentTab='groq';
         let lastQuery = '';  // Track the last search query
 
         function performSearch(query) {
