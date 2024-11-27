@@ -468,6 +468,27 @@
                 }
             }, 100);
         });
+
+        // Monitor text selection changes
+        document.addEventListener('selectionchange', function() {
+            const selection = window.getSelection().toString().trim();
+            if (selection && selection !== lastQuery) {
+                textarea.value = selection;
+                performSearch(selection);
+                clearButton.style.display = 'block';
+                
+                // Update URL with selected text
+                const newUrl = new URL(window.location.href);
+                const urlParams = new URLSearchParams(window.location.search);
+                const prompt = urlParams.get('prompt');
+                
+                newUrl.searchParams.set('query', prompt ? `${prompt}\n\n${selection}` : selection);
+                if (!newUrl.searchParams.has('model')) {
+                    newUrl.searchParams.set('model', 'anthropic:claude-3-5-haiku-20241022');
+                }
+                history.replaceState({}, '', newUrl.toString());
+            }
+        });
     </script>
 </body>
 
