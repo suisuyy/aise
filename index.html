@@ -98,7 +98,8 @@
         }
 
         .textarea-placeholder {
-            height: 100px; /* Significantly increased height to prevent content shift */
+            height: 100px;
+            /* Significantly increased height to prevent content shift */
             display: none;
         }
 
@@ -106,7 +107,7 @@
             height: 120px;
         }
 
-        #searchContainer.expanded + .textarea-placeholder {
+        #searchContainer.expanded+.textarea-placeholder {
             display: block;
         }
 
@@ -168,7 +169,7 @@
 </head>
 
 <body>
-    
+
     <div class="tab-container">
         <button class="tab active" data-target="all">All</button>
         <button class="tab" data-target="groq">Groq</button>
@@ -181,7 +182,8 @@
     <div style="height: 50px"></div>
     <div class="search-container" id="searchContainer">
         <div class="search-wrapper">
-            <textarea id="search-textarea" class="search-textarea" rows="1" placeholder="Type your search and press Enter..."></textarea>
+            <textarea id="search-textarea" class="search-textarea" rows="1"
+                placeholder="Type your search and press Enter..."></textarea>
             <button id="clear-button" class="clear-button" style="display: none;">×</button>
         </div>
     </div>
@@ -200,7 +202,8 @@
             </div>
             <div id="groq-container" class="frame-container">
                 <div id="groq-url" class="url-display"></div>
-                <div id="groq-content" class="results-frame" style="background: white; padding: 20px; overflow-y: auto;"></div>
+                <div id="groq-content" class="results-frame"
+                    style="background: white; padding: 20px; overflow-y: auto;"></div>
             </div>
             <div id="perplexityai-container" class="frame-container" style="display: none;">
                 <div id="perplexityai-url" class="url-display"></div>
@@ -210,10 +213,12 @@
             <div id="help-container" class="frame-container" style="display: none;">
                 <div class="results-frame" style="background: white; padding: 20px; overflow-y: auto;">
                     <h2>How to Use AISE</h2>
-                    
+
                     <h3>⚠️ Important: Chrome Extension Required</h3>
-                    <p>To properly view Google, Perplexity, and other web results within AISE, you <strong>must</strong> install our Chrome extension first. Without it, these services may not load correctly due to browser security restrictions.</p>
-                    
+                    <p>To properly view Google, Perplexity, and other web results within AISE, you <strong>must</strong>
+                        install our Chrome extension first. Without it, these services may not load correctly due to
+                        browser security restrictions.</p>
+
                     <h3>Chrome Extension Installation Steps</h3>
                     <ol>
                         <li>Download the <a href="./aiseext.zip">Chrome Extension</a></li>
@@ -226,7 +231,8 @@
 
                     <h3>Search Features</h3>
                     <ul>
-                        <li><strong>Multi-Engine Search:</strong> Search across multiple AI and traditional search engines simultaneously</li>
+                        <li><strong>Multi-Engine Search:</strong> Search across multiple AI and traditional search
+                            engines simultaneously</li>
                         <li><strong>Tabs:</strong>
                             <ul>
                                 <li>All - View all search results at once</li>
@@ -300,10 +306,10 @@
                 // Get the prompt from URL parameters
                 const urlParams = new URLSearchParams(window.location.search);
                 const prompt = urlParams.get('prompt');
-                
+
                 // Combine prompt and query if prompt exists
                 const fullQuery = prompt ? `${prompt}\n\n${query}` : query;
-                
+
                 // If the new query is the same as the last one, do nothing
                 if (fullQuery === lastQuery) {
                     console.log('Skipping duplicate search: ' + fullQuery);
@@ -344,7 +350,7 @@
             var urlParams = new URLSearchParams(window.location.search);
             var query = urlParams.get('query') || urlParams.get('q');
             var model = urlParams.get('model');
-            
+
             // Switch to default tab (help if first time, or saved preference)
             switchTab(currentTab);
 
@@ -387,7 +393,7 @@
         const textarea = document.getElementById('search-textarea');
         textarea.addEventListener('focus', function () {
             searchContainer.classList.add('expanded');
-            
+
 
 
 
@@ -405,33 +411,33 @@
         textarea.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') {
                 var query = document.getElementById('search-textarea').value;
-                if(query.trim()!==lastQuery.trim()){
-                performSearch(query);
+                if (query.trim() !== lastQuery.trim()) {
+                    performSearch(query);
 
                 }
             }
         });
 
         document.body.addEventListener('keydown', (e) => {
-  if (e.ctrlKey && e.key === 'Enter') {
-    textarea.focus();
-  }
-});
+            if (e.ctrlKey && e.key === 'Enter') {
+                textarea.focus();
+            }
+        });
 
 
         const clearButton = document.getElementById('clear-button');
-        
+
         textarea.addEventListener('input', function () {
             // Show/hide clear button based on text content
             clearButton.style.display = this.value ? 'block' : 'none';
-            
+
             if (this.value !== '') {
                 searchContainer.classList.add('expanded');
                 // Update URL with current query
                 const newUrl = new URL(window.location.href);
                 const urlParams = new URLSearchParams(window.location.search);
                 const prompt = urlParams.get('prompt');
-                
+
                 newUrl.searchParams.set('query', prompt ? `${prompt}\n\n${this.value}` : this.value);
                 if (!newUrl.searchParams.has('model')) {
                     newUrl.searchParams.set('model', 'anthropic:claude-3-5-haiku-20241022');
@@ -446,17 +452,17 @@
         });
 
         // Clear button functionality
-        clearButton.addEventListener('click', function() {
+        clearButton.addEventListener('click', function () {
             textarea.value = '';
             lastQuery = '';  // Reset last query
             clearButton.style.display = 'none';
             textarea.focus();
-            
+
             // Clear URL parameter
             const newUrl = new URL(window.location.href);
             newUrl.searchParams.delete('query');
             history.replaceState({}, '', newUrl.toString());
-            
+
             // Clear iframes
             document.getElementById('perplexity-frame').src = 'about:blank';
             document.getElementById('google-frame').src = 'about:blank';
@@ -465,7 +471,7 @@
         });
 
         // Add paste event listener
-        textarea.addEventListener('paste', function(e) {
+        textarea.addEventListener('paste', function (e) {
             // Small delay to ensure the pasted content is in the textarea
             setTimeout(() => {
                 if (this.value !== '') {
@@ -475,16 +481,16 @@
         });
 
         // Monitor text selection changes
-        document.addEventListener('selectionchange', function() {
+        document.addEventListener('selectionchange', function () {
             const selection = window.getSelection().toString().trim();
             if (selection && selection !== lastQuery) {
                 performSearch(selection);
-                
+
                 // Update URL with selected text
                 const newUrl = new URL(window.location.href);
                 const urlParams = new URLSearchParams(window.location.search);
                 const prompt = urlParams.get('prompt');
-                
+
                 newUrl.searchParams.set('query', prompt ? `${prompt}\n\n${selection}` : selection);
                 if (!newUrl.searchParams.has('model')) {
                     newUrl.searchParams.set('model', 'anthropic:claude-3-5-haiku-20241022');
