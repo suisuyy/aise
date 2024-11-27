@@ -164,10 +164,14 @@
 <body>
     
     <div class="tab-container">
-        <button class="tab active" data-target="groq">Groq</button>
-        <button class="tab" data-target="all">All</button>
+        <button class="tab active" data-target="all">All</button>
+        <button class="tab" data-target="groq">Groq</button>
+        <button class="tab" data-target="claude4">Claude4</button>
+        <button class="tab" data-target="gpt4">GPT4</button>
         <button class="tab" data-target="perplexity">MPLX</button>
+        <button class="tab" data-target="perplexityai">Perplexity</button>
         <button class="tab" data-target="google" id="google-tab">Google</button>
+        <button class="tab" data-target="help">Help</button>
     </div>
 
     <div class="search-container" id="searchContainer">
@@ -193,11 +197,46 @@
                 <div id="groq-url" class="url-display"></div>
                 <div id="groq-content" class="results-frame" style="background: white; padding: 20px; overflow-y: auto;"></div>
             </div>
+            <div id="perplexityai-container" class="frame-container" style="display: none;">
+                <div id="perplexityai-url" class="url-display"></div>
+                <iframe id="perplexityai-frame" class="results-frame" src="about:blank" tabindex="-1"
+                    allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
+            </div>
+            <div id="claude4-container" class="frame-container" style="display: none;">
+                <div id="claude4-url" class="url-display"></div>
+                <iframe id="claude4-frame" class="results-frame" src="about:blank" tabindex="-1"
+                    allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
+            </div>
+            <div id="gpt4-container" class="frame-container" style="display: none;">
+                <div id="gpt4-url" class="url-display"></div>
+                <iframe id="gpt4-frame" class="results-frame" src="about:blank" tabindex="-1"
+                    allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
+            </div>
+            <div id="help-container" class="frame-container" style="display: none;">
+                <div class="results-frame" style="background: white; padding: 20px; overflow-y: auto;">
+                    <h2>How to Use</h2>
+                    <h3>Chrome Extension Installation</h3>
+                    <ol>
+                        <li>Download the <a href="./aiseext.zip">Chrome Extension</a></li>
+                        <li>Unzip the downloaded file</li>
+                        <li>Open Chrome and go to chrome://extensions/</li>
+                        <li>Enable "Developer mode" in the top right</li>
+                        <li>Click "Load unpacked" and select the unzipped folder</li>
+                    </ol>
+                    <h3>Usage Tips</h3>
+                    <ul>
+                        <li>Use Ctrl+Enter to quickly focus the search box</li>
+                        <li>Press Enter to search</li>
+                        <li>Clear button (×) will reset all search results</li>
+                        <li>Switch between different search engines using the tabs</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        let currentTab='groq';
+        let currentTab='all';
         let lastQuery = '';  // Track the last search query
 
         function performSearch(query) {
@@ -220,13 +259,22 @@
                 var perplexityUrl = 'https://mplx.run/search?model=anthropic:claude-3-5-haiku-20241022&query=' + encodeURIComponent(fullQuery);
                 var googleUrl = 'https://www.google.com/search?&q=' + encodeURIComponent(fullQuery);
                 var groqUrl = 'https://simpleai.devilent2.workers.dev/?q=' + encodeURIComponent(fullQuery);
+                var perplexityaiUrl = 'https://www.perplexity.ai/search/new?q=' + encodeURIComponent(fullQuery);
+                var claude4Url = 'https://mplx.run/search?model=anthropic:claude-3-5-opus-20240229&query=' + encodeURIComponent(fullQuery);
+                var gpt4Url = 'https://mplx.run/search?model=openai:gpt-4&query=' + encodeURIComponent(fullQuery);
 
                 document.getElementById('perplexity-frame').src = perplexityUrl;
                 document.getElementById('google-frame').src = googleUrl;
+                document.getElementById('perplexityai-frame').src = perplexityaiUrl;
+                document.getElementById('claude4-frame').src = claude4Url;
+                document.getElementById('gpt4-frame').src = gpt4Url;
 
                 document.getElementById('perplexity-url').textContent = perplexityUrl;
                 document.getElementById('google-url').textContent = googleUrl;
                 document.getElementById('groq-url').textContent = groqUrl;
+                document.getElementById('perplexityai-url').textContent = perplexityaiUrl;
+                document.getElementById('claude4-url').textContent = claude4Url;
+                document.getElementById('gpt4-url').textContent = gpt4Url;
 
                 // Fetch and render Groq response
                 fetch(groqUrl)
