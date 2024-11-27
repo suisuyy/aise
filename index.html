@@ -224,8 +224,37 @@
     </div>
 
     <script>
-        let currentTab='all';
+        let currentTab = localStorage.getItem('defaultTab') || 'help';
         let lastQuery = '';  // Track the last search query
+
+        // Function to switch tabs
+        function switchTab(target) {
+            const tabs = document.querySelectorAll('.tab');
+            const framesWrapper = document.querySelector('.frames-wrapper');
+            const frameContainers = document.querySelectorAll('.frame-container');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            document.querySelector(`[data-target="${target}"]`).classList.add('active');
+
+            if (target === 'all') {
+                framesWrapper.classList.add('all-tab');
+                frameContainers.forEach(container => {
+                    container.style.display = 'flex';
+                });
+            } else {
+                framesWrapper.classList.remove('all-tab');
+                frameContainers.forEach(container => {
+                    container.style.display = 'none';
+                });
+                const targetContainer = document.getElementById(`${target}-container`);
+                targetContainer.style.display = 'flex';
+                if (target !== 'groq') {
+                    targetContainer.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+            currentTab = target;
+            localStorage.setItem('defaultTab', target);
+        }
 
         function performSearch(query) {
             // Only proceed if there's a query
@@ -277,6 +306,10 @@
             var urlParams = new URLSearchParams(window.location.search);
             var query = urlParams.get('query') || urlParams.get('q');
             var model = urlParams.get('model');
+            
+            // Switch to default tab (help if first time, or saved preference)
+            switchTab(currentTab);
+
             if (query) {
                 document.getElementById('search-textarea').value = query;
                 document.getElementById('search-textarea').classList.add('expanded');
@@ -308,42 +341,7 @@
         const framesWrapper = document.querySelector('.frames-wrapper');
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-
-                const target = tab.getAttribute('data-target');
-                const frameContainers = document.querySelectorAll('.frame-container');
-
-                if (target === 'all') {
-                    framesWrapper.classList.add('all-tab');
-                    frameContainers.forEach(container => {
-                        container.style.display = 'flex';
-                    });
-                    currentTab='all';
-                } 
-                else if(target==='perplexity'){
-                    currentTab='perplexity';
-                    framesWrapper.classList.remove('all-tab');
-                    frameContainers.forEach(container => {
-                        container.style.display = 'none';
-                    });
-                    const targetContainer = document.getElementById(`${target}-container`);
-                    targetContainer.style.display = 'flex';
-                    targetContainer.scrollIntoView({ behavior: 'smooth' });
-                }
-                else {
-                    currentTab='else'
-                    framesWrapper.classList.remove('all-tab');
-                    frameContainers.forEach(container => {
-                        container.style.display = 'none';
-                    });
-                    const targetContainer = document.getElementById(`${target}-container`);
-                    targetContainer.style.display = 'flex';
-                    // Only scroll for tabs other than groq
-                    if (target !== 'groq') {
-                        targetContainer.scrollIntoView({ behavior: 'smooth' });
-                    }
-                }
+                switchTab(tab.getAttribute('data-target'));
             });
         });
 
