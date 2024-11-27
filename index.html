@@ -301,7 +301,10 @@
                     });
                     const targetContainer = document.getElementById(`${target}-container`);
                     targetContainer.style.display = 'flex';
-                    targetContainer.scrollIntoView({ behavior: 'smooth' });
+                    // Only scroll for tabs other than groq
+                    if (target !== 'groq') {
+                        targetContainer.scrollIntoView({ behavior: 'smooth' });
+                    }
                 }
             });
         });
