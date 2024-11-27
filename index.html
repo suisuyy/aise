@@ -480,8 +480,8 @@
             }, 100);
         });
 
-        // Monitor text selection changes
-        document.addEventListener('selectionchange', function () {
+        // Monitor selection on mouse up
+        document.addEventListener('mouseup', function () {
             const selection = window.getSelection().toString().trim();
             if (selection && selection !== lastQuery) {
                 performSearch(selection);
