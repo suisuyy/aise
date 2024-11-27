@@ -555,8 +555,8 @@
         }, 100);
       });
 
-      // Monitor selection on mouse up
-      document.addEventListener("pointerup ", function () {
+      // Handle text selection
+      function handleTextSelection() {
         const selection = window.getSelection().toString().trim();
         if (selection && selection !== lastQuery) {
           performSearch(selection);
@@ -579,7 +579,11 @@
           }
           history.replaceState({}, "", newUrl.toString());
         }
-      });
+      }
+
+      // Monitor selection on mouse up and touch end
+      document.addEventListener("pointerup", handleTextSelection);
+      document.addEventListener("touchend", handleTextSelection);
     
     
     </script>
