@@ -166,8 +166,6 @@
     <div class="tab-container">
         <button class="tab active" data-target="all">All</button>
         <button class="tab" data-target="groq">Groq</button>
-        <button class="tab" data-target="claude4">Claude4</button>
-        <button class="tab" data-target="gpt4">GPT4</button>
         <button class="tab" data-target="perplexity">MPLX</button>
         <button class="tab" data-target="perplexityai">Perplexity</button>
         <button class="tab" data-target="google" id="google-tab">Google</button>
@@ -200,16 +198,6 @@
             <div id="perplexityai-container" class="frame-container" style="display: none;">
                 <div id="perplexityai-url" class="url-display"></div>
                 <iframe id="perplexityai-frame" class="results-frame" src="about:blank" tabindex="-1"
-                    allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
-            </div>
-            <div id="claude4-container" class="frame-container" style="display: none;">
-                <div id="claude4-url" class="url-display"></div>
-                <iframe id="claude4-frame" class="results-frame" src="about:blank" tabindex="-1"
-                    allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
-            </div>
-            <div id="gpt4-container" class="frame-container" style="display: none;">
-                <div id="gpt4-url" class="url-display"></div>
-                <iframe id="gpt4-frame" class="results-frame" src="about:blank" tabindex="-1"
                     allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
             </div>
             <div id="help-container" class="frame-container" style="display: none;">
@@ -260,21 +248,15 @@
                 var googleUrl = 'https://www.google.com/search?&q=' + encodeURIComponent(fullQuery);
                 var groqUrl = 'https://simpleai.devilent2.workers.dev/?q=' + encodeURIComponent(fullQuery);
                 var perplexityaiUrl = 'https://www.perplexity.ai/search/new?q=' + encodeURIComponent(fullQuery);
-                var claude4Url = 'https://mplx.run/search?model=anthropic:claude-3-5-opus-20240229&query=' + encodeURIComponent(fullQuery);
-                var gpt4Url = 'https://mplx.run/search?model=openai:gpt-4&query=' + encodeURIComponent(fullQuery);
 
                 document.getElementById('perplexity-frame').src = perplexityUrl;
                 document.getElementById('google-frame').src = googleUrl;
                 document.getElementById('perplexityai-frame').src = perplexityaiUrl;
-                document.getElementById('claude4-frame').src = claude4Url;
-                document.getElementById('gpt4-frame').src = gpt4Url;
 
                 document.getElementById('perplexity-url').textContent = perplexityUrl;
                 document.getElementById('google-url').textContent = googleUrl;
                 document.getElementById('groq-url').textContent = groqUrl;
                 document.getElementById('perplexityai-url').textContent = perplexityaiUrl;
-                document.getElementById('claude4-url').textContent = claude4Url;
-                document.getElementById('gpt4-url').textContent = gpt4Url;
 
                 // Fetch and render Groq response
                 fetch(groqUrl)
