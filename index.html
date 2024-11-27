@@ -98,6 +98,7 @@
         transition: all 0.3s ease;
         box-sizing: border-box;
         width: calc(100% - 20px);
+        touch-action: none;
       }
 
       .textarea-placeholder {
@@ -582,8 +583,17 @@
       }
 
       // Monitor selection on mouse up and touch end
-      document.addEventListener("pointerup", handleTextSelection);
-      document.addEventListener("touchend", handleTextSelection);
+      textarea.addEventListener("pointerup", (e)=>{
+        handleTextSelection();
+      });
+      //need for touch devices, it dont triggle pointerup when select text
+      textarea.addEventListener("pointercancel", (e)=>{
+        setTimeout(() => {
+            handleTextSelection();
+            
+        }, 500);
+      });
+      //document.addEventListener("touchend", handleTextSelection);
     
     
     </script>
