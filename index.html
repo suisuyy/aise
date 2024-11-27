@@ -201,21 +201,22 @@
         let lastQuery = '';  // Track the last search query
 
         function performSearch(query) {
-            // Get the prompt from URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const prompt = urlParams.get('prompt');
-            
-            // Combine prompt and query if prompt exists
-            const fullQuery = prompt ? `${prompt}\n\n${query}` : query;
-            
-            // If the new query is the same as the last one, do nothing
-            if (fullQuery === lastQuery) {
-                console.log('Skipping duplicate search: ' + fullQuery);
-                return;
-            }
-            lastQuery = fullQuery;  // Update the last query
-            console.log('query: ' + fullQuery)
+            // Only proceed if there's a query
             if (query) {
+                // Get the prompt from URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const prompt = urlParams.get('prompt');
+                
+                // Combine prompt and query if prompt exists
+                const fullQuery = prompt ? `${prompt}\n\n${query}` : query;
+                
+                // If the new query is the same as the last one, do nothing
+                if (fullQuery === lastQuery) {
+                    console.log('Skipping duplicate search: ' + fullQuery);
+                    return;
+                }
+                lastQuery = fullQuery;  // Update the last query
+                console.log('query: ' + fullQuery)
                 var perplexityUrl = 'https://mplx.run/search?model=anthropic:claude-3-5-haiku-20241022&query=' + encodeURIComponent(fullQuery);
                 var googleUrl = 'https://www.google.com/search?&q=' + encodeURIComponent(fullQuery);
                 var groqUrl = 'https://simpleai.devilent2.workers.dev/?q=' + encodeURIComponent(fullQuery);
@@ -362,7 +363,10 @@
                 searchContainer.classList.add('expanded');
                 // Update URL with current query
                 const newUrl = new URL(window.location.href);
-                newUrl.searchParams.set('query', this.value);
+                const urlParams = new URLSearchParams(window.location.search);
+                const prompt = urlParams.get('prompt');
+                
+                newUrl.searchParams.set('query', prompt ? `${prompt}\n\n${this.value}` : this.value);
                 if (!newUrl.searchParams.has('model')) {
                     newUrl.searchParams.set('model', 'anthropic:claude-3-5-haiku-20241022');
                 }
