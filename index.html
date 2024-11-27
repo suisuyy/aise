@@ -473,9 +473,7 @@
         document.addEventListener('selectionchange', function() {
             const selection = window.getSelection().toString().trim();
             if (selection && selection !== lastQuery) {
-                textarea.value = selection;
                 performSearch(selection);
-                clearButton.style.display = 'block';
                 
                 // Update URL with selected text
                 const newUrl = new URL(window.location.href);
