@@ -201,17 +201,24 @@
         let lastQuery = '';  // Track the last search query
 
         function performSearch(query) {
+            // Get the prompt from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const prompt = urlParams.get('prompt');
+            
+            // Combine prompt and query if prompt exists
+            const fullQuery = prompt ? `${prompt}\n\n${query}` : query;
+            
             // If the new query is the same as the last one, do nothing
-            if (query === lastQuery) {
-                console.log('Skipping duplicate search: ' + query);
+            if (fullQuery === lastQuery) {
+                console.log('Skipping duplicate search: ' + fullQuery);
                 return;
             }
-            lastQuery = query;  // Update the last query
-            console.log('query: ' + query)
+            lastQuery = fullQuery;  // Update the last query
+            console.log('query: ' + fullQuery)
             if (query) {
-                var perplexityUrl = 'https://mplx.run/search?model=anthropic:claude-3-5-haiku-20241022&query=' + encodeURIComponent(query);
-                var googleUrl = 'https://www.google.com/search?&q=' + encodeURIComponent(query);
-                var groqUrl = 'https://simpleai.devilent2.workers.dev/?q=' + encodeURIComponent(query);
+                var perplexityUrl = 'https://mplx.run/search?model=anthropic:claude-3-5-haiku-20241022&query=' + encodeURIComponent(fullQuery);
+                var googleUrl = 'https://www.google.com/search?&q=' + encodeURIComponent(fullQuery);
+                var groqUrl = 'https://simpleai.devilent2.workers.dev/?q=' + encodeURIComponent(fullQuery);
 
                 document.getElementById('perplexity-frame').src = perplexityUrl;
                 document.getElementById('google-frame').src = googleUrl;
