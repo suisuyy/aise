@@ -385,17 +385,25 @@
           }
           lastQuery = fullQuery; // Update the last query
           console.log("query: " + fullQuery);
-          var perplexityUrl =
-            "https://mplx.run/search?query=" +
-            encodeURIComponent(fullQuery);
-          var googleUrl =
-            "https://www.google.com/search?&q=" + encodeURIComponent(fullQuery);
-          var groqUrl =
-            "https://simpleai.devilent2.workers.dev/?q=" +
-            encodeURIComponent(fullQuery);
-          var perplexityaiUrl =
-            "https://www.perplexity.ai/search/new?q=" +
-            encodeURIComponent(fullQuery);
+          // Get all current URL parameters
+          const currentParams = new URLSearchParams(window.location.search);
+          
+          // Create new URLSearchParams objects for each service
+          const mplxParams = new URLSearchParams(currentParams);
+          const googleParams = new URLSearchParams(currentParams);
+          const groqParams = new URLSearchParams(currentParams);
+          const perplexityParams = new URLSearchParams(currentParams);
+          
+          // Set the query parameter for each service (they use different parameter names)
+          mplxParams.set('query', fullQuery);
+          googleParams.set('q', fullQuery);
+          groqParams.set('q', fullQuery);
+          perplexityParams.set('q', fullQuery);
+
+          var perplexityUrl = "https://mplx.run/search?" + mplxParams.toString();
+          var googleUrl = "https://www.google.com/search?" + googleParams.toString();
+          var groqUrl = "https://simpleai.devilent2.workers.dev/?" + groqParams.toString();
+          var perplexityaiUrl = "https://www.perplexity.ai/search/new?" + perplexityParams.toString();
 
           document.getElementById("perplexity-frame").src = perplexityUrl;
           document.getElementById("google-frame").src = googleUrl;
