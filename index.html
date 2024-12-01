@@ -53,8 +53,12 @@
 
       .search-container {
         display: flex;
-        flex-grow: 1;
-        align-items: flex-start;
+        position: fixed;
+        width: 100%;
+        background: #f0f0f0;
+        z-index: 100;
+        padding: 10px;
+        box-sizing: border-box;
       }
 
       .search-wrapper {
@@ -116,13 +120,7 @@
       }
 
       #searchContainer.expanded {
-        z-index: 100;
-        position: fixed;
-        width: 100%;
         height: 30vh;
-        top: 50px;
-        left: 0;
-        box-sizing: border-box;
       }
 
       .results-container {
@@ -181,7 +179,6 @@
       <button class="tab" data-target="help">Help</button>
     </div>
 
-    <div style="height: 50px"></div>
     <div class="search-container" id="searchContainer">
       <div class="search-wrapper">
         <textarea
@@ -430,10 +427,22 @@
         }
       }
 
+      function updateSearchContainerPosition() {
+        const tabContainer = document.querySelector('.tab-container');
+        const searchContainer = document.getElementById('searchContainer');
+        const topbarHeight = tabContainer.offsetHeight;
+        searchContainer.style.top = topbarHeight + 'px';
+      }
+
       window.onload = function () {
         var urlParams = new URLSearchParams(window.location.search);
         var query = urlParams.get("query") || urlParams.get("q");
         var model = urlParams.get("model");
+
+        // Set initial position of search container
+        updateSearchContainerPosition();
+        // Update position on window resize
+        window.addEventListener('resize', updateSearchContainerPosition);
 
         // Switch to default tab (help if first time, or saved preference)
         switchTab(currentTab);
