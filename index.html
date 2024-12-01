@@ -121,9 +121,13 @@
 
       .results-container {
         display: flex;
-        flex-grow: 1;
         flex-direction: column;
         border-top: 1px solid #ddd;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
       }
 
       .frames-wrapper {
@@ -426,8 +430,17 @@
       function updateSearchContainerPosition() {
         const tabContainer = document.querySelector('.tab-container');
         const searchContainer = document.getElementById('searchContainer');
+        const resultsContainer = document.querySelector('.results-container');
+        
         const topbarHeight = tabContainer.offsetHeight;
         searchContainer.style.top = topbarHeight + 'px';
+        
+        const searchContainerBottom = searchContainer.offsetTop + searchContainer.offsetHeight;
+        resultsContainer.style.top = searchContainerBottom + 'px';
+        
+        // Calculate remaining height for results container
+        const windowHeight = window.innerHeight;
+        resultsContainer.style.height = (windowHeight - searchContainerBottom) + 'px';
       }
 
       window.onload = function () {
