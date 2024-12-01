@@ -431,6 +431,13 @@
         switchTab(currentTab);
 
         if (query) {
+          // Update URL to use 'query' parameter consistently
+          if (urlParams.has('q') && !urlParams.has('query')) {
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('query', query);
+            newUrl.searchParams.delete('q');
+            history.replaceState({}, "", newUrl.toString());
+          }
           document.getElementById("search-textarea").value = query;
           document.getElementById("search-textarea").classList.add("expanded");
           performSearch(query);
