@@ -207,16 +207,22 @@
     <div class="textarea-placeholder"></div>
     <div class="results-container">
       <div class="frames-wrapper all-tab">
-        <div id="perplexity-container" class="frame-container">
-          <div id="perplexity-url" class="url-display"></div>
+        
+        
+        <div id="perplexityai-container"
+          class="frame-container"
+          style="display: none"
+        >
+          <div id="perplexityai-url" class="url-display"></div>
           <iframe
-            id="perplexity-frame"
+            id="perplexityai-frame"
             class="results-frame"
             src="about:blank"
             tabindex="-1"
             allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"
           ></iframe>
         </div>
+
         <div id="google-container" class="frame-container">
           <div id="google-url" class="url-display"></div>
           <iframe
@@ -237,6 +243,17 @@
             allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"
           ></iframe>
         </div>
+        <div id="perplexity-container" class="frame-container">
+          <div id="perplexity-url" class="url-display"></div>
+          <iframe
+            id="perplexity-frame"
+            class="results-frame"
+            src="about:blank"
+            tabindex="-1"
+            allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"
+          ></iframe>
+        </div>
+        
         <div id="groq-container" class="frame-container">
           <div id="groq-url" class="url-display"></div>
           <div
@@ -245,20 +262,7 @@
             style="background: white; padding: 20px; overflow-y: auto"
           ></div>
         </div>
-        <div
-          id="perplexityai-container"
-          class="frame-container"
-          style="display: none"
-        >
-          <div id="perplexityai-url" class="url-display"></div>
-          <iframe
-            id="perplexityai-frame"
-            class="results-frame"
-            src="about:blank"
-            tabindex="-1"
-            allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"
-          ></iframe>
-        </div>
+        
         <div id="help-container" class="frame-container" style="display: none">
           <div
             class="results-frame"
