@@ -139,7 +139,16 @@
         flex-direction: column;
         height: 600px;
         min-width: 400px;
+      }
 
+      /* Add styles for single tab view */
+      .frames-wrapper:not(.all-tab) .frame-container {
+        width: 100vw;
+        min-width: 100vw;
+      }
+
+      .frames-wrapper.all-tab .frame-container {
+        min-width: 400px;
       }
 
       .url-display {
@@ -373,6 +382,10 @@
             targetContainer.scrollIntoView({ behavior: "smooth" });
           }
         }
+        
+        // Update container positions after tab switch
+        updateSearchContainerPosition();
+        
         currentTab = target;
         localStorage.setItem("defaultTab", target);
       }
