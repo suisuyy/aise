@@ -10,7 +10,7 @@ body {
 /* this disable zoom on mob
 ile  */
   /* touch-action: none; */
-  font-size: 50px;
+  font-size: 30px;
   width: 100vw;
   height: 100vh;
 
@@ -126,7 +126,7 @@ button:hover {
   position: fixed;
   bottom: 0;
   left: 0;
-  z-index: 100;
+  z-index: 102;
   background-color: #fff;
   padding: 15px;
   border-top: 2px solid #ccc;

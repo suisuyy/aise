@@ -1,3 +1,5 @@
+//mplayer
+
 let zindexLevel = {
     one: 100,
     two: 200,
@@ -39,7 +41,13 @@ function setViewportToDevicePixels() {
 setViewportToDevicePixels();
 
 document.querySelector("#fsbutton").addEventListener("click", () => {
-    document.requestFullscreen();
+    if (!document.fullscreenElement) {
+        document.body.requestFullscreen().catch(err => {
+            console.log(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+    } else {
+        document.exitFullscreen();
+    }
     setViewportToDevicePixels();
 });
 // Run on page load
@@ -341,17 +349,10 @@ document.addEventListener("dblclick", () => {
 });
 
 function resetMenuBarTimeout() {
-    clearTimeout(hideMenuBarTimeout);
     menuBar.classList.remove("hidden");
     let control = document.getElementById('videoPlayerContainer');
     control.classList.remove('hidden');
     control.style.display = 'block';
-
-
-    hideMenuBarTimeout = setTimeout(() => {
-        menuBar.classList.add("hidden");
-
-    }, 10000);
 }
 
 
@@ -402,6 +403,9 @@ setTimeout(() => {
         "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_30mb.mp4",
     );
     resetMenuBarTimeout();
+    // Make both video and image draggable
+    makeMovable(videoPlayer);
+    makeMovable(imgViewer);
 }, 1000);
 
 setInterval(() => {
@@ -415,22 +419,21 @@ function controlVideo() {
     videoContainer.id = "videoPlayerContainer";
     videoContainer.style.cssText = `
         position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90vw;
-        background-color: #333;
+        bottom: 5px;
+        left: 0;
+        width: 100vw;
+        background-color: rgba(0, 0, 0, 0.1); // Make background transparent
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        z-index: 101;
+        z-index: 105;
     `;
     let video = document.querySelector("#videoPlayer");
     const controls = document.createElement("div");
     controls.style.cssText = `
+        width: 100vw;
         display: flex;
         align-items: center;
-        padding: 10px;
         background-color: rgba(0, 0, 0, 0.5);
     `;
     
@@ -448,7 +451,7 @@ function controlVideo() {
     
     // Create backward button
     const backwardBtn = document.createElement("button");
-    backwardBtn.innerHTML = "⏪ -5s";
+    backwardBtn.innerHTML = "⏪";
     backwardBtn.style.cssText = `
         background: none;
         border: none;
@@ -460,7 +463,7 @@ function controlVideo() {
     
     // Create forward button
     const forwardBtn = document.createElement("button");
-    forwardBtn.innerHTML = "+5s ⏩";
+    forwardBtn.innerHTML = "⏩";
     forwardBtn.style.cssText = `
         background: none;
         border: none;
@@ -498,16 +501,7 @@ function controlVideo() {
     `;
     
     // Create hide button
-    const hideBtn = document.createElement("button");
-    hideBtn.innerHTML = "Hide Controls";
-    hideBtn.style.cssText = `
-        background: none;
-        border: none;
-        color: white;
-        font-size: 14px;
-        cursor: pointer;
-        margin-left: 10px;
-    `;
+   
     
     controls.appendChild(playPauseBtn);
     controls.appendChild(backwardBtn);
@@ -515,7 +509,6 @@ function controlVideo() {
     controls.appendChild(progress);
     controls.appendChild(timeDisplay);
     controls.appendChild(muteBtn);
-    controls.appendChild(hideBtn);
     videoContainer.appendChild(controls);
     document.body.appendChild(videoContainer);
 
@@ -599,15 +592,10 @@ makeMovable(videoPlayer);
 makeMovable(imgViewer);
 
 function makeMovable(elem) {
-
     // Select the element you want to make movable
     const movableElement = elem;
     movableElement.style.position = 'fixed';
-    movableElement.style.top = '0';
-    movableElement.style.left = '0';
     movableElement.style.touchAction = 'none';
-
-
 
     let isDragging = false;
     let currentX;
@@ -628,13 +616,12 @@ function makeMovable(elem) {
     document.addEventListener("touchend", dragEnd);
 
     function dragStart(e) {
-        e.preventDefault();
         if (e.type === "touchstart") {
-            initialX = e.touches[0].clientX - movableElement.offsetLeft;
-            initialY = e.touches[0].clientY - movableElement.offsetTop;
+            initialX = e.touches[0].clientX - xOffset;
+            initialY = e.touches[0].clientY - yOffset;
         } else {
-            initialX = e.clientX - movableElement.offsetLeft;
-            initialY = e.clientY - movableElement.offsetTop;
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
         }
 
         if (e.target === movableElement) {
@@ -653,59 +640,50 @@ function makeMovable(elem) {
                 currentY = e.clientY - initialY;
             }
 
-            currentX=Math.floor(currentX);
-            currentY=Math.floor(currentY);
             xOffset = currentX;
             yOffset = currentY;
 
             setTranslate(currentX, currentY, movableElement);
             createCoordinateDisplay(currentX, currentY);
         }
-
-        function createCoordinateDisplay(x, y) {
-            let coordinateDisplay = document.getElementById('posinfo');
-
-            // Create the div if it doesn't exist
-            if (!coordinateDisplay) {
-                coordinateDisplay = document.createElement('div');
-                coordinateDisplay.id = 'posinfo';
-                coordinateDisplay.style.position = 'fixed';
-                coordinateDisplay.style.top = '10px';
-                coordinateDisplay.style.right = '10px';
-                coordinateDisplay.style.zIndex = '1000';
-                coordinateDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-                coordinateDisplay.style.color = 'white';
-                coordinateDisplay.style.padding = '5px';
-                coordinateDisplay.style.borderRadius = '5px';
-                coordinateDisplay.style.fontFamily = 'Arial, sans-serif';
-                coordinateDisplay.style.fontSize = '12px';
-
-                document.body.appendChild(coordinateDisplay);
-            }
-            coordinateDisplay.style.display = 'block';
-
-            coordinateDisplay.textContent = `X: ${x}, Y: ${y}`;
-
-            
-            return coordinateDisplay;
-
-        }
-
     }
 
     function dragEnd(e) {
         initialX = currentX;
         initialY = currentY;
-
         isDragging = false;
         let coordinateDisplay = document.getElementById('posinfo');
-        coordinateDisplay.style.display='none';
-
+        if (coordinateDisplay) {
+            coordinateDisplay.style.display = 'none';
+        }
     }
 
     function setTranslate(xPos, yPos, el) {
         el.style.left = `${xPos}px`;
         el.style.top = `${yPos}px`;
+    }
+
+    function createCoordinateDisplay(x, y) {
+        let coordinateDisplay = document.getElementById('posinfo');
+
+        if (!coordinateDisplay) {
+            coordinateDisplay = document.createElement('div');
+            coordinateDisplay.id = 'posinfo';
+            coordinateDisplay.style.position = 'fixed';
+            coordinateDisplay.style.top = '10px';
+            coordinateDisplay.style.right = '10px';
+            coordinateDisplay.style.zIndex = '1000';
+            coordinateDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            coordinateDisplay.style.color = 'white';
+            coordinateDisplay.style.padding = '5px';
+            coordinateDisplay.style.borderRadius = '5px';
+            coordinateDisplay.style.fontFamily = 'Arial, sans-serif';
+            coordinateDisplay.style.fontSize = '12px';
+            document.body.appendChild(coordinateDisplay);
+        }
+
+        coordinateDisplay.style.display = 'block';
+        coordinateDisplay.textContent = `X: ${Math.round(x)}, Y: ${Math.round(y)}`;
     }
 }
 
@@ -769,3 +747,31 @@ function createRuler() {
 
 
 createRuler();
+
+const toggleControlsButton = document.getElementById("toggleControls");
+const toggleSubtitlesButton = document.getElementById("toggleSubtitles");
+
+// Toggle video controls
+toggleControlsButton.addEventListener("click", () => {
+    const videoControls = document.getElementById('videoPlayerContainer');
+    if (videoControls) {
+        if (videoControls.style.display === 'none') {
+            videoControls.style.display = 'block';
+            toggleControlsButton.textContent = 'Hide Controls';
+        } else {
+            videoControls.style.display = 'none';
+            toggleControlsButton.textContent = 'Show Controls';
+        }
+    }
+});
+
+// Toggle subtitles container
+toggleSubtitlesButton.addEventListener("click", () => {
+    if (subtitlesContainer.style.display === 'none') {
+        subtitlesContainer.style.display = 'block';
+        toggleSubtitlesButton.textContent = 'Hide Subtitles';
+    } else {
+        subtitlesContainer.style.display = 'none';
+        toggleSubtitlesButton.textContent = 'Show Subtitles';
+    }
+});
