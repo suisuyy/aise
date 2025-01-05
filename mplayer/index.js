@@ -446,7 +446,10 @@ function controlVideo() {
         color: white;
         font-size: 20px;
         cursor: pointer;
-        margin-right: 10px;
+        margin:0px;
+        padding: 0px;
+        padding-left: 10px;
+
     `;
     
     // Create backward button
@@ -458,7 +461,10 @@ function controlVideo() {
         color: white;
         font-size: 16px;
         cursor: pointer;
-        margin-right: 10px;
+        padding: 0px;
+        margin:0px;
+        padding-left: 10px;
+
     `;
     
     // Create forward button
@@ -470,7 +476,10 @@ function controlVideo() {
         color: white;
         font-size: 16px;
         cursor: pointer;
-        margin-right: 10px;
+        padding: 0px;
+        padding-left: 10px;
+        margin:0px;
+
     `;
     
     // Create progress bar
@@ -478,7 +487,8 @@ function controlVideo() {
     progress.type = "range";
     progress.style.cssText = `
         flex-grow: 1;
-        margin: 0 10px;
+        padding: 0px;
+        margin: 0;
     `;
     
     // Create mute button
@@ -490,14 +500,20 @@ function controlVideo() {
         color: white;
         font-size: 20px;
         cursor: pointer;
+        padding: 0px;
+
+        margin:0px;
+
     `;
     
     // Create time display
     const timeDisplay = document.createElement("span");
     timeDisplay.style.cssText = `
         color: white;
-        font-size: 14px;
-        margin-left: 10px;
+        font-size: 10px;
+        padding: 0px;
+
+        margin:0px;
     `;
     
     // Create hide button
@@ -576,7 +592,6 @@ function controlVideo() {
     muteBtn.addEventListener("click", toggleMute);
     forwardBtn.addEventListener("click", forward5s);
     backwardBtn.addEventListener("click", backward5s);
-    hideBtn.addEventListener("click", toggleControlsVisibility);
 
     // Initialize progress bar and time display
     video.addEventListener("loadedmetadata", () => {
@@ -750,18 +765,18 @@ createRuler();
 
 const toggleControlsButton = document.getElementById("toggleControls");
 const toggleSubtitlesButton = document.getElementById("toggleSubtitles");
+const toggleMenuBarButton = document.getElementById("toggleMenuBar");
 
 // Toggle video controls
 toggleControlsButton.addEventListener("click", () => {
+    console.log('toggleControlsButton');
     const videoControls = document.getElementById('videoPlayerContainer');
-    if (videoControls) {
-        if (videoControls.style.display === 'none') {
-            videoControls.style.display = 'block';
-            toggleControlsButton.textContent = 'Hide Controls';
-        } else {
-            videoControls.style.display = 'none';
-            toggleControlsButton.textContent = 'Show Controls';
-        }
+    if (videoControls.style.display === 'none') {
+        videoControls.style.display = 'block';
+        toggleControlsButton.textContent = 'Hide Controls';
+    } else {
+        videoControls.style.display = 'none';
+        toggleControlsButton.textContent = 'Show Controls';
     }
 });
 
@@ -773,5 +788,16 @@ toggleSubtitlesButton.addEventListener("click", () => {
     } else {
         subtitlesContainer.style.display = 'none';
         toggleSubtitlesButton.textContent = 'Show Subtitles';
+    }
+});
+
+// Toggle menu bar
+toggleMenuBarButton.addEventListener("click", () => {
+    if (menuBar.classList.contains("hidden")) {
+        menuBar.classList.remove("hidden");
+        toggleMenuBarButton.textContent = 'Hide Menu Bar';
+    } else {
+        menuBar.classList.add("hidden");
+        toggleMenuBarButton.textContent = 'Show Menu Bar';
     }
 });
