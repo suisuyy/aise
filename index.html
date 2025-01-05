@@ -177,6 +177,7 @@
       <button class="tab" data-target="perplexity">MPLX</button>
       <button class="tab" data-target="perplexityai">Perplexity</button>
       <button class="tab" data-target="google" id="google-tab">Google</button>
+      <button class="tab" data-target="bing">Bing</button>
       <button class="tab" data-target="help">Help</button>
     </div>
 
@@ -210,6 +211,16 @@
           <div id="google-url" class="url-display"></div>
           <iframe
             id="google-frame"
+            class="results-frame"
+            src="about:blank"
+            tabindex="-1"
+            allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"
+          ></iframe>
+        </div>
+        <div id="bing-container" class="frame-container">
+          <div id="bing-url" class="url-display"></div>
+          <iframe
+            id="bing-frame"
             class="results-frame"
             src="about:blank"
             tabindex="-1"
@@ -391,27 +402,31 @@
           const googleParams = new URLSearchParams(currentParams);
           const groqParams = new URLSearchParams(currentParams);
           const perplexityParams = new URLSearchParams(currentParams);
+          const bingParams = new URLSearchParams(currentParams);
           
           // Set the query parameter for each service (they use different parameter names)
           mplxParams.set('q', fullQuery);
           googleParams.set('q', fullQuery);
           groqParams.set('q', fullQuery);
           perplexityParams.set('q', fullQuery);
+          bingParams.set('q', fullQuery);
 
           var perplexityUrl = "https://mplx.run?" + mplxParams.toString();
           var googleUrl = "https://www.google.com/search?" + googleParams.toString();
           var groqUrl = "https://simpleai.devilent2.workers.dev/?" + groqParams.toString();
           var perplexityaiUrl = "https://www.perplexity.ai/search/new?" + perplexityParams.toString();
+          var bingUrl = "https://bing.com?" + bingParams.toString();
 
           document.getElementById("perplexity-frame").src = perplexityUrl;
           document.getElementById("google-frame").src = googleUrl;
           document.getElementById("perplexityai-frame").src = perplexityaiUrl;
+          document.getElementById("bing-frame").src = bingUrl;
 
           document.getElementById("perplexity-url").textContent = perplexityUrl;
           document.getElementById("google-url").textContent = googleUrl;
           document.getElementById("groq-url").textContent = groqUrl;
-          document.getElementById("perplexityai-url").textContent =
-            perplexityaiUrl;
+          document.getElementById("perplexityai-url").textContent = perplexityaiUrl;
+          document.getElementById("bing-url").textContent = bingUrl;
 
           // Fetch and render Groq response
           fetch(groqUrl)
@@ -576,8 +591,10 @@
         // Clear iframes
         document.getElementById("perplexity-frame").src = "about:blank";
         document.getElementById("google-frame").src = "about:blank";
+        document.getElementById("bing-frame").src = "about:blank";
         document.getElementById("perplexity-url").textContent = "";
         document.getElementById("google-url").textContent = "";
+        document.getElementById("bing-url").textContent = "";
       });
 
       // Add paste event listener
