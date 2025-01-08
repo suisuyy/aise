@@ -246,7 +246,7 @@
         <div id="perplexity-container" class="frame-container">
           <div id="perplexity-url" class="url-display"></div>
           <iframe
-            id="perplexity-frame"
+            id="mplx-frame"
             class="results-frame"
             src="about:blank"
             tabindex="-1"
@@ -256,11 +256,14 @@
         
         <div id="groq-container" class="frame-container">
           <div id="groq-url" class="url-display"></div>
-          <div
-            id="groq-content"
+          <iframe
+            id="groq-frame"
             class="results-frame"
             style="background: white; padding: 20px; overflow-y: auto"
-          ></div>
+            allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"
+
+            >
+        </iframe>
         </div>
         
         <div id="help-container" class="frame-container" style="display: none">
@@ -429,35 +432,25 @@
           perplexityParams.set('q', fullQuery);
           bingParams.set('q', fullQuery);
 
-          var perplexityUrl = "https://mplx.run?" + mplxParams.toString();
+          var mplxUrl = "https://mplx.run?" + mplxParams.toString();
           var googleUrl = "https://www.google.com/search?" + googleParams.toString();
           var groqUrl = "https://simpleai.devilent2.workers.dev/?" + groqParams.toString();
           var perplexityaiUrl = "https://www.perplexity.ai/search/new?" + perplexityParams.toString();
           var bingUrl = "https://bing.com?" + bingParams.toString();
 
-          document.getElementById("perplexity-frame").src = perplexityUrl;
+          document.getElementById("mplx-frame").src = mplxUrl;
           document.getElementById("google-frame").src = googleUrl;
           document.getElementById("perplexityai-frame").src = perplexityaiUrl;
           document.getElementById("bing-frame").src = bingUrl;
+          document.getElementById('groq-frame').src = groqUrl;
 
-          document.getElementById("perplexity-url").textContent = perplexityUrl;
+          document.getElementById("perplexity-url").textContent = mplxUrl;
           document.getElementById("google-url").textContent = googleUrl;
           document.getElementById("groq-url").textContent = groqUrl;
           document.getElementById("perplexityai-url").textContent = perplexityaiUrl;
           document.getElementById("bing-url").textContent = bingUrl;
 
-          // Fetch and render Groq response
-          fetch(groqUrl)
-            .then((response) => response.text())
-            .then((text) => {
-              const groqContent = document.getElementById("groq-content");
-              groqContent.innerHTML = marked.parse(text);
-            })
-            .catch((error) => {
-              console.error("Error fetching Groq response:", error);
-              document.getElementById("groq-content").innerHTML =
-                "Error fetching response";
-            });
+          
         }
       }
 
@@ -607,7 +600,7 @@
         history.replaceState({}, "", newUrl.toString());
 
         // Clear iframes
-        document.getElementById("perplexity-frame").src = "about:blank";
+        document.getElementById("mplx-frame").src = "about:blank";
         document.getElementById("google-frame").src = "about:blank";
         document.getElementById("bing-frame").src = "about:blank";
         document.getElementById("perplexity-url").textContent = "";
