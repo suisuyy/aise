@@ -473,7 +473,6 @@
       window.onload = function () {
         var urlParams = new URLSearchParams(window.location.search);
         var query = urlParams.get("query") || urlParams.get("q");
-        var model = urlParams.get("model");
 
         // Set initial position of search container
         updateSearchContainerPosition();
@@ -494,21 +493,6 @@
           document.getElementById("search-textarea").value = query;
           document.getElementById("search-textarea").classList.add("expanded");
           performSearch(query);
-          if (model) {
-            // If model parameter exists, switch to perplexity tab
-            document.querySelector('[data-target="perplexity"]').click();
-            // Focus the textarea
-            setTimeout(() => {
-              document.getElementById("search-textarea").focus();
-            }, 100);
-          }
-        }
-        // Always focus textarea when model parameter exists
-        else if (model) {
-          document.querySelector('[data-target="perplexity"]').click();
-          setTimeout(() => {
-            document.getElementById("search-textarea").focus();
-          }, 100);
         }
         if (!window.location.href.includes("q=")) {
           document.getElementById("search-textarea").focus();
@@ -572,12 +556,6 @@
             "q",
             prompt ? `${prompt}\n\n${this.value}` : this.value
           );
-          if (!newUrl.searchParams.has("model")) {
-            newUrl.searchParams.set(
-              "model",
-              "anthropic:claude-3-5-haiku-20241022"
-            );
-          }
           history.replaceState({}, "", newUrl.toString());
         } else {
           // If textarea is empty, remove query parameter
@@ -634,12 +612,6 @@
             "q",
             prompt ? `${prompt}\n\n${selection}` : selection
           );
-          if (!newUrl.searchParams.has("model")) {
-            newUrl.searchParams.set(
-              "model",
-              "anthropic:claude-3-5-haiku-20241022"
-            );
-          }
           history.replaceState({}, "", newUrl.toString());
         }
       }
