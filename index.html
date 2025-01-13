@@ -569,7 +569,7 @@
           const prompt = urlParams.get("prompt");
 
           newUrl.searchParams.set(
-            "query",
+            "q",
             prompt ? `${prompt}\n\n${this.value}` : this.value
           );
           if (!newUrl.searchParams.has("model")) {
@@ -582,7 +582,7 @@
         } else {
           // If textarea is empty, remove query parameter
           const newUrl = new URL(window.location.href);
-          newUrl.searchParams.delete("query");
+          newUrl.searchParams.delete("q");
           history.replaceState({}, "", newUrl.toString());
         }
       });
@@ -596,7 +596,7 @@
 
         // Clear URL parameter
         const newUrl = new URL(window.location.href);
-        newUrl.searchParams.delete("query");
+        newUrl.searchParams.delete("q");
         history.replaceState({}, "", newUrl.toString());
 
         // Clear iframes
@@ -631,7 +631,7 @@
           const prompt = urlParams.get("prompt");
 
           newUrl.searchParams.set(
-            "query",
+            "q",
             prompt ? `${prompt}\n\n${selection}` : selection
           );
           if (!newUrl.searchParams.has("model")) {
