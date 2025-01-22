@@ -22,7 +22,7 @@ chrome.runtime.onInstalled.addListener(() => {
             { header: 'content-security-policy', operation: 'remove' },
             { header: 'x-frame-options', operation: 'remove' },
             { header: 'frame-options', operation: 'remove' },
-            { header: 'set-cookie', operation: 'set', value: 'SameSite=None; Secure' }
+             
           ]
         },
         condition: {
@@ -40,7 +40,7 @@ chrome.runtime.onInstalled.addListener(() => {
             { header: 'content-security-policy', operation: 'remove' },
             { header: 'x-frame-options', operation: 'remove' },
             { header: 'frame-options', operation: 'remove' },
-            { header: 'set-cookie', operation: 'set', value: 'SameSite=None; Secure' }
+             
           ]
         },
         condition: {
@@ -57,7 +57,7 @@ chrome.runtime.onInstalled.addListener(() => {
             { header: 'content-security-policy', operation: 'remove' },
             { header: 'x-frame-options', operation: 'remove' },
             { header: 'frame-options', operation: 'remove' },
-            { header: 'set-cookie', operation: 'set', value: 'SameSite=None; Secure' }
+             
           ]
         },
         condition: {
@@ -74,7 +74,7 @@ chrome.runtime.onInstalled.addListener(() => {
             { header: 'content-security-policy', operation: 'remove' },
             { header: 'x-frame-options', operation: 'remove' },
             { header: 'frame-options', operation: 'remove' },
-            { header: 'set-cookie', operation: 'set', value: 'SameSite=None; Secure' }
+             
           ]
         },
         condition: {
@@ -91,7 +91,7 @@ chrome.runtime.onInstalled.addListener(() => {
             { header: 'content-security-policy', operation: 'remove' },
             { header: 'x-frame-options', operation: 'remove' },
             { header: 'frame-options', operation: 'remove' },
-            { header: 'set-cookie', operation: 'set', value: 'SameSite=None; Secure' }
+             
           ]
         },
         condition: {
@@ -108,7 +108,7 @@ chrome.runtime.onInstalled.addListener(() => {
             { header: 'content-security-policy', operation: 'remove' },
             { header: 'x-frame-options', operation: 'remove' },
             { header: 'frame-options', operation: 'remove' },
-            { header: 'set-cookie', operation: 'set', value: 'SameSite=None; Secure' }
+             
           ]
         },
         condition: {
@@ -125,7 +125,7 @@ chrome.runtime.onInstalled.addListener(() => {
             { header: 'content-security-policy', operation: 'remove' },
             { header: 'x-frame-options', operation: 'remove' },
             { header: 'frame-options', operation: 'remove' },
-            { header: 'set-cookie', operation: 'set', value: 'SameSite=None; Secure' }
+             
           ]
         },
         condition: {
@@ -142,7 +142,7 @@ chrome.runtime.onInstalled.addListener(() => {
             { header: 'content-security-policy', operation: 'remove' },
             { header: 'x-frame-options', operation: 'remove' },
             { header: 'frame-options', operation: 'remove' },
-            { header: 'set-cookie', operation: 'set', value: 'SameSite=None; Secure' }
+             
           ]
         },
         condition: {
