@@ -15,7 +15,11 @@
             allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"
           ></iframe>
     <br>
-    
+    <script>
+        document.querySelector('iframe').addEventListener('click', function() {
+            window.open('../front/index.html', '_blank');
+        });
+    </script>
 
 </body>
 </html>

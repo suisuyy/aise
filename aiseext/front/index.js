@@ -287,6 +287,8 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
 
       window.addEventListener("load", function () {
         textarea.focus();
+        textarea.classList.add("expanded");
+
 
         
       });
