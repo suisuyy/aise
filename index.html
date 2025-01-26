@@ -1,667 +1,341 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="search"
-      type="application/opensearchdescription+xml"
-      href="/opensearch.xml"
-      title="Perplexity Open Search"
-    />
-    <title>Custom Search Engine with Perplexity, Bing, and Google</title>
-    <style>
-      * {
-        scrollbar-width:thin;
-      }
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f0f0f0;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
 
-      .tab-container {
-        font-size: x-large;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        display: flex;
+<head>
+  <meta charset="UTF-8" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml"
+    title="Perplexity Open Search" />
+  <title>Custom Search Engine with Perplexity, Bing, and Google</title>
+  <style>
+    * {
+      scrollbar-width: thin;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tab-container {
+      scrollbar-width: none;
+      white-space: nowrap;
+      overflow-x: auto;
+      height: 30px;
+      font-size: x-large;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      /* display: flex; */
+      /* flex-wrap: wrap; */
+      /* align-items: center; */
+      background-color: #e0e0e0;
+      padding: 0;
+      z-index: 200;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab {
+      font-size: large;
+      padding: 0;
+      cursor: pointer;
+      border: none;
+      background-color: #e0e0e0;
+      margin-right: 15px;
+    }
+
+    .tab.active {
+      background-color: #f0f0f0;
+      border-bottom: 2px solid #4285f4;
+    }
+
+    .search-container {
+      display: flex;
+      position: fixed;
+      width: 100%;
+      background: #f0f0f0;
+      z-index: 100;
+      box-sizing: border-box;
+      height: 30px;
+    }
+
+    .expanded {
+      height: 120px;
+      position: fixed;
+      top: 30px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .clear-button {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #666;
+      padding: 5px 10px;
+      border-radius: 50%;
+    }
+
+    .clear-button:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .search-textarea {
+      margin-bottom: 10px;
+      height: 40px;
+      flex-grow: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      outline: none;
+      resize: none;
+      overflow: hidden;
+      z-index: 100000;
+      max-height: 150px;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+      width: calc(100% - 20px);
+      touch-action: none;
+    }
+
+    .textarea-placeholder {
+      height: 100px;
+      /* Significantly increased height to prevent content shift */
+      display: none;
+    }
+
+    .search-textarea:focus {
+      height: 120px;
+    }
+
+
+
+
+
+    .results-container {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid #ddd;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+    }
+
+    .frames-wrapper {
+      display: flex;
+      overflow: auto;
+
+    }
+
+    .frame-container {
+      min-height: 95vh;
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+      min-width: 400px;
+    }
+
+    /* Add styles for single tab view */
+    .frames-wrapper:not(.all-tab) .frame-container {
+      width: 100vw;
+      min-width: 100vw;
+    }
+
+    .frames-wrapper.all-tab .frame-container {
+      min-width: 400px;
+    }
+
+    .url-display {
+      padding: 5px;
+      background-color: #e0e0e0;
+      font-size: 12px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .results-frame {
+      border: none;
+      height: 80vh;
+    }
+
+    /* New styles for wide screen layout */
+    @media (min-width: 1200px) {
+      .frames-wrapper.all-tab {
+        flex-direction: row;
         flex-wrap: wrap;
-        align-items: center;
-        background-color: #e0e0e0;
-        padding: 0;
-        z-index: 200;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      }
-
-      .tab {
-        font-size: large;
-        padding: 0;
-        cursor: pointer;
-        border: none;
-        background-color: #e0e0e0;
-        margin-right: 15px;
-      }
-
-      .tab.active {
-        background-color: #f0f0f0;
-        border-bottom: 2px solid #4285f4;
-      }
-
-      .search-container {
-        display: flex;
-        position: fixed;
-        width: 100%;
-        background: #f0f0f0;
-        z-index: 100;
-        box-sizing: border-box;
-      }
-
-      .search-wrapper {
-        position: relative;
-        width: 100%;
-        display: flex;
-        align-items: center;
-      }
-
-      .clear-button {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        font-size: 20px;
-        cursor: pointer;
-        color: #666;
-        padding: 5px 10px;
-        border-radius: 50%;
-      }
-
-      .clear-button:hover {
-        background-color: rgba(0, 0, 0, 0.1);
-      }
-
-      .search-textarea {
-        margin-bottom: 10px;
-        height: 40px;
-        flex-grow: 1;
-        padding: 10px;
-        font-size: 16px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        outline: none;
-        resize: none;
-        overflow: hidden;
-        z-index: 100000;
-        max-height: 150px;
-        transition: all 0.3s ease;
-        box-sizing: border-box;
-        width: calc(100% - 20px);
-        touch-action: none;
-      }
-
-      .textarea-placeholder {
-        height: 100px;
-        /* Significantly increased height to prevent content shift */
-        display: none;
-      }
-
-      .search-textarea:focus {
-        height: 120px;
-      }
-
-      
-
-     
-
-      .results-container {
-        display: flex;
-        flex-direction: column;
-        border-top: 1px solid #ddd;
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        overflow: hidden;
-      }
-
-      .frames-wrapper {
-        display: flex;
-        overflow: auto;
-
-      }
-
-      .frame-container {
-        min-height: 95vh;
-        display: flex;
-        flex-direction: column;
-        height: 600px;
-        min-width: 400px;
-      }
-
-      /* Add styles for single tab view */
-      .frames-wrapper:not(.all-tab) .frame-container {
-        width: 100vw;
-        min-width: 100vw;
       }
 
       .frames-wrapper.all-tab .frame-container {
-        min-width: 400px;
+        width: calc(50% - 20px);
       }
+    }
+  </style>
+</head>
 
-      .url-display {
-        padding: 5px;
-        background-color: #e0e0e0;
-        font-size: 12px;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-      }
+<body>
+  <div class="tab-container">
+    <button class="tab active" data-target="all">All</button>
+    <button class="tab" data-target="groq">Groq</button>
+    <button class="tab" data-target="perplexityai">Perplexity</button>
+    <button class="tab" data-target="google" id="google-tab">Google</button>
+    <button class="tab" data-target="bing">Bing</button>
+    <button class="tab" data-target="chatgpt">ChatGPT</button>
+    <button class="tab" data-target="help">Help</button>
+  </div>
 
-      .results-frame {
-        border: none;
-        height: 80vh;
-      }
-
-      /* New styles for wide screen layout */
-      @media (min-width: 1200px) {
-        .frames-wrapper.all-tab {
-          flex-direction: row;
-          flex-wrap: wrap;
-        }
-
-        .frames-wrapper.all-tab .frame-container {
-          width: calc(50% - 20px);
-        }
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="tab-container">
-      <button class="tab active" data-target="all">All</button>
-      <button class="tab" data-target="groq">Groq</button>
-      <button class="tab" data-target="perplexity">MPLX</button>
-      <button class="tab" data-target="perplexityai">Perplexity</button>
-      <button class="tab" data-target="google" id="google-tab">Google</button>
-      <button class="tab" data-target="bing">Bing</button>
-      <button class="tab" data-target="help">Help</button>
+  <div class="search-container" id="searchContainer">
+    <div class="search-wrapper">
+      <textarea id="search-textarea" class="search-textarea" rows="1" placeholder="Type your search and press Enter..."
+        autofocus></textarea>
+      <button id="clear-button" class="clear-button" style="display: none">
+        ×
+      </button>
     </div>
+  </div>
+  <div class="textarea-placeholder"></div>
+  <div class="results-container">
+    <div class="frames-wrapper all-tab">
 
-    <div class="search-container" id="searchContainer">
-      <div class="search-wrapper">
-        <textarea
-          id="search-textarea"
-          class="search-textarea"
-          rows="1"
-          placeholder="Type your search and press Enter..."
-        ></textarea>
-        <button id="clear-button" class="clear-button" style="display: none">
-          ×
-        </button>
+
+      <div id="perplexityai-container" class="frame-container" style="display: none">
+        <div id="perplexityai-url" class="url-display"></div>
+        <iframe id="perplexityai-frame" class="results-frame" src="about:blank" tabindex="-1"
+          allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
       </div>
-    </div>
-    <div class="textarea-placeholder"></div>
-    <div class="results-container">
-      <div class="frames-wrapper all-tab">
-        
-        
-        <div id="perplexityai-container"
-          class="frame-container"
-          style="display: none"
-        >
-          <div id="perplexityai-url" class="url-display"></div>
-          <iframe
-            id="perplexityai-frame"
-            class="results-frame"
-            src="about:blank"
-            tabindex="-1"
-            allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"
-          ></iframe>
-        </div>
 
-        <div id="google-container" class="frame-container">
-          <div id="google-url" class="url-display"></div>
-          <iframe
-            id="google-frame"
-            class="results-frame"
-            src="about:blank"
-            tabindex="-1"
-            allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"
-          ></iframe>
-        </div>
-        <div id="bing-container" class="frame-container">
-          <div id="bing-url" class="url-display"></div>
-          <iframe
-            id="bing-frame"
-            class="results-frame"
-            src="about:blank"
-            tabindex="-1"
-            allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"
-          ></iframe>
-        </div>
-        <div id="perplexity-container" class="frame-container">
-          <div id="perplexity-url" class="url-display"></div>
-          <iframe
-            id="mplx-frame"
-            class="results-frame"
-            src="about:blank"
-            tabindex="-1"
-            allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"
-          ></iframe>
-        </div>
-        
-        <div id="groq-container" class="frame-container">
-          <div id="groq-url" class="url-display"></div>
-          <iframe
-            id="groq-frame"
-            class="results-frame"
-            style="background: white; padding: 20px; overflow-y: auto"
-            allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"
+      <div id="google-container" class="frame-container">
+        <div id="google-url" class="url-display"></div>
+        <iframe id="google-frame" class="results-frame" src="about:blank" tabindex="-1"
+          allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
+      </div>
+      <div id="bing-container" class="frame-container">
+        <div id="bing-url" class="url-display"></div>
+        <iframe id="bing-frame" class="results-frame" src="about:blank" tabindex="-1"
+          allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
+      </div>
 
-            >
+      <div id="groq-container" class="frame-container">
+        <div id="groq-url" class="url-display"></div>
+        <iframe id="groq-frame" class="results-frame" style="background: white; padding: 20px; overflow-y: auto"
+          allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb">
         </iframe>
-        </div>
-        
-        <div id="help-container" class="frame-container" style="display: none">
-          <div
-            class="results-frame"
-            style="background: white; padding: 20px; overflow-y: auto"
-          >
-            <h2>How to Use AISE</h2>
+      </div>
 
-            <h3>⚠️ Important: Chrome Extension Required</h3>
-            <p>
-              To properly view Google, Perplexity, and other web results within
-              AISE, you <strong>must</strong> install our Chrome extension
-              first. Without it, these services may not load correctly due to
-              browser security restrictions.
-            </p>
+      <div id="chatgpt-container" class="frame-container">
+        <div id="chatgpt-url" class="url-display"></div>
+        <iframe id="chatgpt-frame" class="results-frame" src="about:blank" tabindex="-1"
+          allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
+      </div>
 
-            <h3>Chrome Extension Installation Steps</h3>
-            <ol>
-              <li>Download the <a href="./aiseext.zip">Chrome Extension</a></li>
-              <li>Unzip the downloaded file</li>
-              <li>
-                Open Chrome and navigate to <code>chrome://extensions/</code>
-              </li>
-              <li>
-                Enable "Developer mode" using the toggle in the top right corner
-              </li>
-              <li>
-                Click "Load unpacked" and select the unzipped extension folder
-              </li>
-              <li>The extension icon should appear in your Chrome toolbar</li>
-            </ol>
+      <div id="help-container" class="frame-container" style="display: none">
+        <div class="results-frame" style="background: white; padding: 20px; overflow-y: auto">
+          <h2>How to Use AISE</h2>
 
-            <h3>Search Features</h3>
-            <ul>
-              <li>
-                <strong>Multi-Engine Search:</strong> Search across multiple AI
-                and traditional search engines simultaneously
-              </li>
-              <li>
-                <strong>Tabs:</strong>
-                <ul>
-                  <li>All - View all search results at once</li>
-                  <li>Groq - AI-powered responses using Groq</li>
-                  <li>MPLX - Fast AI responses from Claude</li>
-                  <li>Perplexity - Comprehensive AI research assistant</li>
-                  <li>Google - Traditional web search</li>
-                </ul>
-              </li>
-            </ul>
+          <h3>⚠️ Important: Chrome Extension Required</h3>
+          <p>
+            To properly view Google, Perplexity, and other web results within
+            AISE, you <strong>must</strong> install our Chrome extension
+            first. Without it, these services may not load correctly due to
+            browser security restrictions.
+          </p>
 
-            <h3>Keyboard Shortcuts & Tips</h3>
-            <ul>
-              <li>
-                <strong>Ctrl+Enter:</strong> Quickly focus the search box from
-                anywhere
-              </li>
-              <li><strong>Enter:</strong> Execute your search</li>
-              <li>
-                <strong>Clear button (×):</strong> Reset all search results and
-                query
-              </li>
-              <li>
-                The search box expands automatically when focused for better
-                visibility
-              </li>
-              <li>
-                Select text in the search box to immediately search the selected
-                portion
-              </li>
-              <li>Your last selected tab is remembered between sessions</li>
-              <li>URLs are displayed above each result for easy reference</li>
-            </ul>
+          <h3>Chrome Extension Installation Steps</h3>
+          <ol>
+            <li>Download the <a href="./aiseext.zip">Chrome Extension</a></li>
+            <li>Unzip the downloaded file</li>
+            <li>
+              Open Chrome and navigate to <code>chrome://extensions/</code>
+            </li>
+            <li>
+              Enable "Developer mode" using the toggle in the top right corner
+            </li>
+            <li>
+              Click "Load unpacked" and select the unzipped extension folder
+            </li>
+            <li>The extension icon should appear in your Chrome toolbar</li>
+          </ol>
 
-            <h3>Best Practices</h3>
-            <ul>
-              <li>Use natural language for better AI responses</li>
-              <li>
-                Compare results across different engines for comprehensive
-                information
-              </li>
-              <li>Check the URL bar to share specific searches with others</li>
-              <li>
-                Use the "All" tab for complex queries that benefit from multiple
-                perspectives
-              </li>
-            </ul>
-          </div>
+          <h3>Search Features</h3>
+          <ul>
+            <li>
+              <strong>Multi-Engine Search:</strong> Search across multiple AI
+              and traditional search engines simultaneously
+            </li>
+            <li>
+              <strong>Tabs:</strong>
+              <ul>
+                <li>All - View all search results at once</li>
+                <li>Groq - AI-powered responses using Groq</li>
+                <li>MPLX - Fast AI responses from Claude</li>
+                <li>Perplexity - Comprehensive AI research assistant</li>
+                <li>Google - Traditional web search</li>
+              </ul>
+            </li>
+          </ul>
+
+          <h3>Keyboard Shortcuts & Tips</h3>
+          <ul>
+            <li>
+              <strong>Ctrl+Enter:</strong> Quickly focus the search box from
+              anywhere
+            </li>
+            <li><strong>Enter:</strong> Execute your search</li>
+            <li>
+              <strong>Clear button (×):</strong> Reset all search results and
+              query
+            </li>
+            <li>
+              The search box expands automatically when focused for better
+              visibility
+            </li>
+            <li>
+              Select text in the search box to immediately search the selected
+              portion
+            </li>
+            <li>Your last selected tab is remembered between sessions</li>
+            <li>URLs are displayed above each result for easy reference</li>
+          </ul>
+
+          <h3>Best Practices</h3>
+          <ul>
+            <li>Use natural language for better AI responses</li>
+            <li>
+              Compare results across different engines for comprehensive
+              information
+            </li>
+            <li>Check the URL bar to share specific searches with others</li>
+            <li>
+              Use the "All" tab for complex queries that benefit from multiple
+              perspectives
+            </li>
+          </ul>
         </div>
       </div>
     </div>
+  </div>
 
-    <script>
-      let currentTab = localStorage.getItem("defaultTab") || "help";
-      let lastQuery = ""; // Track the last search query
-      let lastSearchWasSelection = false; // Track if last search was from selection
+  <script src="./index.js"></script>
+</body>
 
-      // Function to switch tabs
-      function switchTab(target) {
-        const tabs = document.querySelectorAll(".tab");
-        const framesWrapper = document.querySelector(".frames-wrapper");
-        const frameContainers = document.querySelectorAll(".frame-container");
-
-        tabs.forEach((t) => t.classList.remove("active"));
-        document
-          .querySelector(`[data-target="${target}"]`)
-          .classList.add("active");
-
-        if (target === "all") {
-          framesWrapper.classList.add("all-tab");
-          frameContainers.forEach((container) => {
-            container.style.display = "flex";
-          });
-        } else {
-          framesWrapper.classList.remove("all-tab");
-          frameContainers.forEach((container) => {
-            container.style.display = "none";
-          });
-          const targetContainer = document.getElementById(
-            `${target}-container`
-          );
-          targetContainer.style.display = "flex";
-          if (target !== "groq") {
-            targetContainer.scrollIntoView({ behavior: "smooth" });
-          }
-        }
-        
-        // Update container positions after tab switch
-        updateSearchContainerPosition();
-        
-        currentTab = target;
-        localStorage.setItem("defaultTab", target);
-      }
-
-      function performSearch(query) {
-        // Only proceed if there's a query
-        if (query) {
-          // Get the prompt from URL parameters
-          const urlParams = new URLSearchParams(window.location.search);
-          const prompt = urlParams.get("prompt");
-
-          // Combine prompt and query if prompt exists
-          const fullQuery = prompt ? `${prompt}\n\n${query}` : query;
-
-          // If the new query is the same as the last one, do nothing
-          if (fullQuery === lastQuery) {
-            console.log("Skipping duplicate search: " + fullQuery);
-            return;
-          }
-          lastQuery = fullQuery; // Update the last query
-          console.log("query: " + fullQuery);
-          // Get all current URL parameters
-          const currentParams = new URLSearchParams(window.location.search);
-          
-          // Create new URLSearchParams objects for each service
-          const mplxParams = new URLSearchParams(currentParams);
-          const googleParams = new URLSearchParams(currentParams);
-          const groqParams = new URLSearchParams(currentParams);
-          const perplexityParams = new URLSearchParams(currentParams);
-          const bingParams = new URLSearchParams(currentParams);
-          
-          // Set the query parameter for each service (they use different parameter names)
-          mplxParams.set('q', fullQuery);
-          googleParams.set('q', fullQuery);
-          groqParams.set('q', fullQuery);
-          perplexityParams.set('q', fullQuery);
-          bingParams.set('q', fullQuery);
-
-          var mplxUrl = "https://mplx.run?" + mplxParams.toString();
-          var googleUrl = "https://www.google.com/search?" + googleParams.toString();
-          var groqUrl = "https://simpleai.devilent2.workers.dev/?" + groqParams.toString();
-          var perplexityaiUrl = "https://www.perplexity.ai/search/new?" + perplexityParams.toString();
-          var bingUrl = "https://bing.com?" + bingParams.toString();
-
-          document.getElementById("mplx-frame").src = mplxUrl;
-          document.getElementById("google-frame").src = googleUrl;
-          document.getElementById("perplexityai-frame").src = perplexityaiUrl;
-          document.getElementById("bing-frame").src = bingUrl;
-          document.getElementById('groq-frame').src = groqUrl;
-
-          document.getElementById("perplexity-url").textContent = mplxUrl;
-          document.getElementById("google-url").textContent = googleUrl;
-          document.getElementById("groq-url").textContent = groqUrl;
-          document.getElementById("perplexityai-url").textContent = perplexityaiUrl;
-          document.getElementById("bing-url").textContent = bingUrl;
-
-          
-        }
-      }
-
-      function updateSearchContainerPosition() {
-        const tabContainer = document.querySelector('.tab-container');
-        const searchContainer = document.getElementById('searchContainer');
-        const resultsContainer = document.querySelector('.results-container');
-        
-        const topbarHeight = tabContainer.offsetHeight;
-        searchContainer.style.top = topbarHeight + 'px';
-        
-        const searchContainerBottom = searchContainer.offsetTop + searchContainer.offsetHeight;
-        resultsContainer.style.top = searchContainerBottom + 'px';
-        
-        // Calculate remaining height for results container
-        const windowHeight = window.innerHeight;
-        resultsContainer.style.height = (windowHeight - searchContainerBottom) + 'px';
-      }
-
-      window.onload = function () {
-        var urlParams = new URLSearchParams(window.location.search);
-        var query = urlParams.get("query") || urlParams.get("q");
-        var model = urlParams.get("model");
-
-        // Set initial position of search container
-        updateSearchContainerPosition();
-        // Update position on window resize
-        window.addEventListener('resize', updateSearchContainerPosition);
-
-        // Switch to default tab (help if first time, or saved preference)
-        switchTab(currentTab);
-
-        if (query) {
-          // Update URL to use 'query' parameter consistently
-          if (urlParams.has('q') && !urlParams.has('query')) {
-            const newUrl = new URL(window.location.href);
-            newUrl.searchParams.set('query', query);
-            newUrl.searchParams.delete('q');
-            history.replaceState({}, "", newUrl.toString());
-          }
-          document.getElementById("search-textarea").value = query;
-          document.getElementById("search-textarea").classList.add("expanded");
-          performSearch(query);
-          if (model) {
-            // If model parameter exists, switch to perplexity tab
-            document.querySelector('[data-target="perplexity"]').click();
-            // Focus the textarea
-            setTimeout(() => {
-              document.getElementById("search-textarea").focus();
-            }, 100);
-          }
-        }
-        // Always focus textarea when model parameter exists
-        else if (model) {
-          document.querySelector('[data-target="perplexity"]').click();
-          setTimeout(() => {
-            document.getElementById("search-textarea").focus();
-          }, 100);
-        }
-        if (!window.location.href.includes("q=")) {
-          document.getElementById("search-textarea").focus();
-        }
-      };
-
-      // Tab functionality
-      const tabs = document.querySelectorAll(".tab");
-      const framesWrapper = document.querySelector(".frames-wrapper");
-      tabs.forEach((tab) => {
-        tab.addEventListener("click", () => {
-          switchTab(tab.getAttribute("data-target"));
-        });
-      });
-
-      // Textarea focus and blur functionality
-      const textarea = document.getElementById("search-textarea");
-      textarea.addEventListener("focus", function () {
-        searchContainer.classList.add("expanded");
-      });
-      textarea.addEventListener("blur", function () {
-        setTimeout(() => {
-          searchContainer.classList.remove("expanded");
-          // Only perform search if query has changed and last search wasn't from selection
-          const query = textarea.value;
-          if (!lastSearchWasSelection && query.trim() !== lastQuery.trim() && query.trim() !== "") {
-            performSearch(query);
-          }
-          lastSearchWasSelection = false; // Reset the flag
-        }, 200);
-      });
-      textarea.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
-          var query = document.getElementById("search-textarea").value;
-          if (query.trim() !== lastQuery.trim()) {
-            performSearch(query);
-          }
-        }
-      });
-
-      document.body.addEventListener("keydown", (e) => {
-        if (e.ctrlKey && e.key === "Enter") {
-          textarea.focus();
-        }
-      });
-
-      const clearButton = document.getElementById("clear-button");
-
-      textarea.addEventListener("input", function () {
-        // Show/hide clear button based on text content
-        clearButton.style.display = this.value ? "block" : "none";
-
-        if (this.value !== "") {
-          searchContainer.classList.add("expanded");
-          // Update URL with current query
-          const newUrl = new URL(window.location.href);
-          const urlParams = new URLSearchParams(window.location.search);
-          const prompt = urlParams.get("prompt");
-
-          newUrl.searchParams.set(
-            "q",
-            prompt ? `${prompt}\n\n${this.value}` : this.value
-          );
-          if (!newUrl.searchParams.has("model")) {
-            newUrl.searchParams.set(
-              "model",
-              "anthropic:claude-3-5-haiku-20241022"
-            );
-          }
-          history.replaceState({}, "", newUrl.toString());
-        } else {
-          // If textarea is empty, remove query parameter
-          const newUrl = new URL(window.location.href);
-          newUrl.searchParams.delete("q");
-          history.replaceState({}, "", newUrl.toString());
-        }
-      });
-
-      // Clear button functionality
-      clearButton.addEventListener("click", function () {
-        textarea.value = "";
-        lastQuery = ""; // Reset last query
-        clearButton.style.display = "none";
-        textarea.focus();
-
-        // Clear URL parameter
-        const newUrl = new URL(window.location.href);
-        newUrl.searchParams.delete("q");
-        history.replaceState({}, "", newUrl.toString());
-
-        // Clear iframes
-        document.getElementById("mplx-frame").src = "about:blank";
-        document.getElementById("google-frame").src = "about:blank";
-        document.getElementById("bing-frame").src = "about:blank";
-        document.getElementById("perplexity-url").textContent = "";
-        document.getElementById("google-url").textContent = "";
-        document.getElementById("bing-url").textContent = "";
-      });
-
-      // Add paste event listener
-      textarea.addEventListener("paste", function (e) {
-        // Small delay to ensure the pasted content is in the textarea
-        setTimeout(() => {
-          if (this.value !== "") {
-            performSearch(this.value);
-          }
-        }, 100);
-      });
-
-      // Handle text selection
-      function handleTextSelection() {
-        const selection = window.getSelection().toString().trim();
-        if (selection && selection !== lastQuery) {
-          performSearch(selection);
-          lastSearchWasSelection = true; // Mark that this search came from selection
-
-          // Update URL with selected text
-          const newUrl = new URL(window.location.href);
-          const urlParams = new URLSearchParams(window.location.search);
-          const prompt = urlParams.get("prompt");
-
-          newUrl.searchParams.set(
-            "q",
-            prompt ? `${prompt}\n\n${selection}` : selection
-          );
-          if (!newUrl.searchParams.has("model")) {
-            newUrl.searchParams.set(
-              "model",
-              "anthropic:claude-3-5-haiku-20241022"
-            );
-          }
-          history.replaceState({}, "", newUrl.toString());
-        }
-      }
-
-      // Monitor selection on mouse up and touch end
-      textarea.addEventListener("pointerup", (e)=>{
-        handleTextSelection();
-      });
-      //need for touch devices, it dont triggle pointerup when select text
-      textarea.addEventListener("pointercancel", (e)=>{
-        setTimeout(() => {
-            handleTextSelection();
-            
-        }, 500);
-      });
-      //document.addEventListener("touchend", handleTextSelection);
-    
-    
-    </script>
-  </body>
 </html>
