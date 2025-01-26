@@ -197,9 +197,10 @@
     <button class="tab active" data-target="all">All</button>
     <button class="tab" data-target="groq">Groq</button>
     <button class="tab" data-target="perplexityai">Perplexity</button>
+    <button class="tab" data-target="chatgpt">ChatGPT</button>
     <button class="tab" data-target="google" id="google-tab">Google</button>
     <button class="tab" data-target="bing">Bing</button>
-    <button class="tab" data-target="chatgpt">ChatGPT</button>
+    
     <button class="tab" data-target="help">Help</button>
   </div>
 
@@ -223,6 +224,12 @@
           allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
       </div>
 
+      <div id="chatgpt-container" class="frame-container">
+        <div id="chatgpt-url" class="url-display"></div>
+        <iframe id="chatgpt-frame" class="results-frame" src="about:blank" tabindex="-1"
+          allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
+      </div>
+      
       <div id="google-container" class="frame-container">
         <div id="google-url" class="url-display"></div>
         <iframe id="google-frame" class="results-frame" src="about:blank" tabindex="-1"
@@ -241,11 +248,7 @@
         </iframe>
       </div>
 
-      <div id="chatgpt-container" class="frame-container">
-        <div id="chatgpt-url" class="url-display"></div>
-        <iframe id="chatgpt-frame" class="results-frame" src="about:blank" tabindex="-1"
-          allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
-      </div>
+      
 
       <div id="help-container" class="frame-container" style="display: none">
         <div class="results-frame" style="background: white; padding: 20px; overflow-y: auto">
