@@ -75,7 +75,7 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
           var groqUrl = "https://simpleai.devilent2.workers.dev/?" + groqParams.toString();
           var perplexityaiUrl = "https://www.perplexity.ai/search/new?" + perplexityParams.toString();
           var bingUrl = "https://bing.com?" + bingParams.toString();
-          var chatgptUrl = "https://chatgpt.com/?" + groqParams.toString();
+          var chatgptUrl = "https://chatgpt.com/?" + groqParams.toString()+'&hints=search&ref=ext';
 
           document.getElementById("google-frame").src = googleUrl;
           document.getElementById("perplexityai-frame").src = perplexityaiUrl;
