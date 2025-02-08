@@ -7,8 +7,12 @@
   "permissions": [
     "declarativeNetRequest",
     "declarativeNetRequestFeedback",
-    "search"
+    "search",
+    "activeTab",
+    "storage",
+     "scripting"
   ],
+  "action":{},
   "host_permissions": [
     "https://aise.pages.dev/*",
     "https://appstore.suisuy.eu.org/*",
@@ -21,9 +25,6 @@
   ],
   "background": {
     "service_worker": "background.js"
-  },
-  "action": {
-    "default_popup": "popup/index.html"
   },
   "content_scripts": [
     {

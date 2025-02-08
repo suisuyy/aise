@@ -1,3 +1,12 @@
+
+
+chrome.action.onClicked.addListener((tab) => {
+  chrome.tabs.create({
+    url: chrome.runtime.getURL("front/index.html")
+  });
+});
+
+
 // Set up rules when extension is installed
 chrome.runtime.onInstalled.addListener(() => {
   // Add AISE as search engine 
@@ -26,7 +35,7 @@ chrome.runtime.onInstalled.addListener(() => {
         },
         condition: {
           urlFilter: '|*pages.dev|*suisuy.eu.org|*mplx.run|*google.com|*perplexity.ai|*bing.com|*mistral.ai|*chatgpt.com|*openai.com',
-          resourceTypes: ['main_frame', 'sub_frame']
+          resourceTypes: [ 'sub_frame']
         }
       }
     ]

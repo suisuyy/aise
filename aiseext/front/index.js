@@ -64,30 +64,35 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
           const groqParams = new URLSearchParams(currentParams);
           const perplexityParams = new URLSearchParams(currentParams);
           const bingParams = new URLSearchParams(currentParams);
+          const mistralParams = new URLSearchParams(currentParams);
           
           // Set the query parameter for each service (they use different parameter names)
           googleParams.set('q', fullQuery);
           groqParams.set('q', fullQuery);
           perplexityParams.set('q', fullQuery);
           bingParams.set('q', fullQuery);
+          mistralParams.set('q', fullQuery);
 
           var googleUrl = "https://www.google.com/search?" + googleParams.toString();
           var groqUrl = "https://simpleai.devilent2.workers.dev/?" + groqParams.toString();
           var perplexityaiUrl = "https://www.perplexity.ai/search/new?" + perplexityParams.toString();
           var bingUrl = "https://bing.com?" + bingParams.toString();
           var chatgptUrl = "https://chatgpt.com/?" + groqParams.toString()+'&hints=search&ref=ext';
+          var mistralUrl = "https://chat.mistral.ai/chat?" + mistralParams.toString();
 
           document.getElementById("google-frame").src = googleUrl;
           document.getElementById("perplexityai-frame").src = perplexityaiUrl;
           document.getElementById("bing-frame").src = bingUrl;
           document.getElementById('groq-frame').src = groqUrl;
           document.getElementById('chatgpt-frame').src = chatgptUrl;
+          document.getElementById('mistral-frame').src = mistralUrl;
 
           document.getElementById("google-url").textContent = googleUrl;
           document.getElementById("groq-url").textContent = groqUrl;
           document.getElementById("perplexityai-url").textContent = perplexityaiUrl;
           document.getElementById("bing-url").textContent = bingUrl;
           document.getElementById("chatgpt-url").textContent = chatgptUrl;
+          document.getElementById("mistral-url").textContent = mistralUrl;
 
           
         }
@@ -236,10 +241,12 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         document.getElementById("google-frame").src = "about:blank";
         document.getElementById("bing-frame").src = "about:blank";
         document.getElementById("chatgpt-frame").src = "about:blank";
+        document.getElementById("mistral-frame").src = "about:blank";
         document.getElementById("perplexity-url").textContent = "";
         document.getElementById("google-url").textContent = "";
         document.getElementById("bing-url").textContent = "";
         document.getElementById("chatgpt-url").textContent = "";
+        document.getElementById("mistral-url").textContent = "";
       });
 
       // Add paste event listener
