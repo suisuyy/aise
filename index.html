@@ -150,7 +150,7 @@
       min-height: 95vh;
       display: flex;
       flex-direction: column;
-      height: 600px;
+      height: 92vh;
       min-width: 400px;
     }
 
@@ -175,7 +175,7 @@
 
     .results-frame {
       border: none;
-      height: 80vh;
+      height: 90vh;
     }
 
     /* New styles for wide screen layout */
@@ -200,7 +200,7 @@
     <button class="tab" data-target="chatgpt">ChatGPT</button>
     <button class="tab" data-target="google" id="google-tab">Google</button>
     <button class="tab" data-target="bing">Bing</button>
-    
+    <button class="tab" data-target="mistral">Mistral</button>
     <button class="tab" data-target="help">Help</button>
   </div>
 
@@ -248,7 +248,11 @@
         </iframe>
       </div>
 
-      
+      <div id="mistral-container" class="frame-container">
+        <div class="url-display">URL: <span id="mistral-url"></span></div>
+
+        <iframe id="mistral-frame" class="results-frame"></iframe>
+      </div>
 
       <div id="help-container" class="frame-container" style="display: none">
         <div class="results-frame" style="background: white; padding: 20px; overflow-y: auto">
