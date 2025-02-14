@@ -14,6 +14,8 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         { name: "bimg", base: "https://www.bing.com/images/search?q=" },
         { name: "gimg", base: "https://www.google.com/search?udm=2&q=" },
         { name: "groq", base: "https://simpleai.devilent2.workers.dev/?q=" },
+        { name: "scira", base: "https://scira.app/?q=" },
+
         { name: "help", base: "./help.html?" },
 
       ];
