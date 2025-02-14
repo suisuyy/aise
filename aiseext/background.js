@@ -29,7 +29,16 @@ chrome.runtime.onInstalled.addListener(() => {
         type: 'modifyHeaders',
         responseHeaders: [
         { header: 'x-frame-options', operation: 'remove' },
-        { header: 'frame-options', operation: 'remove' }
+        { header: 'frame-options', operation: 'remove' },
+        {
+          header: 'content-security-policy',
+          operation: 'remove'
+        },
+        // {
+        //   header: 'content-security-policy',
+        //   operation: 'set',
+        //   value: 'frame-ancestors *'
+        // }
         ]
       },
       condition: {

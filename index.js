@@ -2,6 +2,22 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
       let lastQuery = ""; // Track the last search query
       let lastSearchWasSelection = false; // Track if last search was from selection
 
+      // Add engine configuration
+      const engines = [
+        
+        { name: "google", base: "https://www.google.com/search?q=" },
+        { name: "bing", base: "https://bing.com?q=" },
+        { name: "chatgpt", base: "https://chatgpt.com/?q=", extra: "&hints=search&ref=ext" },
+        { name: "perplex", base: "https://www.perplexity.ai/search/new?q=" },
+        { name: "claude", base: "https://claude.ai/new?q=" },
+        { name: "mistral", base: "https://chat.mistral.ai/chat?q=" },
+        { name: "bimg", base: "https://www.bing.com/images/search?q=" },
+        { name: "gimg", base: "https://www.google.com/search?udm=2&q=" },
+        { name: "groq", base: "https://simpleai.devilent2.workers.dev/?q=" },
+        { name: "help", base: "./help.html?" },
+
+      ];
+
       // Function to switch tabs
       function switchTab(target) {
         const tabs = document.querySelectorAll(".tab");
@@ -39,15 +55,55 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         localStorage.setItem("defaultTab", target);
       }
 
+      // Function to create engine iframe containers dynamically
+      function createEngineIframes() {
+        const framesWrapper = document.querySelector(".frames-wrapper");
+        framesWrapper.innerHTML = ""; // Clear existing content
+
+        let i=0;
+        // Create engine iframe containers dynamically
+        engines.forEach(engine => {
+            const container = document.createElement("div");
+            container.className = "frame-container";
+            container.id = engine.name + "-container";
+            // Initially display container if it matches currentTab or if All tab is active
+            container.style.display = engine.name === currentTab || currentTab === "all" ? "flex" : "none";
+
+            // Create URL display
+            const urlDiv = document.createElement("div");
+            urlDiv.className = "url-display";
+            urlDiv.id = engine.name + "-url";
+            container.appendChild(urlDiv);
+
+            // Create iframe
+            const iframe = document.createElement("iframe");
+            iframe.className = "results-frame";
+            iframe.id = engine.name + "-frame";
+            iframe.src = "about:blank";
+            iframe.setAttribute("tabindex", "-1");
+            iframe.setAttribute("allow", "accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb");
+            container.appendChild(iframe);
+
+            framesWrapper.appendChild(container);
+            if(i>2){
+            iframe.setAttribute("loading", "lazy");
+
+            }
+            i++;
+          });
+
+        
+      }
+
       function performSearch(query) {
         // Only proceed if there's a query
         if (query) {
           // Get the prompt from URL parameters
           const urlParams = new URLSearchParams(window.location.search);
-          const prompt = urlParams.get("prompt");
+          const prompt = urlParams.get("cmd");
 
           // Combine prompt and query if prompt exists
-          const fullQuery = prompt ? `${prompt}\n\n${query}` : query;
+          const fullQuery = prompt ? `${prompt}: \n\n${query}` : query;
 
           // If the new query is the same as the last one, do nothing
           if (fullQuery === lastQuery) {
@@ -59,37 +115,18 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
           // Get all current URL parameters
           const currentParams = new URLSearchParams(window.location.search);
           
-          // Create new URLSearchParams objects for each service
-          const googleParams = new URLSearchParams(currentParams);
-          const groqParams = new URLSearchParams(currentParams);
-          const perplexityParams = new URLSearchParams(currentParams);
-          const bingParams = new URLSearchParams(currentParams);
-          
-          // Set the query parameter for each service (they use different parameter names)
-          googleParams.set('q', fullQuery);
-          groqParams.set('q', fullQuery);
-          perplexityParams.set('q', fullQuery);
-          bingParams.set('q', fullQuery);
-
-          var googleUrl = "https://www.google.com/search?" + googleParams.toString();
-          var groqUrl = "https://simpleai.devilent2.workers.dev/?" + groqParams.toString();
-          var perplexityaiUrl = "https://www.perplexity.ai/search/new?" + perplexityParams.toString();
-          var bingUrl = "https://bing.com?" + bingParams.toString();
-          var chatgptUrl = "https://chatgpt.com/?" + groqParams.toString()+'&hints=search&ref=ext';
-
-          document.getElementById("google-frame").src = googleUrl;
-          document.getElementById("perplexityai-frame").src = perplexityaiUrl;
-          document.getElementById("bing-frame").src = bingUrl;
-          document.getElementById('groq-frame').src = groqUrl;
-          document.getElementById('chatgpt-frame').src = chatgptUrl;
-
-          document.getElementById("google-url").textContent = googleUrl;
-          document.getElementById("groq-url").textContent = groqUrl;
-          document.getElementById("perplexityai-url").textContent = perplexityaiUrl;
-          document.getElementById("bing-url").textContent = bingUrl;
-          document.getElementById("chatgpt-url").textContent = chatgptUrl;
-
-          
+          engines.forEach(engine => {
+            // Create new search parameters for each engine
+            let engineUrl = engine.base  + fullQuery;
+            if (engine.extra) {
+                engineUrl += engine.extra;
+            }
+            // Update iframe src and URL display dynamically
+            const frame = document.getElementById(engine.name + "-frame");
+            if (frame) frame.src = engineUrl;
+            const urlDisplay = document.getElementById(engine.name + "-url");
+            if (urlDisplay) urlDisplay.textContent = engineUrl;
+          });
         }
       }
 
@@ -99,7 +136,7 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         const resultsContainer = document.querySelector('.results-container');
         
         const topbarHeight = tabContainer.offsetHeight;
-        searchContainer.style.top = topbarHeight + 'px';
+        searchContainer.style.top = topbarHeight+10 + 'px';
         
         const searchContainerBottom = searchContainer.offsetTop + searchContainer.offsetHeight;
         resultsContainer.style.top = searchContainerBottom + 'px';
@@ -107,6 +144,36 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         // Calculate remaining height for results container
         const windowHeight = window.innerHeight;
         resultsContainer.style.height = (windowHeight - searchContainerBottom) + 'px';
+      }
+
+      // Updated function to dynamically create tab buttons with event listeners attached
+      function createTabButtons() {
+        const tabContainer = document.querySelector(".tab-container");
+        tabContainer.innerHTML = ""; // Clear existing hard-coded tabs
+    
+        // Create "all" tab button
+        const allTab = document.createElement("button");
+        allTab.className = "tab" + (currentTab === "all" ? " active" : "");
+        allTab.setAttribute("data-target", "all");
+        allTab.textContent = "all";
+        allTab.addEventListener("click", () => {
+          switchTab("all");
+        });
+        tabContainer.appendChild(allTab);
+    
+        // Create tab buttons for each engine
+        engines.forEach(engine => {
+            const btn = document.createElement("button");
+            btn.className = "tab" + (currentTab === engine.name ? " active" : "");
+            btn.setAttribute("data-target", engine.name);
+            btn.textContent = engine.name;
+            btn.addEventListener("click", () => {
+              switchTab(engine.name);
+            });
+            tabContainer.appendChild(btn);
+        });
+    
+        
       }
 
       window.onload = function () {
@@ -119,6 +186,11 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         // Update position on window resize
         window.addEventListener('resize', updateSearchContainerPosition);
 
+        // Create engine containers before switching tabs
+        createEngineIframes();
+        // Dynamically create tab buttons
+        createTabButtons();
+        
         // Switch to default tab (help if first time, or saved preference)
         switchTab(currentTab);
 
@@ -153,23 +225,18 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         }
       };
 
-      // Tab functionality
-      const tabs = document.querySelectorAll(".tab");
-      const framesWrapper = document.querySelector(".frames-wrapper");
-      tabs.forEach((tab) => {
-        tab.addEventListener("click", () => {
-          switchTab(tab.getAttribute("data-target"));
-        });
-      });
-
       // Textarea focus and blur functionality
       const textarea = document.getElementById("search-textarea");
+      const bigClearButton = document.getElementById("big-clear-button");
+
       textarea.addEventListener("focus", function () {
         textarea.classList.add("expanded");
+        bigClearButton.style.display = "block";
       });
       textarea.addEventListener("blur", function () {
         setTimeout(() => {
           textarea.classList.remove("expanded");
+          bigClearButton.style.display = "none";
           // Only perform search if query has changed and last search wasn't from selection
           const query = textarea.value;
           if (!lastSearchWasSelection && query.trim() !== lastQuery.trim() && query.trim() !== "") {
@@ -185,6 +252,18 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
             performSearch(query);
           }
         }
+      });
+
+      // New big clear button functionality
+      bigClearButton.addEventListener("click", function () {
+        textarea.value = "";
+        lastQuery = "";
+        bigClearButton.style.display = "none";
+        // Optionally update URL parameter and focus textarea
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.delete("query");
+        history.replaceState({}, "", newUrl.toString());
+        textarea.focus();
       });
 
       document.body.addEventListener("keydown", (e) => {
@@ -233,13 +312,12 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         history.replaceState({}, "", newUrl.toString());
 
         // Clear iframes
-        document.getElementById("google-frame").src = "about:blank";
-        document.getElementById("bing-frame").src = "about:blank";
-        document.getElementById("chatgpt-frame").src = "about:blank";
-        document.getElementById("perplexity-url").textContent = "";
-        document.getElementById("google-url").textContent = "";
-        document.getElementById("bing-url").textContent = "";
-        document.getElementById("chatgpt-url").textContent = "";
+        engines.forEach(engine => {
+          const frame = document.getElementById(engine.name + "-frame");
+          if (frame) frame.src = "about:blank";
+          const urlDisplay = document.getElementById(engine.name + "-url");
+          if (urlDisplay) urlDisplay.textContent = "";
+        });
       });
 
       // Add paste event listener

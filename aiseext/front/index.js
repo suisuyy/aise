@@ -9,10 +9,13 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         { name: "bing", base: "https://bing.com?q=" },
         { name: "chatgpt", base: "https://chatgpt.com/?q=", extra: "&hints=search&ref=ext" },
         { name: "perplex", base: "https://www.perplexity.ai/search/new?q=" },
+        { name: "claude", base: "https://claude.ai/new?q=" },
         { name: "mistral", base: "https://chat.mistral.ai/chat?q=" },
         { name: "bimg", base: "https://www.bing.com/images/search?q=" },
         { name: "gimg", base: "https://www.google.com/search?udm=2&q=" },
         { name: "groq", base: "https://simpleai.devilent2.workers.dev/?q=" },
+        { name: "scira", base: "https://scira.app/?q=" },
+
         { name: "help", base: "./help.html?" },
 
       ];
