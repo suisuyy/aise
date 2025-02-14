@@ -14,14 +14,7 @@
   ],
   "action":{},
   "host_permissions": [
-    "https://aise.pages.dev/*",
-    "https://appstore.suisuy.eu.org/*",
-    "https://scira.app/*",
-    "https://www.google.com/*",
-    "https://www.perplexity.ai/*",
-    "https://*.bing.com/*",
-    "https://mistral.ai/*",
-    "https://*.chatgpt.com/*"
+    "<all_urls>"
   ],
   "background": {
     "service_worker": "background.js"

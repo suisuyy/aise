@@ -23,21 +23,20 @@ chrome.runtime.onInstalled.addListener(() => {
     removeRuleIds: [1],
     addRules: [
       {
-        id: 1,
-        priority: 1,
-        action: {
-          type: 'modifyHeaders',
-          responseHeaders: [
-            // { header: 'content-security-policy', operation: 'remove' },
-            { header: 'x-frame-options', operation: 'remove' },
-            { header: 'frame-options', operation: 'remove' }
-          ]
-        },
-        condition: {
-          urlFilter: '|*pages.dev|*suisuy.eu.org|*mplx.run|*google.com|*perplexity.ai|*bing.com|*mistral.ai|*chatgpt.com|*openai.com',
-          resourceTypes: [ 'sub_frame']
-        }
+      id: 1,
+      priority: 1,
+      action: {
+        type: 'modifyHeaders',
+        responseHeaders: [
+        { header: 'x-frame-options', operation: 'remove' },
+        { header: 'frame-options', operation: 'remove' }
+        ]
+      },
+      condition: {
+        urlFilter: '*',
+        resourceTypes: [ 'sub_frame']
+      }
       }
     ]
-  });
+    });
 });
