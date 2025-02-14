@@ -4,10 +4,10 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
 
       // Add engine configuration
       const engines = [
-        { name: "google", base: "https://www.google.com/search?q=" },
-        { name: "bing", base: "https://bing.com?q=" },
         { name: "chatgpt", base: "https://chatgpt.com/?q=", extra: "&hints=search&ref=ext" },
         { name: "perplex", base: "https://www.perplexity.ai/search/new?q=" },
+        { name: "google", base: "https://www.google.com/search?q=" },
+        { name: "bing", base: "https://bing.com?q=" },
         { name: "mistral", base: "https://chat.mistral.ai/chat?q=" },
         { name: "bimg", base: "https://www.bing.com/images/search?q=" },
         { name: "gimg", base: "https://www.google.com/search?udm=2&q=" },
@@ -58,6 +58,7 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         const framesWrapper = document.querySelector(".frames-wrapper");
         framesWrapper.innerHTML = ""; // Clear existing content
 
+        let i=0;
         // Create engine iframe containers dynamically
         engines.forEach(engine => {
             const container = document.createElement("div");
@@ -82,7 +83,12 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
             container.appendChild(iframe);
 
             framesWrapper.appendChild(container);
-        });
+            if(i>2){
+            iframe.setAttribute("loading", "lazy");
+
+            }
+            i++;
+          });
 
         
       }
