@@ -20,6 +20,8 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow: auto;
+      scrollbar-width: thin;
     }
 
     .tab-container {
@@ -58,6 +60,7 @@
     .search-container {
       display: flex;
       position: fixed;
+      top: 40px;
       width: 95%;
       background: #f0f0f0;
       z-index: 100;
@@ -65,10 +68,12 @@
       height: 30px;
     }
 
+
+
     .expanded {
       height: 150px;
       position: fixed;
-      top: 20px;
+      top: 35px;
     }
 
     .search-wrapper {
@@ -94,6 +99,24 @@
 
     .clear-button:hover {
       background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .big-clear-button {
+      display: none;
+      margin-top: 5px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #e0e0e0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 100001; /* ensure it appears above other elements */
+      position:fixed;
+      top: 200px;
+    }
+
+    .big-clear-button:hover {
+      background-color: #d0d0d0;
     }
 
     .search-textarea {
@@ -210,135 +233,65 @@
       <button id="clear-button" class="clear-button" style="display: none">
         ×
       </button>
+      <button id="big-clear-button" class="big-clear-button" style="display: none;">Clear</button>
     </div>
   </div>
   <div class="textarea-placeholder"></div>
   <div class="results-container">
     <div class="frames-wrapper all-tab">
-
-
-      <div id="perplexityai-container" class="frame-container" style="display: none">
-        <div id="perplexityai-url" class="url-display"></div>
-        <iframe id="perplexityai-frame" class="results-frame" src="about:blank" tabindex="-1"
-          allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
-      </div>
-
-      <div id="chatgpt-container" class="frame-container">
-        <div id="chatgpt-url" class="url-display"></div>
-        <iframe id="chatgpt-frame" class="results-frame" src="about:blank" tabindex="-1"
-          allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
-      </div>
-
-      <div id="google-container" class="frame-container">
-        <div id="google-url" class="url-display"></div>
-        <iframe id="google-frame" class="results-frame" src="about:blank" tabindex="-1"
-          allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
-      </div>
-      <div id="bing-container" class="frame-container">
-        <div id="bing-url" class="url-display"></div>
-        <iframe id="bing-frame" class="results-frame" src="about:blank" tabindex="-1"
-          allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb"></iframe>
-      </div>
-
-      <div id="groq-container" class="frame-container">
-        <div id="groq-url" class="url-display"></div>
-        <iframe id="groq-frame" class="results-frame" style="background: white; padding: 20px; overflow-y: auto"
-          allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb">
-        </iframe>
-      </div>
-
-      <div id="mistral-container" class="frame-container">
-        <div class="url-display">URL: <span id="mistral-url"></span></div>
-
-        <iframe id="mistral-frame" class="results-frame"></iframe>
-      </div>
-
-      <div id="help-container" class="frame-container" style="display: none">
-        <div class="results-frame" style="background: white; padding: 20px; overflow-y: auto">
-          <h2>How to Use AISE</h2>
-
-          <h3>⚠️ Important: Chrome Extension Required, and chatgpt only works in extension page, try to click the extension to search chatgpt now</h3>
-          <p>
-            To properly view Google, Perplexity, and other web results within
-            AISE, you <strong>must</strong> install our Chrome extension
-            first. Without it, these services may not load correctly due to
-            browser security restrictions.
-          </p>
-
-          <h3>Chrome Extension Installation Steps</h3>
-          <ol>
-            <li>Download the <a href="./aiseext.zip">Chrome Extension</a></li>
-            <li>Unzip the downloaded file</li>
-            <li>
-              Open Chrome and navigate to <code>chrome://extensions/</code>
-            </li>
-            <li>
-              Enable "Developer mode" using the toggle in the top right corner
-            </li>
-            <li>
-              Click "Load unpacked" and select the unzipped extension folder
-            </li>
-            <li>The extension icon should appear in your Chrome toolbar</li>
-          </ol>
-
-          <h3>Search Features</h3>
-          <ul>
-            <li>
-              <strong>Multi-Engine Search:</strong> Search across multiple AI
-              and traditional search engines simultaneously
-            </li>
-            <li>
-              <strong>Tabs:</strong>
-              <ul>
-                <li>All - View all search results at once</li>
-                <li>Groq - AI-powered responses using Groq</li>
-                <li>MPLX - Fast AI responses from Claude</li>
-                <li>Perplexity - Comprehensive AI research assistant</li>
-                <li>Google - Traditional web search</li>
-              </ul>
-            </li>
-          </ul>
-
-          <h3>Keyboard Shortcuts & Tips</h3>
-          <ul>
-            <li>
-              <strong>Ctrl+Enter:</strong> Quickly focus the search box from
-              anywhere
-            </li>
-            <li><strong>Enter:</strong> Execute your search</li>
-            <li>
-              <strong>Clear button (×):</strong> Reset all search results and
-              query
-            </li>
-            <li>
-              The search box expands automatically when focused for better
-              visibility
-            </li>
-            <li>
-              Select text in the search box to immediately search the selected
-              portion
-            </li>
-            <li>Your last selected tab is remembered between sessions</li>
-            <li>URLs are displayed above each result for easy reference</li>
-          </ul>
-
-          <h3>Best Practices</h3>
-          <ul>
-            <li>Use natural language for better AI responses</li>
-            <li>
-              Compare results across different engines for comprehensive
-              information
-            </li>
-            <li>Check the URL bar to share specific searches with others</li>
-            <li>
-              Use the "All" tab for complex queries that benefit from multiple
-              perspectives
-            </li>
-          </ul>
-        </div>
-      </div>
     </div>
   </div>
+
+  <!-- Add help template -->
+  <template id="help-template">
+    <div class="results-frame" style="background: white; padding: 20px; overflow-y: auto">
+      <h2>How to Use AISE</h2>
+      <h3>⚠️ Important: Chrome Extension Required, and ChatGPT only works in the extension page. Try clicking the extension to search ChatGPT now</h3>
+      <p>
+        To properly view Google, Perplexity, and other web results within AISE, you <strong>must</strong> install our Chrome extension first. Without it, these services may not load correctly due to browser security restrictions.
+      </p>
+      <h3>Chrome Extension Installation Steps</h3>
+      <ol>
+        <li>Download the <a href="./aiseext.zip">Chrome Extension</a></li>
+        <li>Unzip the downloaded file</li>
+        <li>Open Chrome and navigate to <code>chrome://extensions/</code></li>
+        <li>Enable "Developer mode" using the toggle in the top right corner</li>
+        <li>Click "Load unpacked" and select the unzipped extension folder</li>
+        <li>The extension icon should appear in your Chrome toolbar</li>
+      </ol>
+      <h3>Search Features</h3>
+      <ul>
+        <li><strong>Multi-Engine Search:</strong> Search across multiple AI and traditional search engines simultaneously</li>
+        <li>
+          <strong>Tabs:</strong>
+          <ul>
+            <li>All - View all search results at once</li>
+            <li>Groq - AI-powered responses using Groq</li>
+            <li>MPLX - Fast AI responses from Claude</li>
+            <li>Perplexity - Comprehensive AI research assistant</li>
+            <li>Google - Traditional web search</li>
+          </ul>
+        </li>
+      </ul>
+      <h3>Keyboard Shortcuts & Tips</h3>
+      <ul>
+        <li><strong>Ctrl+Enter:</strong> Quickly focus the search box from anywhere</li>
+        <li><strong>Enter:</strong> Execute your search</li>
+        <li><strong>Clear button (×):</strong> Reset all search results and query</li>
+        <li>The search box expands automatically when focused for better visibility</li>
+        <li>Select text in the search box to immediately search the selected portion</li>
+        <li>Your last selected tab is remembered between sessions</li>
+        <li>URLs are displayed above each result for easy reference</li>
+      </ul>
+      <h3>Best Practices</h3>
+      <ul>
+        <li>Use natural language for better AI responses</li>
+        <li>Compare results across different engines for comprehensive information</li>
+        <li>Check the URL bar to share specific searches with others</li>
+        <li>Use the "All" tab for complex queries that benefit from multiple perspectives</li>
+      </ul>
+    </div>
+  </template>
 
   <script src="./aiinput.js" ></script>
   <script src="./index.js"></script>
