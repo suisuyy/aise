@@ -16,7 +16,7 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         { name: "groq", base: "https://simpleai.devilent2.workers.dev/?q=" },
         { name: "scira", base: "https://scira.app/?q=" },
 
-        { name: "help", base: "./help.html?" },
+        { name: "help", base: "./help.html?" , preload: true},
 
       ];
 
@@ -82,6 +82,9 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
             iframe.className = "results-frame";
             iframe.id = engine.name + "-frame";
             iframe.src = "about:blank";
+            if(engine.preload) {
+              iframe.src=engine.base;
+            }
             iframe.setAttribute("tabindex", "-1");
             iframe.setAttribute("allow", "accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb");
             container.appendChild(iframe);
