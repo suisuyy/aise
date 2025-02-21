@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "name": "AISE Support",
+  "key": "ighpklnjgllkdfknoeihdipnlcdelfgk",
+  "version": "1.0",
+  "description": "Support extension for AISE search engine",
+  "permissions": [
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback",
+    "search",
+    "activeTab",
+    "storage",
+     "scripting"
+  ],
+  "action":{},
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://aise.pages.dev/*",
+        "https://appstore.suisuy.eu.org/*"
+      ],
+      "js": ["content.js"]
+    }
+  ],
+  "chrome_settings_overrides": {
+    "homepage": "https://aise.pages.dev",
+    "search_provider": {
+        "name": "AISE",
+        "keyword": "AI search",
+        "search_url": "https://aise.pages.dev?q={searchTerms}",
+        "favicon_url": "https://www.foo.__MSG_url_domain__/favicon.ico",
+        "suggest_url": "https://www.foo.__MSG_url_domain__/suggest?q={searchTerms}",
+        "instant_url": "https://www.foo.__MSG_url_domain__/instant?q={searchTerms}",
+        "image_url": "https://www.foo.__MSG_url_domain__/image?q={searchTerms}",
+        "search_url_post_params": "search_lang=__MSG_url_domain__",
+        "suggest_url_post_params": "suggest_lang=__MSG_url_domain__",
+        "instant_url_post_params": "instant_lang=__MSG_url_domain__",
+        "image_url_post_params": "image_lang=__MSG_url_domain__",
+        "alternate_urls": [
+          "https://www.moo.__MSG_url_domain__/s?q={searchTerms}",
+          "https://www.noo.__MSG_url_domain__/s?q={searchTerms}"
+        ],
+        "encoding": "UTF-8",
+        "is_default": true
+    }
+  }
+}

@@ -11,10 +11,10 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         { name: "claude", base: "https://claude.ai/new?q=" },
         { name: "grok", base: "https://grok.com/?q=" },
         { name: "mistral", base: "https://chat.mistral.ai/chat?q=" },
-        { name: "bimg", base: "https://www.bing.com/images/search?q=" },
-        { name: "gimg", base: "https://www.google.com/search?udm=2&q=" },
         { name: "groq", base: "https://simpleai.devilent2.workers.dev/?q=" },
         { name: "scira", base: "https://scira.app/?q=" },
+        { name: "bimg", base: "https://www.bing.com/images/search?q=" },
+        { name: "gimg", base: "https://www.google.com/search?udm=2&q=" },
 
         { name: "help", base: "./help.html?" , preload: true},
 
@@ -141,10 +141,10 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         const resultsContainer = document.querySelector('.results-container');
         
         const topbarHeight = tabContainer.offsetHeight;
-        searchContainer.style.top = topbarHeight+10 + 'px';
+        searchContainer.style.top = topbarHeight + 'px';
         
         const searchContainerBottom = searchContainer.offsetTop + searchContainer.offsetHeight;
-        resultsContainer.style.top = searchContainerBottom + 'px';
+        resultsContainer.style.top = searchContainerBottom +10+ 'px';
         
         // Calculate remaining height for results container
         const windowHeight = window.innerHeight;
@@ -207,7 +207,6 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
             history.replaceState({}, "", newUrl.toString());
           }
           document.getElementById("search-textarea").value = query;
-          document.getElementById("search-textarea").classList.add("expanded");
           performSearch(query);
           if (model) {
             // If model parameter exists, switch to perplexity tab
@@ -235,7 +234,6 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
       const bigClearButton = document.getElementById("big-clear-button");
 
       textarea.addEventListener("focus", function () {
-        textarea.classList.add("expanded");
         bigClearButton.style.display = "block";
       });
       textarea.addEventListener("blur", function () {
@@ -284,7 +282,6 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         clearButton.style.display = this.value ? "block" : "none";
 
         if (this.value !== "") {
-          textarea.classList.add("expanded");
           // Update URL with current query
           const newUrl = new URL(window.location.href);
           const urlParams = new URLSearchParams(window.location.search);
@@ -305,24 +302,18 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
       });
 
       // Clear button functionality
-      clearButton.addEventListener("click", function () {
+      clearButton.addEventListener("click", function (e) {
+        e.preventDefault();
         textarea.value = "";
         lastQuery = ""; // Reset last query
         clearButton.style.display = "none";
-        textarea.focus();
 
         // Clear URL parameter
         const newUrl = new URL(window.location.href);
         newUrl.searchParams.delete("query");
         history.replaceState({}, "", newUrl.toString());
 
-        // Clear iframes
-        engines.forEach(engine => {
-          const frame = document.getElementById(engine.name + "-frame");
-          if (frame) frame.src = "about:blank";
-          const urlDisplay = document.getElementById(engine.name + "-url");
-          if (urlDisplay) urlDisplay.textContent = "";
-        });
+        
       });
 
       // Add paste event listener
@@ -370,7 +361,6 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
 
       window.addEventListener("load", function () {
         textarea.focus();
-        textarea.classList.add("expanded");
 
 
         
