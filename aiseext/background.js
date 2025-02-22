@@ -1,7 +1,7 @@
 
 
 chrome.action.onClicked.addListener((tab) => {
-  chrome.tabs.create({
+  chrome.tabs.update(tab.id, {
     url: chrome.runtime.getURL("front/index.html")
   });
 });
