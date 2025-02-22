@@ -87,7 +87,7 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
               iframe.src=engine.base;
             }
             iframe.setAttribute("tabindex", "-1");
-            iframe.setAttribute("allow", "accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb");
+            iframe.setAttribute("allow", "accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; picture-in-picture; usb; clipboard-read; clipboard-write");
             container.appendChild(iframe);
 
             framesWrapper.appendChild(container);
