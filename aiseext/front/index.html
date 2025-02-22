@@ -12,7 +12,7 @@
 
 <body>
   <div class="tab-container">
-    <button class="tab active" data-target="all">All</button>
+    <button class="tab alltab" data-target="all" style="color: darkslategrey;">All</button>
     <button class="tab" data-target="groq">Groq</button>
     <button class="tab" data-target="perplexityai">Perplexity</button>
     <button class="tab" data-target="chatgpt">ChatGPT</button>
@@ -27,9 +27,10 @@
       <textarea id="search-textarea" class="search-textarea" rows="1" placeholder="Type your search and press Enter..."
         autofocus></textarea>
       <div class="button-container">
-        <button id="big-clear-button" class="tool-button">❌</button>
-        <button id="search-line-button" class="tool-button" >🔍-</button>
-        <button id="search-button" class="tool-button">🔍</button>
+        <button id="big-clear-button" class="tool-button" title="Clear text (Esc)">❌</button>
+        <button id="expand-button" class="tool-button" title="Toggle height">⬇️</button>
+        <button id="search-line-button" class="tool-button" title="Search current line (Shift+Enter)">🔍-</button>
+        <button id="search-button" class="tool-button" title="Search all text (Enter)">🔍</button>
       </div>
     </div>
   </div>

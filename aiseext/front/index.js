@@ -104,6 +104,9 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
       function performSearch(query) {
         // Only proceed if there's a query
         if (query) {
+          //make new line \n in query to spaces+\n,encode newline to url 
+          // Encode query for URL
+          query = encodeURIComponent(query);
           // Get the prompt from URL parameters
           const urlParams = new URLSearchParams(window.location.search);
           const prompt = urlParams.get("cmd");
@@ -154,7 +157,7 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         searchContainer.style.top = topbarHeight + 'px';
         
         const searchContainerBottom = searchContainer.offsetTop + searchContainer.offsetHeight;
-        resultsContainer.style.top = searchContainerBottom +10+ 'px';
+        resultsContainer.style.top = searchContainerBottom +30+ 'px';
         
         // Calculate remaining height for results container
         const windowHeight = window.innerHeight;
@@ -169,8 +172,9 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         // Create "all" tab button
         const allTab = document.createElement("button");
         allTab.className = "tab" + (currentTab === "all" ? " active" : "");
+        allTab.id='alltab'
         allTab.setAttribute("data-target", "all");
-        allTab.textContent = "all";
+        allTab.textContent = "Home";
         allTab.addEventListener("click", () => {
           switchTab("all");
         });
@@ -244,18 +248,20 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
       const bigClearButton = document.getElementById("big-clear-button");
 
       textarea.addEventListener("focus", function () {
-        document.querySelector('.button-container').style.display = "block";
+        //get textare bottom possition, set button container to this possition
+        setTimeout(() => {
+          const textareaBottom = textarea.getBoundingClientRect().bottom;
+        document.querySelector('.button-container').style.top = textareaBottom + "px";
+        document.querySelector('.button-container').style.display = "flex";
+        }, 200);
 
       });
       textarea.addEventListener("blur", function () {
         setTimeout(() => {
           document.querySelector('.button-container').style.display = "none";
           // Only perform search if query has changed and last search wasn't from selection
-          const query = textarea.value;
-          if (!lastSearchWasSelection && query.trim() !== lastQuery.trim() && query.trim() !== "") {
-            performSearch(query);
-          }
-          lastSearchWasSelection = false; // Reset the flag
+          
+          textarea.style.height='';
         }, 200);
       });
       textarea.addEventListener("keypress", (event) => {
@@ -270,17 +276,22 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
       // New big clear button functionality
       bigClearButton.addEventListener("pointerdown", function (e) {
         e.preventDefault();
+        try {
+          textarea.select();
+          document.execCommand('insertText', false, '');
+            
+        } catch (error) {
         textarea.value = "";
-        lastQuery = "";
+
+        }
         // Optionally update URL parameter and focus textarea
         const newUrl = new URL(window.location.href);
-        newUrl.searchParams.delete("query");
-        history.replaceState({}, "", newUrl.toString());
-        textarea.focus();
+        newUrl.searchParams.delete("q");
       });
 
       document.body.addEventListener("keydown", (e) => {
         if (e.ctrlKey && e.key === "Enter") {
+          e.preventDefault();
           textarea.focus();
         }
       });
@@ -357,5 +368,93 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
       });
 
       //document.addEventListener("touchend", handleTextSelection);
+
+// Function to get current line text
+function getCurrentLine(textarea) {
+  const start = textarea.value.lastIndexOf('\n', textarea.selectionStart - 1) + 1;
+  const end = textarea.value.indexOf('\n', textarea.selectionStart);
+  return textarea.value.substring(start, end === -1 ? textarea.value.length : end);
+}
+
+function showToast(message, e) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerText = message;
+  toast.style.position = 'fixed';
+  // Position toast below pointer
+  toast.style.left = (e.clientX +30) + 'px';  // Center horizontally relative to pointer
+  toast.style.top = (e.clientY) + 'px';   // Position below pointer
+  toast.style.zIndex = '10000';
+  toast.style.background = '#333';
+  toast.style.color = '#fff';
+  toast.style.padding = '8px 16px';
+  toast.style.borderRadius = '4px';
+  toast.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+  toast.style.animation = 'fadeIn 0.3s, fadeOut 0.3s 1.7s';
+  document.body.appendChild(toast);
+  
+  // Add required CSS animation if not already present
+  if (!document.getElementById('toastAnimations')) {
+    const style = document.createElement('style');
+    style.id = 'toastAnimations';
+    style.textContent = `
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+    `;
+    document.head.appendChild(style);
+  }
+
+  setTimeout(() => document.body.removeChild(toast), 2000);
+}
+// Search button handlers
+document.getElementById('search-line-button').addEventListener('pointerdown', function(e) {
+  e.preventDefault();
+});
+document.getElementById('search-line-button').addEventListener('click', function(e) {
+  e.preventDefault();
+  const currentLine = getCurrentLine(textarea);
+  if (currentLine.trim()) {
+    performSearch(currentLine);
+  }
+  // Show toast message with better styling
+  
+
+  // Show toast for current line search
+  showToast('Search current line', e);
+
+});
+
+
+document.getElementById('search-button').addEventListener('click', function(e) {
+  const query = textarea.value;
+  if (query.trim()) {
+    performSearch(query);
+    showToast('Search', e);
+  }
+});
+
+document.getElementById('expand-button').addEventListener('pointerdown', function(e) {
+  e.preventDefault();
+  textarea.style.height = textarea.style.height === '250px' ? '150px' : '250px';
+  setTimeout(() => {
+    // Update button container position
+  const textareaBottom = textarea.getBoundingClientRect().bottom;
+  document.querySelector('.button-container').style.top = textareaBottom +10+ "px";
+  }, 200);
+});
+
+// Update keyboard shortcuts
+textarea.addEventListener("keypress", (event) => {
+  if (event.key === "Enter") {
+    if (event.shiftKey) {
+      event.preventDefault();
+      document.getElementById('search-line-button').click();
+    } else if (!event.ctrlKey) {
+      // Enter without modifiers: search full text
+      document.getElementById('search-button').click();
+    }
+    // Ctrl+Enter just adds a newline (default behavior)
+  }
+});
 
 
