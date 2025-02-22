@@ -244,12 +244,12 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
       const bigClearButton = document.getElementById("big-clear-button");
 
       textarea.addEventListener("focus", function () {
-        bigClearButton.style.display = "block";
+        document.querySelector('.button-container').style.display = "block";
+
       });
       textarea.addEventListener("blur", function () {
         setTimeout(() => {
-          textarea.classList.remove("expanded");
-          bigClearButton.style.display = "none";
+          document.querySelector('.button-container').style.display = "none";
           // Only perform search if query has changed and last search wasn't from selection
           const query = textarea.value;
           if (!lastSearchWasSelection && query.trim() !== lastQuery.trim() && query.trim() !== "") {
@@ -268,10 +268,10 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
       });
 
       // New big clear button functionality
-      bigClearButton.addEventListener("click", function () {
+      bigClearButton.addEventListener("pointerdown", function (e) {
+        e.preventDefault();
         textarea.value = "";
         lastQuery = "";
-        bigClearButton.style.display = "none";
         // Optionally update URL parameter and focus textarea
         const newUrl = new URL(window.location.href);
         newUrl.searchParams.delete("query");
@@ -285,46 +285,26 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         }
       });
 
-      const clearButton = document.getElementById("clear-button");
 
       textarea.addEventListener("input", function () {
-        // Show/hide clear button based on text content
-        clearButton.style.display = this.value ? "block" : "none";
+        // Remove the show/hide logic for clear button
+        const newUrl = new URL(window.location.href);
+        const urlParams = new URLSearchParams(window.location.search);
+        const prompt = urlParams.get("prompt");
 
         if (this.value !== "") {
-          // Update URL with current query
-          const newUrl = new URL(window.location.href);
-          const urlParams = new URLSearchParams(window.location.search);
-          const prompt = urlParams.get("prompt");
-
           newUrl.searchParams.set(
             "q",
             prompt ? `${prompt}\n\n${this.value}` : this.value
           );
-          
           history.replaceState({}, "", newUrl.toString());
         } else {
-          // If textarea is empty, remove query parameter
-          const newUrl = new URL(window.location.href);
           newUrl.searchParams.delete("query");
           history.replaceState({}, "", newUrl.toString());
         }
       });
 
-      // Clear button functionality
-      clearButton.addEventListener("click", function (e) {
-        e.preventDefault();
-        textarea.value = "";
-        lastQuery = ""; // Reset last query
-        clearButton.style.display = "none";
-
-        // Clear URL parameter
-        const newUrl = new URL(window.location.href);
-        newUrl.searchParams.delete("query");
-        history.replaceState({}, "", newUrl.toString());
-
-        
-      });
+ 
 
       // Add paste event listener
       textarea.addEventListener("paste", function (e) {
