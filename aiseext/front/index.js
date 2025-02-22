@@ -109,7 +109,16 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
           const prompt = urlParams.get("cmd");
 
           // Combine prompt and query if prompt exists
-          const fullQuery = prompt ? `${prompt}: \n\n${query}` : query;
+            // Get all URL parameters except 'cmd' and 'query'/'q'
+            const otherParams = Array.from(urlParams.entries())
+            .filter(([key]) => !['cmd', 'q'].includes(key))
+            .map(([key, value]) => `&${key}=${value}`)
+            .join('');
+
+            // Combine prompt, query and other parameters
+            const fullQuery = prompt 
+            ? `${prompt}: \n\n${query} ${otherParams}`.trim()
+            : `${query}${otherParams}`.trim();
 
           // If the new query is the same as the last one, do nothing
           if (fullQuery === lastQuery) {
