@@ -7,213 +7,12 @@
   <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml"
     title="Perplexity Open Search" />
   <title>Custom Search Engine with Perplexity, Bing, and Google</title>
-  <style>
-    * {
-      scrollbar-width: thin;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f0f0f0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: auto;
-      scrollbar-width: thin;
-    }
-
-    .tab-container {
-      scrollbar-width: none;
-      white-space: nowrap;
-      overflow-x: auto;
-      height: 30px;
-      font-size: x-large;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      /* display: flex; */
-      /* flex-wrap: wrap; */
-      /* align-items: center; */
-      background-color: #e0e0e0;
-      padding: 0;
-      z-index: 200;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .tab {
-      font-size: large;
-      padding: 0;
-      cursor: pointer;
-      border: none;
-      background-color: #e0e0e0;
-      margin-right: 15px;
-    }
-
-    .tab.active {
-      background-color: #f0f0f0;
-      border-bottom: 2px solid #4285f4;
-    }
-
-    .search-container {
-      position: fixed;
-      top: 40px;
-      width: 95%;
-      background: #f0f0f0;
-      z-index: 100;
-      box-sizing: border-box;
-      height: 30px;
-    }
-
-
-
-    .expanded {
-      height: 150px;
-      position: fixed;
-      top: 35px;
-    }
-
-    .search-wrapper {
-      position: relative;
-      width: 100%;
-      display: flex;
-      align-items: center;
-    }
-
-    .clear-button {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: #666;
-      padding: 5px 10px;
-      border-radius: 50%;
-    }
-
-    .clear-button:hover {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-
-    .big-clear-button {
-      display: none;
-      margin-top: 5px;
-      padding: 10px 20px;
-      font-size: 18px;
-      background-color: #e0e0e0;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 100001; /* ensure it appears above other elements */
-      position:fixed;
-      top: 200px;
-    }
-
-    .big-clear-button:hover {
-      background-color: #d0d0d0;
-    }
-
-    .search-textarea {
-      margin-bottom: 10px;
-      height: 40px;
-      flex-grow: 1;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      outline: none;
-      resize: none;
-      z-index: 100000;
-      max-height: 150px;
-      box-sizing: border-box;
-      width: calc(100% - 20px);
-    }
-
-    .textarea-placeholder {
-      height: 100px;
-      /* Significantly increased height to prevent content shift */
-      display: none;
-    }
-
-    .search-textarea:focus {
-      height: 150px;
-    }
-
-
-
-
-
-    .results-container {
-      display: flex;
-      flex-direction: column;
-      border-top: 1px solid #ddd;
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      overflow: hidden;
-    }
-
-    .frames-wrapper {
-      display: flex;
-      overflow: auto;
-
-    }
-
-    .frame-container {
-      min-height: 95vh;
-      display: flex;
-      flex-direction: column;
-      height: 92vh;
-      min-width: 400px;
-    }
-
-    /* Add styles for single tab view */
-    .frames-wrapper:not(.all-tab) .frame-container {
-      width: 100vw;
-      min-width: 100vw;
-    }
-
-    .frames-wrapper.all-tab .frame-container {
-      min-width: 400px;
-    }
-
-    .url-display {
-      padding: 5px;
-      background-color: #e0e0e0;
-      font-size: 12px;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-
-    .results-frame {
-      border: none;
-      height: 90vh;
-    }
-
-    /* New styles for wide screen layout */
-    @media (min-width: 1200px) {
-      .frames-wrapper.all-tab {
-        flex-direction: row;
-        flex-wrap: wrap;
-      }
-
-      .frames-wrapper.all-tab .frame-container {
-        width: calc(50% - 20px);
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 
 <body>
   <div class="tab-container">
-    <button class="tab active" data-target="all">All</button>
+    <button class="tab alltab" data-target="all" style="color: darkslategrey;">All</button>
     <button class="tab" data-target="groq">Groq</button>
     <button class="tab" data-target="perplexityai">Perplexity</button>
     <button class="tab" data-target="chatgpt">ChatGPT</button>
@@ -227,10 +26,12 @@
     <div class="search-wrapper">
       <textarea id="search-textarea" class="search-textarea" rows="1" placeholder="Type your search and press Enter..."
         autofocus></textarea>
-      <button id="clear-button" class="clear-button" style="display: none">
-        ×
-      </button>
-      <button id="big-clear-button" class="big-clear-button" style="display: none;">Clear</button>
+      <div class="button-container">
+        <button id="big-clear-button" class="tool-button" title="Clear text (Esc)">❌</button>
+        <button id="expand-button" class="tool-button" title="Toggle height">⬇️</button>
+        <button id="search-line-button" class="tool-button" title="Search current line (Shift+Enter)">🔍-</button>
+        <button id="search-button" class="tool-button" title="Search all text (Enter)">🔍</button>
+      </div>
     </div>
   </div>
   <div class="textarea-placeholder"></div>
