@@ -340,5 +340,9 @@ currentTimeSlider.addEventListener("input", updateAdjustedTimeDisplay);
   else{
     mediaPlayer.pause();
   }
+
+  if(stopTimeSlider.value<=0){
+    mediaPlayer.pause();
+  }
  }
 
