@@ -3,6 +3,7 @@ import {writeToLocalStorage,readFromLocalStorage} from './storage.mjs'
 
 let appstate={
   isPlay:false,
+  playinterval: 10000
 }
 
 
@@ -17,6 +18,8 @@ const fileInput = document.getElementById("fileInput");
 const startTimeSlider = document.getElementById("startTime");
 const endTimeSlider = document.getElementById("endTime");
 const stopTimeSlider = document.getElementById("stopTimeSlider");
+const playIntervalSlider = document.getElementById("playIntervalSlider");
+const playIntervalDisplay = document.getElementById("playIntervalDisplay");
 let stopTimeDisplay = document.getElementById("stopTimeDisplay");
 const currentTimeSlider = document.getElementById("currentTime");
 const startTimeValue = document.getElementById("startTimeValue");
@@ -60,11 +63,7 @@ function initializeWaveSurfer() {
 // Play/Pause button click event
 playPauseButton.addEventListener("click", () => {
   appstate.isPlay=!appstate.isPlay;
-  if (appstate.isPlay) {
-    mediaPlayer.play();
-  } else {
-    mediaPlayer.pause();
-  }
+  checkstate();
 });
 
 // Stop button click event
@@ -149,11 +148,24 @@ currentTimeSlider.addEventListener("input", () => {
   playWithinRange();
 });
 
+// Add this after other slider event listeners
+playIntervalSlider.addEventListener("input", () => {
+  appstate.playinterval = playIntervalSlider.value * 1000; // Convert to milliseconds
+  playIntervalDisplay.innerHTML = playIntervalSlider.value;
+});
+
 // Media time update event
+let playTimeout=0;
 function onTimeUpdate() {
   playWithinRange();
   if (mediaPlayer.currentTime >= endTimeSlider.value) {
-    mediaPlayer.currentTime = startTimeSlider.value;
+    appstate.isPlay=false;
+    clearTimeout(playTimeout);
+    playTimeout = setTimeout(() => {
+      appstate.isPlay=true;
+      mediaPlayer.currentTime = startTimeSlider.value;
+    }
+    , appstate.playinterval); // Delay before resetting to start time
   }
 }
 
@@ -198,8 +210,8 @@ function loadMedia(source, name) {
   mediaPlayer.addEventListener("loadedmetadata", () => {
     const mediaDuration = mediaPlayer.duration;
     startTimeSlider.max = mediaDuration;
-    endTimeSlider.max = mediaDuration;
-    endTimeSlider.value = mediaDuration;
+    endTimeSlider.max = mediaDuration-1;
+    endTimeSlider.value = mediaDuration-1;
     currentTimeSlider.max = mediaDuration;
   });
 
@@ -217,7 +229,7 @@ setInterval(() => {
     stopTimeSlider.value--;
   }
   if (stopTimeSlider.value <= 0) {
-    mediaPlayer.pause();
+    appstate.isPlay=false;
     stopTimeSlider.value = 10000;
   }
   stopTimeDisplay.innerHTML = stopTimeSlider.value;
@@ -336,13 +348,16 @@ currentTimeSlider.addEventListener("input", updateAdjustedTimeDisplay);
  function checkstate() {
   if(appstate.isPlay){
     mediaPlayer.play();
+    console.log(' checkstate: play')
   }
   else{
+    console.log(' checkstate: pause')
+
     mediaPlayer.pause();
   }
 
   if(stopTimeSlider.value<=0){
-    mediaPlayer.pause();
+    appstate.isPlay=false;
   }
  }
 

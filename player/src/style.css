@@ -23,6 +23,7 @@ button ,input, textarea {
 
 
 #audioSources{
+  font-size: large;
   width: 90vw;
   height: 300px;
 }
