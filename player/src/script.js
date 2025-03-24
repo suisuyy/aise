@@ -3,7 +3,7 @@ import {writeToLocalStorage,readFromLocalStorage} from './storage.mjs'
 
 let appstate={
   isPlay:false,
-  playinterval: 10000
+  playinterval: 15000
 }
 
 
