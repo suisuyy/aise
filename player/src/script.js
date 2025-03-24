@@ -160,10 +160,11 @@ function onTimeUpdate() {
   playWithinRange();
   if (mediaPlayer.currentTime >= endTimeSlider.value) {
     appstate.isPlay=false;
+    mediaPlayer.currentTime = startTimeSlider.value;
+
     clearTimeout(playTimeout);
     playTimeout = setTimeout(() => {
       appstate.isPlay=true;
-      mediaPlayer.currentTime = startTimeSlider.value;
     }
     , appstate.playinterval); // Delay before resetting to start time
   }
