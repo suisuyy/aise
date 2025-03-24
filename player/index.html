@@ -8,12 +8,7 @@
   <body>
 
 
-<div id="playlist">
-  <input id="fileInput" type="file" accept="audio/*,video/*"> or paster file url
-  <textarea id="audioSources" placeholder="Enter audio URLs (one per line)">https://alistd.azurewebsites.net/d/odav/share/tmp/audio/voa/202405/VOA60_%20June%2010%2C%202024.mp3</textarea>
-  <button id="loadPlaylist">Load Playlist</button>
 
-</div>
 
 <div class="controls" id="controlDiv">
   <button id="playPause">Play</button>
@@ -53,6 +48,14 @@
 <div id="currentAudioName">Currently Playing: <p id="audioName">No Audio</p>
 </div>
 
+<div id="playlist">
+  <input id="fileInput" type="file" accept="audio/*,video/*"> or paster file url
+  <br>
+  <textarea id="audioSources" placeholder="Enter audio URLs (one per line)">https://alistd.azurewebsites.net/d/odav/share/tmp/audio/voa/202405/VOA60_%20June%2010%2C%202024.mp3</textarea>
+  <br>
+  <button id="loadPlaylist">Load Playlist</button>
+
+</div>
 
 
     <script src="https://unpkg.com/wavesurfer.js"></script>

@@ -4,6 +4,28 @@ body {
   margin: 0;
 }
 
+* {
+
+  margin:2px;
+  font-family: system-ui;
+}
+
+
+button ,input, textarea {
+  padding: 6px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background-color: white;
+  color: black;
+  border: 1px solid lightgray;
+
+}
+
+
+#audioSources{
+  width: 90vw;
+  height: 300px;
+}
 
 iframe{
   width: 100%;
@@ -25,27 +47,6 @@ h1 {
   margin: 0;
 }
 
-textarea {
-  width: 95vw;
-  height: 100px;
-  resize: none;
-}
-
-button {
-  padding: 12px 24px;
-  margin: 8px;
-  cursor: pointer;
-  background-color: lightcyan;
-  color: black;
-  border: none;
-  font-size: large;
-  border-radius: 5px;
-  width: auto;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
 
 input[type="range"] {
   width: 98vw;

@@ -1,5 +1,11 @@
 import {writeToLocalStorage,readFromLocalStorage} from './storage.mjs'
 
+
+let appstate={
+  isPlay:false,
+}
+
+
 const audioPlayer = document.getElementById("audioPlayer");
 const videoPlayer = document.getElementById("videoPlayer");
 const playPauseButton = document.getElementById("playPause");
@@ -53,7 +59,8 @@ function initializeWaveSurfer() {
 
 // Play/Pause button click event
 playPauseButton.addEventListener("click", () => {
-  if (mediaPlayer.paused) {
+  appstate.isPlay=!appstate.isPlay;
+  if (appstate.isPlay) {
     mediaPlayer.play();
   } else {
     mediaPlayer.pause();
@@ -74,15 +81,26 @@ volumeControl.addEventListener("input", () => {
     waveSurfer.setVolume(volumeControl.value);
   }
 });
+
+let checkinterval=0;
   
 // Load playlist button click event
 loadPlaylistButton.addEventListener("click", () => {
+  loadPlaylistButton.style.backgroundColor = "lightgreen";
+  setTimeout(() => {
+    loadPlaylistButton.style.backgroundColor = "";
+  }, 1000);
     writeToLocalStorage('lplay',{urls: audioSourcesTextarea.value});
   playlist = audioSourcesTextarea.value
     .split("\n")
     .filter((url) => url.trim() !== "");
   currentIndex = 0;
   loadMedia(playlist[currentIndex]);
+  appstate.isPlay=true;
+  clearInterval(checkinterval);
+  checkinterval= setInterval(() => {
+    checkstate();
+  }, 1000);
 
 });
   
@@ -168,7 +186,6 @@ function loadMedia(source, name) {
     videoPlayer.style.display = "none";
     audioPlayer.style.display = "block";
     audioPlayer.src = source;
-    audioPlayer.load();
     mediaPlayer = audioPlayer;
 
     // Load audio into WaveSurfer
@@ -279,15 +296,7 @@ currentTimeSlider.addEventListener("input", updateAdjustedTimeDisplay);
    const button = document.createElement('button');
    button.textContent = id.charAt(0).toUpperCase() + id.slice(1); // Capitalize text
    button.id = `${id}-tab`;
-   button.style.padding = '10px 20px';
-   button.style.margin = '0 5px';
-   button.style.border = 'none';
-   button.style.borderRadius = '5px';
-   button.style.backgroundColor = '#ffffff';
-   button.style.color = '#333';
-   button.style.cursor = 'pointer';
-   button.style.fontSize = '16px';
-   button.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+  
   
    // Add event listener to each button
    button.addEventListener('click', () => {
@@ -322,4 +331,14 @@ currentTimeSlider.addEventListener("input", updateAdjustedTimeDisplay);
      tabElement.style.display = 'none'; // Hide others
    }
  });
+
+
+ function checkstate() {
+  if(appstate.isPlay){
+    mediaPlayer.play();
+  }
+  else{
+    mediaPlayer.pause();
+  }
+ }
 

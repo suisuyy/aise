@@ -13,9 +13,16 @@ let currentTab = localStorage.getItem("defaultTab") || "help";
         { name: "grok", base: "https://grok.com/?q=" },
         { name: "mistral", base: "https://chat.mistral.ai/chat?q=" },
         { name: "scira", base: "https://scira.app/?q=" },
+        { name: "aistudio", base: "https://aistudio.google.com?" , preload: true},
+        { name: "gemini", base: "https://gemini.google.com/search?q=" },
+
+
         { name: "groq", base: "https://simpleai.devilent2.workers.dev/?q=" },
+        
+
         { name: "bimg", base: "https://www.bing.com/images/search?q=" },
         { name: "gimg", base: "https://www.google.com/search?udm=2&q=" },
+
 
         { name: "help", base: "./help.html?" , preload: true},
 
