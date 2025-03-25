@@ -351,13 +351,24 @@ currentTimeSlider.addEventListener("input", updateAdjustedTimeDisplay);
 
  function checkstate() {
   if(appstate.isPlay){
-    mediaPlayer.play();
+    if(mediaPlayer.src!==playlist[currentIndex]){ 
+      mediaPlayer.src=playlist[currentIndex];
+      mediaPlayer.play();
+    }
+    else{
+      mediaPlayer.play();
+    }
     console.log(' checkstate: play')
   }
   else{
     console.log(' checkstate: pause')
 
-    mediaPlayer.pause();
+   // mediaPlayer.pause();
+   //instead of pause, set audio src to silent 
+   if(!mediaPlayer.src.endsWith("1-hour-of-silence.mp3")){
+    
+    mediaPlayer.src = "./src/1-hour-of-silence.mp3";
+   }
   }
 
   if(stopTimeSlider.value<=0){
