@@ -165,6 +165,9 @@ function onTimeUpdate() {
     clearTimeout(playTimeout);
     playTimeout = setTimeout(() => {
       appstate.isPlay=true;
+      mediaPlayer.currentTime = startTimeSlider.value;
+      mediaPlayer.play();
+
     }
     , appstate.playinterval); // Delay before resetting to start time
   }
