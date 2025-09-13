@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gemini (OpenAI-compatible) Test Client</title>
+<style>
+  :root{
+    --bg: #0b0c10;
+    --panel: #111319;
+    --muted: #9aa4b2;
+    --text: #e6e9ee;
+    --accent: #7aa2f7;
+    --ring: rgba(122,162,247,.35);
+    --border: #1b1f2a;
+  }
+  @media (prefers-color-scheme: light) {
+    :root{
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --muted: #64748b;
+      --text: #0f172a;
+      --accent: #3b82f6;
+      --ring: rgba(59,130,246,.25);
+      --border: #e5e7eb;
+    }
+  }
+  *{box-sizing:border-box}
+  html, body { height: 100% }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  }
+  .container{
+    max-width: 980px; margin: 24px auto; padding: 0 16px;
+    display:flex; flex-direction:column; gap:16px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px; padding:16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  }
+  h1{ font-size: 18px; margin:0 0 6px }
+  .sub{ color:var(--muted); font-size:12px }
+  .grid{
+    display:grid; gap:12px;
+    grid-template-columns:1fr 1fr 1fr 120px;
+  }
+  .grid > .wide { grid-column: 1 / -1; }
+  label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px }
+  input[type="text"], input[type="url"], input[type="password"], textarea, select{
+    width:100%; padding:10px 12px;
+    background:transparent; color:var(--text);
+    border:1px solid var(--border); border-radius:10px;
+    outline: none;
+  }
+  input:focus, textarea:focus, select:focus{
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--ring);
+  }
+  .row{ display:flex; align-items:center; gap:8px; flex-wrap:wrap }
+  .btn{
+    appearance:none; border:1px solid transparent; border-radius:12px;
+    padding:10px 14px; font-weight:600; cursor:pointer;
+    background:var(--accent); color:white;
+    transition: transform .05s ease;
+  }
+  .btn.secondary{ background:transparent; border-color:var(--border); color:var(--text) }
+  .btn.ghost{ background:transparent; color:var(--muted) }
+  .btn:active{ transform: translateY(1px) }
+  .switch { display:flex; align-items:center; gap:8px }
+  .messages{
+    display:flex; flex-direction:column; gap:10px; max-height: 55vh; overflow:auto; padding-right:4px;
+  }
+  .bubble{
+    border:1px solid var(--border);
+    border-radius:14px; padding:12px 14px;
+    background: #0e1420;
+  }
+  .user .bubble{ background:#132233 }
+  .assistant .bubble{ background:#111a28 }
+  .role{ font-size:11px; color:var(--muted); margin-bottom:6px }
+  .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+  pre { margin:0; white-space:pre-wrap; word-wrap:anywhere }
+  .composer{ display:grid; grid-template-columns: 1fr 140px; gap:10px }
+  .muted{ color:var(--muted) }
+  .tiny{ font-size:11px }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Gemini (OpenAI-compatible) Client</h1>
+      <div class="sub">Point this at your Worker’s <span class="mono">/chat/completions</span> endpoint. Toggle stream to exercise SSE.</div>
+      <div class="grid" style="margin-top:12px">
+        <div>
+          <label>Endpoint (base URL)</label>
+          <input id="endpoint" type="url" placeholder="https://your-worker.workers.dev" />
+        </div>
+        <div>
+          <label>Model</label>
+          <input id="model" list="models" type="text" placeholder="gemini-1.5-pro-latest" />
+          <datalist id="models">
+            <option value="gemini-1.5-pro-latest"></option>
+            <option value="gemini-1.5-flash"></option>
+            <option value="gemini-2.0-flash"></option>
+            <option value="gemini-2.5-pro"></option>
+            <option value="learnlm-1.5-pro"></option>
+          </datalist>
+        </div>
+        <div>
+          <label>API Key (optional; sent as Bearer)</label>
+          <input id="apiKey" type="password" placeholder="sk-..." autocomplete="off" />
+        </div>
+        <div class="switch">
+          <input id="stream" type="checkbox" />
+          <label for="stream" style="margin:0">Stream</label>
+        </div>
+        <div class="wide">
+          <label>System Prompt (optional)</label>
+          <textarea id="system" rows="2" placeholder="You are a helpful assistant."></textarea>
+        </div>
+      </div>
+      <div class="row" style="justify-content:flex-end; gap:8px; margin-top:8px">
+        <button id="clear" class="btn secondary">Clear chat</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div id="messages" class="messages" aria-live="polite"></div>
+      <div style="height:6px"></div>
+      <div class="composer">
+        <textarea id="input" rows="3" placeholder="Type a message… (Enter to send, Shift+Enter for newline)"></textarea>
+        <div class="row" style="align-items:stretch">
+          <button id="send" class="btn" style="flex:1">Send</button>
+          <button id="stop" class="btn secondary" style="flex:0">Stop</button>
+        </div>
+      </div>
+      <div class="row" style="margin-top:6px; justify-content:space-between">
+        <div class="tiny muted">This client posts OpenAI-style JSON to <span class="mono">/chat/completions</span>. Streaming parses SSE frames.</div>
+        <div class="tiny"><a href="#" id="copyLast" class="muted">Copy last answer</a></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const els = {
+    endpoint: document.getElementById('endpoint'),
+    model: document.getElementById('model'),
+    apiKey: document.getElementById('apiKey'),
+    stream: document.getElementById('stream'),
+    system: document.getElementById('system'),
+    messages: document.getElementById('messages'),
+    input: document.getElementById('input'),
+    send: document.getElementById('send'),
+    stop: document.getElementById('stop'),
+    clear: document.getElementById('clear'),
+    copyLast: document.getElementById('copyLast'),
+  };
+
+  // Minimal state
+  let convo = []; // { role: 'user'|'assistant', content: string }
+  let currentAbort = null;
+  let lastAssistantEl = null;
+
+  // Persist simple settings (except API key)
+  const SETTINGS_KEY = 'gemini_client_settings_v1';
+  function loadSettings(){
+    try{
+      const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
+      if (s.endpoint) els.endpoint.value = s.endpoint;
+      if (s.model) els.model.value = s.model;
+      if (typeof s.stream === 'boolean') els.stream.checked = s.stream;
+      if (s.system) els.system.value = s.system;
+    }catch{}
+  }
+  function saveSettings(){
+    const s = {
+      endpoint: els.endpoint.value.trim(),
+      model: els.model.value.trim(),
+      stream: !!els.stream.checked,
+      system: els.system.value,
+    };
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+  }
+  loadSettings();
+
+  function appendMessage(role, text){
+    const wrap = document.createElement('div');
+    wrap.className = role;
+    const roleEl = document.createElement('div');
+    roleEl.className = 'role';
+    roleEl.textContent = role;
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    const pre = document.createElement('pre');
+    pre.textContent = text || '';
+    bubble.appendChild(pre);
+    wrap.appendChild(roleEl);
+    wrap.appendChild(bubble);
+    els.messages.appendChild(wrap);
+    els.messages.scrollTop = els.messages.scrollHeight;
+    return pre; // return content node for streaming updates
+  }
+
+  function setSending(sending){
+    els.send.disabled = sending;
+    els.stop.disabled = !sending;
+  }
+
+  function ensureEndpointPath(base){
+    // Accept base with or without trailing slash; append /chat/completions
+    return base.replace(/\/+$/,'') + '/chat/completions';
+  }
+
+  function buildMessages(){
+    const msgs = [];
+    const sys = els.system.value.trim();
+    if (sys) msgs.push({ role: 'system', content: sys });
+    for (const m of convo) msgs.push({ role: m.role, content: m.content });
+    return msgs;
+  }
+
+  function startChat(){
+    const endpoint = els.endpoint.value.trim();
+    const model = (els.model.value.trim() || 'gemini-1.5-pro-latest');
+    if (!endpoint){ alert('Please enter endpoint base URL'); return; }
+    const userText = els.input.value;
+    if (!userText.trim()){ return; }
+
+    // push user message to state + UI
+    convo.push({ role: 'user', content: userText });
+    appendMessage('user', userText);
+    els.input.value = '';
+
+    // prepare request payload
+    const body = {
+      model,
+      stream: !!els.stream.checked,
+      messages: buildMessages(),
+    };
+
+    // auth header if provided
+    const headers = { 'Content-Type': 'application/json' };
+    const apiKey = els.apiKey.value.trim();
+    if (apiKey) headers['Authorization'] = 'Bearer ' + apiKey;
+
+    const url = ensureEndpointPath(endpoint);
+    const controller = new AbortController();
+    currentAbort = controller;
+    setSending(true);
+
+    // Create assistant message placeholder
+    lastAssistantEl = appendMessage('assistant', '');
+    let accumulated = '';
+
+    fetch(url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    }).then(async (res) => {
+      if (body.stream) {
+        // Stream mode: parse SSE frames from fetch body
+        await handleSSEStream(res, (frame) => {
+          if (frame === '[DONE]') return;
+          try{
+            const data = JSON.parse(frame);
+            const delta = data.choices?.[0]?.delta || {};
+            const chunk = (delta.content ?? '');
+            if (chunk) {
+              accumulated += chunk;
+              lastAssistantEl.textContent = accumulated;
+              els.messages.scrollTop = els.messages.scrollHeight;
+            }
+          }catch(e){
+            // Ignore non-JSON noise
+          }
+        });
+        finishAssistant(accumulated);
+      } else {
+        // Non-stream: parse JSON once
+        if (!res.ok){
+          const t = await res.text();
+          const msg = safeErrorMessage(t);
+          lastAssistantEl.textContent = msg;
+          finishAssistant(msg);
+          return;
+        }
+        const data = await res.json();
+        const text = data.choices?.[0]?.message?.content ?? '';
+        lastAssistantEl.textContent = text || '';
+        finishAssistant(text);
+      }
+    }).catch(err => {
+      if (err.name === 'AbortError') return;
+      const msg = 'Request failed: ' + (err.message || err);
+      lastAssistantEl.textContent = msg;
+      finishAssistant(msg);
+    }).finally(() => {
+      setSending(false);
+      currentAbort = null;
+    });
+  }
+
+  function finishAssistant(text){
+    convo.push({ role:'assistant', content: text });
+  }
+
+  async function handleSSEStream(res, onData){
+    // If not OK, try to show body text (rate limit message may come as JSON)
+    if (!res.ok){
+      const t = await res.text();
+      onData(JSON.stringify({
+        choices:[{delta:{content: safeErrorMessage(t)}}]
+      }));
+      onData('[DONE]');
+      return;
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    while (true){
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      // split on double newlines (handles \n\n, \r\n\r\n, etc.)
+      let idx;
+      while ((idx = buffer.search(/\r?\n\r?\n/)) !== -1){
+        const raw = buffer.slice(0, idx);
+        buffer = buffer.slice(idx + (buffer[idx] === '\r' ? 4 : 2)); // best effort
+        const line = raw.startsWith('data:') ? raw.slice(5).trim() : raw.trim();
+        if (line) onData(line);
+      }
+    }
+    // any tail line
+    const tail = buffer.trim();
+    if (tail){
+      const line = tail.startsWith('data:') ? tail.slice(5).trim() : tail;
+      if (line) onData(line);
+    }
+    onData('[DONE]');
+  }
+
+  function safeErrorMessage(t){
+    try{
+      const j = JSON.parse(t);
+      if (j?.error) return typeof j.error === 'string' ? j.error : (j.error.message || JSON.stringify(j.error));
+      if (j?.choices?.[0]?.message?.content) return j.choices[0].message.content;
+      return t;
+    }catch{ return t; }
+  }
+
+  // UI wiring
+  els.send.addEventListener('click', () => { saveSettings(); startChat(); });
+  els.stop.addEventListener('click', () => {
+    if (currentAbort){ currentAbort.abort(); setSending(false); }
+  });
+  els.clear.addEventListener('click', () => {
+    convo = [];
+    els.messages.innerHTML = '';
+  });
+  els.copyLast.addEventListener('click', (e) => {
+    e.preventDefault();
+    for (let i = convo.length - 1; i >= 0; i--){
+      if (convo[i].role === 'assistant'){
+        navigator.clipboard.writeText(convo[i].content || '');
+        break;
+      }
+    }
+  });
+
+  // Send on Enter, newline with Shift+Enter
+  els.input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      saveSettings();
+      startChat();
+    }
+  });
+
+  // UX niceties
+  setSending(false);
+})();
+</script>
+</body>
+</html>
