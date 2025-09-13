@@ -98,7 +98,7 @@
       <div class="grid" style="margin-top:12px">
         <div>
           <label>Endpoint (base URL)</label>
-          <input id="endpoint" type="url" placeholder="https://your-worker.workers.dev" />
+          <input id="endpoint" type="url" placeholder="https://your-worker.workers.dev" value="/" />
         </div>
         <div>
           <label>Model</label>
@@ -180,7 +180,7 @@
   }
   function saveSettings(){
     const s = {
-      endpoint: els.endpoint.value.trim(),
+      endpoint: els.endpoint.value.trim() || '/',
       model: els.model.value.trim(),
       stream: !!els.stream.checked,
       system: els.system.value,
